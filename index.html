@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <!-- 开启iOS全屏模式，隐藏Safari工具栏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- 全屏时状态栏为半透明黑色，视觉更统一 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- 设置主屏幕图标 -->
+    <link rel="apple-touch-icon" href="https://img.heliar.top/file/1768165259227_IMG_9124.jpeg">
     <title>Pure Milky Pink Desktop</title>
     <style>
         :root {
@@ -170,14 +176,17 @@
 
         .icon-grid {
             display: flex;
-            gap: 40px;
+            justify-content: space-between; /* 图标之间自动平均分布 */
+            padding: 0 10px; /* 两边留出等距间隔 */
             margin-bottom: 60px;
             box-sizing: border-box;
+            width: 100%; /* 占满容器宽度 */
         }
 
         .app-item {
             display: flex; flex-direction: column; align-items: center;
             cursor: pointer;
+            width: 60px; /* 固定宽度，确保分布均匀 */
         }
 
         .icon-box {
@@ -603,9 +612,7 @@
             .widget-temp {
                 font-size: 14px;
             }
-            .icon-grid {
-                gap: 30px;
-            }
+            /* 移除之前针对特定断点的 icon-grid 覆盖，因为现在使用 space-between 自适应 */
             .icon-box {
                 width: 55px;
                 height: 55px;
@@ -641,9 +648,7 @@
                 font-size: 8px;
                 width: calc(100% - 25px);
             }
-            .icon-grid {
-                gap: 25px;
-            }
+            /* 移除 icon-grid gap 覆盖 */
             .icon-box {
                 width: 50px;
                 height: 50px;
@@ -696,6 +701,14 @@
             <div class="app-item" onclick="openPersonalizationPage()">
                 <div class="icon-box"></div>
                 <div class="app-label">个性化</div>
+            </div>
+            <div class="app-item" onclick="openApp('WeChat')">
+                <div class="icon-box"></div>
+                <div class="app-label">WeChat</div>
+            </div>
+            <div class="app-item" onclick="openApp('TikTok')">
+                <div class="icon-box"></div>
+                <div class="app-label">TikTok</div>
             </div>
         </div>
 
@@ -949,13 +962,15 @@
         document.getElementById('openaiApiKey').value = savedOpenAIKey;
         document.getElementById('openaiModel').value = savedOpenAIModel;
         
-        // 3. 如果有保存的城市，自动查询天气
-        if (savedCity) {
-            document.getElementById('cityInput').value = savedCity;
-            autoUpdateWeather(); // 自动更新天气
-        }
+        // 3. 初始化天气系统 (自动定位或使用保存城市)
+        if (savedCity) document.getElementById('cityInput').value = savedCity;
+        initWeatherSystem();
+        
         // 4. 启动时间自动更新
         setInterval(updateWidgetTime, 60000);
+        
+        // 5. 启动天气自动更新 (60分钟)
+        setInterval(autoUpdateWeather, 3600000);
     }
 
     // 时间更新函数
@@ -1080,63 +1095,154 @@
         }
     }
 
-    // 查询天气（使用免费API）
+    // ================== 天气功能实现 (纯前端/无后端) ==================
+
+    // 天气状态映射 (Open-Meteo WMO Code)
+    function getWeatherStatus(code) {
+        if (code === 0) return { type: '晴', icon: 'sun' };
+        if (code >= 1 && code <= 3) return { type: '多云', icon: '⛅' };
+        if (code >= 45 && code <= 48) return { type: '雾', icon: '🌫️' };
+        if (code >= 51 && code <= 67) return { type: '雨', icon: '🌧️' };
+        if (code >= 71 && code <= 77) return { type: '雪', icon: '❄️' };
+        if (code >= 80 && code <= 82) return { type: '阵雨', icon: '🌦️' };
+        if (code >= 85 && code <= 86) return { type: '雪', icon: '❄️' };
+        if (code >= 95 && code <= 99) return { type: '雷雨', icon: '⛈️' };
+        return { type: '阴', icon: '☁️' };
+    }
+
+    // 更新天气UI
+    function updateWeatherUI(temp, code) {
+        const status = getWeatherStatus(code);
+        const tempStr = `${Math.round(temp)}℃`;
+        
+        // 更新温度显示
+        const tempEl = document.getElementById('showTemp');
+        const inputEl = document.getElementById('tempDisplay');
+        if(tempEl) tempEl.textContent = tempStr;
+        if(inputEl) inputEl.value = tempStr;
+
+        // 更新图标
+        const iconContainer = document.querySelector('.weather-icon');
+        if (iconContainer) {
+            if (status.icon === 'sun') {
+                // 保持原有的CSS太阳动画
+                iconContainer.innerHTML = `
+                    <div class="sun-circle"></div>
+                    <div class="sun-ray ray-1"></div>
+                    <div class="sun-ray ray-2"></div>
+                    <div class="sun-ray ray-3"></div>
+                    <div class="sun-ray ray-4"></div>
+                    <div class="sun-ray ray-5"></div>
+                    <div class="sun-ray ray-6"></div>
+                    <div class="sun-ray ray-7"></div>
+                    <div class="sun-ray ray-8"></div>
+                `;
+            } else {
+                // 使用Emoji显示其他天气
+                iconContainer.innerHTML = `<div style="font-size: 22px; line-height: 20px; text-align: center; margin-top:-2px;">${status.icon}</div>`;
+            }
+        }
+    }
+
+    // 核心天气获取函数
+    async function fetchWeatherData(lat, lon, isManual = false) {
+        try {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('Weather API Error');
+            
+            const data = await res.json();
+            const { temperature, weathercode } = data.current_weather;
+            
+            updateWeatherUI(temperature, weathercode);
+            
+            // 保存最后一次成功的数据
+            localStorage.setItem('lastWeatherData', JSON.stringify({
+                temp: temperature,
+                code: weathercode,
+                timestamp: Date.now()
+            }));
+
+            if (isManual) alert(`更新成功：${temperature}℃`);
+            
+        } catch (error) {
+            console.error("天气更新失败:", error);
+            if (isManual) alert('天气更新失败，请稍后重试');
+            loadLastWeather(); // 失败时加载缓存
+        }
+    }
+
+    // 加载缓存天气
+    function loadLastWeather() {
+        const last = localStorage.getItem('lastWeatherData');
+        if (last) {
+            try {
+                const { temp, code } = JSON.parse(last);
+                updateWeatherUI(temp, code);
+            } catch(e) {}
+        }
+    }
+
+    // 初始化天气系统
+    function initWeatherSystem() {
+        // 尝试加载缓存作为兜底
+        loadLastWeather();
+
+        // 优先使用定位
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    fetchWeatherData(latitude, longitude);
+                },
+                (err) => {
+                    console.log("定位获取失败，尝试使用保存的城市", err);
+                    if (savedCity) getCoordinatesByCity(savedCity);
+                }
+            );
+        } else {
+            if (savedCity) getCoordinatesByCity(savedCity);
+        }
+    }
+
+    // 通过城市名获取坐标 (Open-Meteo Geocoding)
+    async function getCoordinatesByCity(city, isManual = false) {
+        try {
+            const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=zh&format=json`;
+            const res = await fetch(url);
+            const data = await res.json();
+            
+            if (data.results && data.results.length > 0) {
+                const { latitude, longitude, name } = data.results[0];
+                // 如果是手动查询，保存这个确定的城市名
+                if (isManual) {
+                     localStorage.setItem('savedCity', name); 
+                     savedCity = name;
+                }
+                fetchWeatherData(latitude, longitude, isManual);
+            } else {
+                if (isManual) alert('未找到该城市，请尝试输入拼音或英文名');
+            }
+        } catch (e) {
+            console.error("城市搜索失败", e);
+            if (isManual) alert('城市搜索失败，请检查网络');
+            loadLastWeather();
+        }
+    }
+
+    // 手动查询天气
     async function getWeather() {
         const city = document.getElementById('cityInput').value.trim();
         if (!city) {
             alert('请输入城市名称！');
             return;
         }
-        // 保存城市到本地存储
-        localStorage.setItem('savedCity', city);
-        savedCity = city;
-        
-        try {
-            // 使用免费的天气API（示例API，实际使用时可能需要替换）
-            // 这里使用的是和风天气的免费API示例，需要注册获取key
-            // 为了简化，这里使用一个模拟的响应
-            const response = await fetch(`https://api.jisuapi.com/weather/query?city=${encodeURIComponent(city)}&appkey=free`);
-            const data = await response.json();
-            
-            if (data.status === 0 && data.result) {
-                const temp = data.result.temp;
-                document.getElementById('showTemp').textContent = `${temp}℃`;
-                document.getElementById('tempDisplay').value = `${temp}℃`;
-                alert(`已成功更新天气：${city} ${temp}℃`);
-            } else {
-                // 如果API失败，显示模拟数据
-                const mockTemp = Math.floor(Math.random() * 15) + 20; // 20-35度之间的随机温度
-                document.getElementById('showTemp').textContent = `${mockTemp}℃`;
-                document.getElementById('tempDisplay').value = `${mockTemp}℃`;
-                alert(`使用模拟天气数据：${city} ${mockTemp}℃`);
-            }
-        } catch (error) {
-            // 如果API请求失败，显示模拟数据
-            const mockTemp = Math.floor(Math.random() * 15) + 20; // 20-35度之间的随机温度
-            document.getElementById('showTemp').textContent = `${mockTemp}℃`;
-            document.getElementById('tempDisplay').value = `${mockTemp}℃`;
-            alert(`使用模拟天气数据：${city} ${mockTemp}℃`);
-        }
+        getCoordinatesByCity(city, true);
     }
 
-    // 自动更新天气（页面加载时调用）
-    async function autoUpdateWeather() {
-        if (savedCity) {
-            try {
-                const response = await fetch(`https://api.jisuapi.com/weather/query?city=${encodeURIComponent(savedCity)}&appkey=free`);
-                const data = await response.json();
-                if (data.status === 0 && data.result) {
-                    const temp = data.result.temp;
-                    document.getElementById('showTemp').textContent = `${temp}℃`;
-                    document.getElementById('tempDisplay').value = `${temp}℃`;
-                }
-            } catch (error) {
-                // 如果API失败，使用模拟数据
-                const mockTemp = Math.floor(Math.random() * 15) + 20;
-                document.getElementById('showTemp').textContent = `${mockTemp}℃`;
-                document.getElementById('tempDisplay').value = `${mockTemp}℃`;
-            }
-        }
+    // 自动更新天气
+    function autoUpdateWeather() {
+        initWeatherSystem();
     }
 
     // 测试OpenAI API连接
