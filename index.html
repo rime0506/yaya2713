@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <!-- 开启iOS全屏模式，隐藏Safari工具栏 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <!-- 全屏时状态栏为半透明黑色，视觉更统一 -->
@@ -23,7 +23,8 @@
         }
 
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
+            margin: 0; padding: 0; width: 100vw; height: 100vh;
+            padding-top: env(safe-area-inset-top);
             font-family: -apple-system, "Helvetica Neue", sans-serif;
             background-color: #ffffff;
             overflow: hidden;
@@ -259,10 +260,14 @@
             transform: translateX(100%);
             transition: transform 0.4s ease;
         }
-        
+
         /* 朋友资料页面应该在聊天详细页面之上 */
         #friendProfilePage {
             z-index: 50;
+        }
+        
+        #momentsPage {
+            z-index: 60;
         }
 
         .wechat-page.active {
@@ -301,14 +306,13 @@
             align-items: center; /* 垂直居中 */
             justify-content: space-between;
             padding: 0 15px;
-            padding-top: 44px; /* 顶部留出44px空间，避免被灵动岛挡住 */
-            background-color: var(--pure-pink);
-            border-bottom: 1px solid var(--border-pink);
+            background-color: #ffffff;
+            border-bottom: 1px solid #f0f0f0;
             box-sizing: border-box;
             position: relative;
             margin-top: 0; /* 确保紧贴顶部 */
         }
-        
+
         .wechat-header-btn {
             font-size: 16px;
             color: var(--deep-pink);
@@ -317,6 +321,12 @@
             display: flex;
             align-items: center;
             gap: 4px;
+        }
+        
+        /* 朋友资料页面专用样式 */
+        #friendProfilePage .wechat-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #f0f0f0;
         }
 
         .wechat-header-btn svg {
@@ -491,7 +501,6 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 15px;
-            padding-top: 44px;
             background-color: var(--pure-pink);
             border-bottom: 1px solid var(--border-pink);
             box-sizing: border-box;
@@ -1496,7 +1505,6 @@
         .chat-detail-header {
             background: var(--widget-bg);
             padding: 12px 15px;
-            padding-top: 56px; /* 和聊天页面一样，顶部留出空间 */
             font-size: 17px;
             display: flex;
             align-items: center;
@@ -1583,17 +1591,18 @@
             align-items: center;
             justify-content: center;
             padding: 12px 20px;
-            background: white;
-            border: 1px solid #e0e0e0;
+            background: var(--deep-pink);
+            border: none;
             border-radius: 8px;
             font-size: 15px;
-            color: #999;
+            color: white;
             cursor: pointer;
             transition: all 0.2s;
         }
         
         .friend-action-btn:active {
-            background: #f5f5f5;
+            background: var(--deep-pink);
+            opacity: 0.8;
             transform: scale(0.98);
         }
 
@@ -1844,7 +1853,6 @@
         .me-profile-top {
             background: var(--widget-bg);
             padding: 15px 20px;
-            padding-top: 56px;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -3398,36 +3406,42 @@
         <div class="wechat-content" style="background: #f7f7f7; padding: 0;">
             <!-- 头像信息区域 -->
             <div style="background: white; padding: 20px 15px; display: flex; align-items: center; gap: 15px;">
-                <div class="detail-avatar" id="friendProfileAvatar" style="width: 60px; height: 60px;">
+                <div class="detail-avatar" id="friendProfileAvatar" style="width: 60px; height: 60px; border-radius: 8px; background-color: var(--pure-pink); border: 1px solid var(--border-pink); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: 500;">
                     <!-- 头像将动态显示 -->
                 </div>
                 <div style="flex: 1;">
-                    <div class="detail-friend-name" id="friendProfileName" style="font-size: 18px; color: #999; margin-bottom: 5px;">备注</div>
+                    <div class="detail-friend-name" id="friendProfileName" style="font-size: 18px; color: #333; margin-bottom: 5px; font-weight: 500;">备注</div>
                     <div class="detail-friend-id" id="friendProfileId" style="font-size: 14px; color: #aaa;">id:xxx</div>
                 </div>
             </div>
             
             <!-- 朋友资料区域 -->
             <div style="background: white; margin-top: 10px;">
-                <div style="padding: 15px; border-bottom: 1px solid #f0f0f0;">
+                <div style="padding: 15px;">
                     <div style="font-size: 15px; color: #999; margin-bottom: 10px;">朋友资料</div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0;">
                         <span style="font-size: 15px; color: #999;">标签</span>
                         <div style="display: flex; align-items: center; gap: 5px;">
                             <span style="font-size: 15px; color: #aaa;" id="friendProfileTags">不可以,不给</span>
                             <span style="color: #aaa;">→</span>
                         </div>
                     </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; cursor: pointer;" onclick="openFriendMomentsPage()">
+                        <span style="font-size: 15px; color: #999;">朋友圈</span>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <span style="font-size: 14px; color: #aaa;" id="friendProfileMoments">可以是文字可以是文字图片</span>
+                            <span style="color: #aaa;">→</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <!-- 朋友圈区域 -->
+            <!-- 个性签名区域 -->
             <div style="background: white; margin-top: 10px;">
                 <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 15px; color: #999;">朋友圈</span>
+                    <span style="font-size: 15px; color: #999;">个性签名</span>
                     <div style="display: flex; align-items: center; gap: 5px;">
-                        <span style="font-size: 14px; color: #aaa;" id="friendProfileMoments">可以是文字可以是文字图片</span>
-                        <span style="color: #aaa;">→</span>
+                        <span style="font-size: 14px; color: #aaa;" id="friendProfileSignature">暂无内容</span>
                     </div>
                 </div>
             </div>
@@ -3772,29 +3786,26 @@
     </div>
 
     <!-- 朋友圈页面 -->
-    <div class="moments-page" id="momentsPage" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; z-index: 20; overflow-y: auto;">
+    <div class="moments-page" id="momentsPage" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; z-index: 60; overflow-y: auto;">
         <div class="moments-header" style="position: fixed; top: 0; left: 0; width: 100%; height: 60px; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; z-index: 10; padding-top: 20px;">
             <div class="moments-back-btn" onclick="closeMomentsPage()" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));">
                     <path d="M15 18l-6-6 6-6" />
                 </svg>
             </div>
-            <div class="moments-camera-btn" onclick="togglePublishMenu(event)" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-right: 10px;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                    <circle cx="12" cy="13" r="4"/>
-                </svg>
+            <div id="momentsHeaderBtn" class="moments-header-btn" style="width: auto; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-right: 10px; padding: 0 12px; background: rgba(255,255,255,0.2); border-radius: 15px; color: white; font-size: 14px; font-weight: 500;">
+                <span id="momentsHeaderBtnText">生成</span>
             </div>
         </div>
         
-        <div class="moments-cover" style="height: 300px; background-color: #333; position: relative; margin-bottom: 40px; cursor: pointer;" onclick="document.getElementById('momentsCoverInput').click()">
+        <div class="moments-cover" style="height: 300px; background: linear-gradient(135deg, var(--pure-pink) 0%, var(--deep-pink) 100%); position: relative; margin-bottom: 40px; cursor: pointer;" onclick="document.getElementById('momentsCoverInput').click()">
             <img src="" id="momentsCoverImg" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-            <div class="moments-cover-placeholder" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #666; font-size: 14px; background: #222;">点击更换背景图</div>
+            <div class="moments-cover-placeholder" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px; background: linear-gradient(135deg, var(--pure-pink) 0%, var(--deep-pink) 100%);">可替换背景图</div>
             <input type="file" id="momentsCoverInput" style="display:none" accept="image/*" onchange="handleMomentsCoverUpload(event)">
             
             <div class="moments-user-info" style="position: absolute; bottom: -20px; right: 20px; display: flex; align-items: flex-start; gap: 15px; cursor: default;" onclick="event.stopPropagation()">
-                <div class="moments-user-name" onclick="editMomentsName()" style="color: white; font-weight: bold; font-size: 18px; margin-top: 10px; text-shadow: 0 1px 2px rgba(0,0,0,0.5); cursor: pointer;">网名</div>
-                <div class="moments-user-avatar" onclick="document.getElementById('momentsAvatarInput').click()" style="width: 70px; height: 70px; border-radius: 8px; overflow: hidden; background-color: #eee; border: 2px solid white; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative; cursor: pointer;">
+                <div class="moments-user-name" onclick="editMomentsName()" style="color: white; font-weight: bold; font-size: 18px; margin-top: 10px; text-shadow: 0 1px 2px rgba(0,0,0,0.3); cursor: pointer;">网名</div>
+                <div class="moments-user-avatar" onclick="document.getElementById('momentsAvatarInput').click()" style="width: 70px; height: 70px; border-radius: 8px; overflow: hidden; background-color: #f0f0f0; border: 2px solid white; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative; cursor: pointer;">
                     <img src="" id="momentsAvatarImg" style="width: 100%; height: 100%; object-fit: cover; display: none;">
                     <div class="moments-avatar-placeholder" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #999; font-size: 12px; text-align: center; background: #f0f0f0;">点击<br>更换</div>
                     <input type="file" id="momentsAvatarInput" style="display:none" accept="image/*" onchange="handleMomentsAvatarUpload(event)">
@@ -7033,7 +7044,7 @@ ${functionCallingInstructions}
             img.src = result;
             img.style.display = 'block';
             document.querySelector('.moments-cover-placeholder').style.display = 'none';
-            await ChatStorage.saveMomentsProfile({ cover: result });
+            await ChatStorage.saveMomentsProfile({ cover: result }, currentMomentsFriend);
         };
         reader.readAsDataURL(file);
     }
@@ -7050,7 +7061,7 @@ ${functionCallingInstructions}
             img.src = result;
             img.style.display = 'block';
             document.querySelector('.moments-avatar-placeholder').style.display = 'none';
-            await ChatStorage.saveMomentsProfile({ avatar: result });
+            await ChatStorage.saveMomentsProfile({ avatar: result }, currentMomentsFriend);
         };
         reader.readAsDataURL(file);
     }
@@ -7062,28 +7073,45 @@ ${functionCallingInstructions}
         const newName = prompt('修改朋友圈昵称:', currentName);
         if (newName && newName.trim()) {
             document.querySelector('.moments-user-name').textContent = newName.trim();
-            ChatStorage.saveMomentsProfile({ name: newName.trim() });
+            ChatStorage.saveMomentsProfile({ name: newName.trim() }, currentMomentsFriend);
         }
     }
 
     // 渲染朋友圈列表
+    // 当前查看的朋友圈角色名称
+    let currentMomentsFriend = 'me';
+    
     async function renderMomentsList() {
         const listContainer = document.querySelector('.moments-list');
         listContainer.innerHTML = ''; // 清空当前列表
         
-        const posts = await ChatStorage.getPosts();
+        const posts = await ChatStorage.getPosts(currentMomentsFriend);
         
         if (posts.length === 0) {
             listContainer.innerHTML = '<div class="moments-empty" style="text-align: center; padding: 40px; color: #999; font-size: 14px;">暂无内容</div>';
             return;
         }
 
-        // 获取用户信息用于显示
-        const myMomentsProfile = await ChatStorage.getMomentsProfile();
-        const myPersona = currentPersona || { nickname: '我', avatar: '' };
+        // 获取当前查看角色的信息用于显示
+        let momentsProfile, displayName, displayAvatar;
         
-        const myName = myMomentsProfile.name || myPersona.nickname || '我';
-        const myAvatar = myMomentsProfile.avatar || myPersona.avatar || ''; 
+        if (currentMomentsFriend === 'me') {
+            // 用户自己的朋友圈
+            momentsProfile = await ChatStorage.getMomentsProfile('me');
+            const myPersona = currentPersona || { nickname: '我', avatar: '' };
+            displayName = momentsProfile.name || myPersona.nickname || '我';
+            displayAvatar = momentsProfile.avatar || myPersona.avatar || '';
+        } else {
+            // 角色的朋友圈
+            momentsProfile = await ChatStorage.getMomentsProfile(currentMomentsFriend);
+            const friends = getFriendList();
+            const friend = friends.find(f => f.name === currentMomentsFriend);
+            displayName = momentsProfile.name || friend?.remark || friend?.name || currentMomentsFriend;
+            displayAvatar = momentsProfile.avatar || friend?.avatar || '';
+        }
+        
+        const myName = displayName;
+        const myAvatar = displayAvatar; 
 
         posts.forEach(post => {
             const postEl = document.createElement('div');
@@ -7153,30 +7181,65 @@ ${functionCallingInstructions}
         });
     }
 
-    // 打开朋友圈页面
+    // 打开朋友圈页面（用户自己的）
     async function openMomentsPage() {
+        currentMomentsFriend = 'me';
+        await loadMomentsPage('me');
+    }
+    
+    // 打开角色的朋友圈页面
+    async function openFriendMomentsPage() {
+        if (!currentChatFriend) return;
+        currentMomentsFriend = currentChatFriend;
+        await loadMomentsPage(currentChatFriend);
+    }
+    
+    // 加载朋友圈页面
+    async function loadMomentsPage(friendName) {
         const page = document.getElementById('momentsPage');
+        // 确保朋友圈页面直接显示在最上层
         page.style.display = 'block';
+        page.style.zIndex = '60';
         
-        // 加载当前用户头像和网名
-        const myPersona = currentPersona || { nickname: '我', avatar: '' };
+        let momentsProfile, displayName, displayAvatar;
         
-        // 从 IndexedDB 加载朋友圈资料
-        const momentsProfile = await ChatStorage.getMomentsProfile();
+        if (friendName === 'me') {
+            // 用户自己的朋友圈
+            const myPersona = currentPersona || { nickname: '我', avatar: '' };
+            momentsProfile = await ChatStorage.getMomentsProfile('me');
+            displayName = momentsProfile.name || myPersona.nickname || '我';
+            displayAvatar = momentsProfile.avatar || myPersona.avatar || '';
+            
+            // 用户自己的朋友圈显示相机按钮
+            const headerBtn = document.getElementById('momentsHeaderBtn');
+            headerBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>';
+            headerBtn.onclick = (e) => togglePublishMenu(e);
+        } else {
+            // 角色的朋友圈
+            momentsProfile = await ChatStorage.getMomentsProfile(friendName);
+            const friends = getFriendList();
+            const friend = friends.find(f => f.name === friendName);
+            displayName = momentsProfile.name || friend?.remark || friend?.name || friendName;
+            displayAvatar = momentsProfile.avatar || friend?.avatar || '';
+            
+            // 角色的朋友圈显示生成按钮
+            const headerBtn = document.getElementById('momentsHeaderBtn');
+            headerBtn.innerHTML = '<span>生成</span>';
+            headerBtn.onclick = (e) => {
+                e.stopPropagation();
+                generateFriendMoments(friendName);
+            };
+        }
         
-        // 优先读取朋友圈独立设置
-        const savedName = momentsProfile.name;
-        document.querySelector('.moments-user-name').textContent = savedName || myPersona.nickname || '我';
+        // 设置名称
+        document.querySelector('.moments-user-name').textContent = displayName;
         
+        // 设置头像
         const avatarImg = document.getElementById('momentsAvatarImg');
         const avatarPlaceholder = document.querySelector('.moments-avatar-placeholder');
-        const savedAvatar = momentsProfile.avatar;
         
-        // 头像逻辑: Moments > Persona > None
-        const avatarSrc = savedAvatar || myPersona.avatar;
-        
-        if (avatarSrc) {
-            avatarImg.src = avatarSrc;
+        if (displayAvatar) {
+            avatarImg.src = displayAvatar;
             avatarImg.style.display = 'block';
             avatarPlaceholder.style.display = 'none';
         } else {
@@ -7201,10 +7264,201 @@ ${functionCallingInstructions}
         // 渲染帖子列表
         renderMomentsList();
     }
+    
+    // 生成角色的朋友圈
+    async function generateFriendMoments(friendName) {
+        try {
+            const apiUrl = localStorage.getItem('openaiApiUrl') || 'https://api.openai.com/v1/chat/completions';
+            const apiKey = localStorage.getItem('openaiApiKey');
+            const model = localStorage.getItem('openaiModel') || 'gpt-3.5-turbo';
+            
+            if (!apiKey) {
+                alert('请先配置API密钥');
+                return;
+            }
+            
+            // 显示加载提示
+            const headerBtn = document.getElementById('momentsHeaderBtn');
+            const originalText = headerBtn.innerHTML;
+            headerBtn.innerHTML = '<span>生成中...</span>';
+            headerBtn.style.pointerEvents = 'none';
+            
+            // 获取角色信息
+            const friends = getFriendList();
+            const friend = friends.find(f => f.name === friendName);
+            if (!friend) {
+                alert('未找到角色信息');
+                return;
+            }
+            
+            // 获取用户人设
+            const myPersona = currentPersona || { nickname: '我', persona: '' };
+            
+            // 获取最近聊天记录
+            const chatHistory = await ChatStorage.load(friendName);
+            const recentMessages = chatHistory.slice(-10).map(msg => {
+                return `${msg.role === 'user' ? myPersona.nickname || '我' : friend.name}: ${msg.content}`;
+            }).join('\n');
+            
+            // 获取世界书内容
+            let worldbookContent = '';
+            if (friend.worldbookId) {
+                try {
+                    const worldbook = await getWorldbookForFriend(friendName);
+                    if (worldbook && worldbook.content) {
+                        worldbookContent = worldbook.content.substring(0, 1000); // 限制长度
+                    }
+                } catch (e) {
+                    console.log('获取世界书失败:', e);
+                }
+            }
+            
+            // 构建系统提示词
+            const systemPrompt = `你是${friend.name}，${friend.persona || '一个普通的朋友'}。
+
+${worldbookContent ? `世界书信息：\n${worldbookContent}\n` : ''}
+
+根据你的人设、世界书信息和最近与${myPersona.nickname || '我'}的聊天记录，生成一条朋友圈动态。
+
+要求：
+1. 内容要符合你的角色人设和性格
+2. 可以结合最近的聊天内容
+3. 内容要自然、真实，像真人发的朋友圈
+4. 字数控制在50-150字之间
+5. 只返回朋友圈内容，不要其他文字
+
+最近聊天记录：
+${recentMessages || '暂无聊天记录'}`;
+            
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: [
+                        { role: 'system', content: systemPrompt },
+                        { role: 'user', content: '请生成一条朋友圈动态' }
+                    ],
+                    temperature: 0.8
+                    // 不设置max_tokens，让API使用默认值或模型的最大值
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API调用失败: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            if (data.choices && data.choices.length > 0) {
+                const content = data.choices[0].message.content.trim();
+                
+                // 创建新帖子
+                const newPost = {
+                    id: Date.now(),
+                    content: content,
+                    images: [],
+                    time: new Date().toLocaleString(),
+                    likes: [],
+                    comments: [],
+                    owner: friendName
+                };
+                
+                // 保存到 IndexedDB
+                await ChatStorage.savePost(newPost);
+                
+                // 30%概率更新个性签名
+                if (Math.random() < 0.3) {
+                    try {
+                        await generateAndUpdateSignature(friendName, friend, myPersona, worldbookContent, recentMessages, apiUrl, apiKey, model);
+                    } catch (e) {
+                        console.log('更新个性签名失败:', e);
+                        // 不影响朋友圈生成的成功提示
+                    }
+                }
+                
+                // 刷新朋友圈列表
+                await renderMomentsList();
+                
+                alert('朋友圈生成成功！');
+            } else {
+                throw new Error('API返回格式错误');
+            }
+        } catch (error) {
+            console.error('生成朋友圈失败:', error);
+            alert('生成朋友圈失败: ' + error.message);
+        } finally {
+            // 恢复按钮
+            const headerBtn = document.getElementById('momentsHeaderBtn');
+            headerBtn.innerHTML = '<span>生成</span>';
+            headerBtn.style.pointerEvents = 'auto';
+        }
+    }
+    
+    // 生成并更新个性签名
+    async function generateAndUpdateSignature(friendName, friend, myPersona, worldbookContent, recentMessages, apiUrl, apiKey, model) {
+        try {
+            // 构建个性签名生成提示词
+            const signaturePrompt = `你是${friend.name}，${friend.persona || '一个普通的朋友'}。
+
+${worldbookContent ? `世界书信息：\n${worldbookContent}\n` : ''}
+
+根据你的人设、世界书信息和最近与${myPersona.nickname || '我'}的聊天记录，生成一个新的个性签名。
+
+要求：
+1. 个性签名要符合你的角色人设和性格
+2. 可以结合最近的聊天内容或心情
+3. 个性签名要简洁、有特色，通常是一句话或短语
+4. 字数控制在10-30字之间
+5. 只返回个性签名内容，不要其他文字
+
+最近聊天记录：
+${recentMessages || '暂无聊天记录'}`;
+            
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: [
+                        { role: 'system', content: signaturePrompt },
+                        { role: 'user', content: '请生成一个新的个性签名' }
+                    ],
+                    temperature: 0.8
+                    // 不设置max_tokens
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API调用失败: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            if (data.choices && data.choices.length > 0) {
+                const signature = data.choices[0].message.content.trim();
+                
+                // 保存个性签名到朋友圈资料
+                await ChatStorage.saveMomentsProfile({ signature: signature }, friendName);
+                
+                console.log(`已更新${friendName}的个性签名为: ${signature}`);
+            }
+        } catch (error) {
+            console.error('生成个性签名失败:', error);
+            throw error;
+        }
+    }
 
     // 关闭朋友圈页面
     function closeMomentsPage() {
-        document.getElementById('momentsPage').style.display = 'none';
+        const page = document.getElementById('momentsPage');
+        page.style.display = 'none';
+        // 朋友圈页面关闭后，朋友资料页面应该仍然显示（如果是从朋友资料页面打开的）
+        // 不需要额外操作，因为朋友资料页面仍然处于active状态
     }
 
     // 打开聊天详情页面
@@ -7321,9 +7575,9 @@ ${functionCallingInstructions}
             // 设置头像
             const avatarEl = document.getElementById('friendProfileAvatar');
             if (friend.avatar) {
-                avatarEl.innerHTML = `<img src="${friend.avatar}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                avatarEl.innerHTML = `<img src="${friend.avatar}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
             } else {
-                avatarEl.innerHTML = `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 50%; color: #999; font-size: 24px;">${friend.name.charAt(0)}</div>`;
+                avatarEl.innerHTML = `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: var(--pure-pink); border-radius: 8px; color: white; font-size: 24px; font-weight: 500;">${friend.name.charAt(0)}</div>`;
             }
             
             // 设置名称和ID
@@ -7336,6 +7590,11 @@ ${functionCallingInstructions}
             
             // 设置朋友圈（暂时显示占位文本）
             document.getElementById('friendProfileMoments').textContent = '可以是文字可以是文字图片';
+            
+            // 设置个性签名
+            const momentsProfile = await ChatStorage.getMomentsProfile(friendName);
+            const signature = momentsProfile.signature || '暂无内容';
+            document.getElementById('friendProfileSignature').textContent = signature;
         }
         
         // 显示页面（不关闭聊天详细页面）
@@ -10050,7 +10309,7 @@ ${functionCallingInstructions}
     
     // 打开桌面/系统设置页面
     function openSettingsPage() {
-        settingsPageSource = 'desktop';
+            settingsPageSource = 'desktop';
         document.getElementById('desktop').classList.add('hidden');
         document.getElementById('settingsPage').classList.add('active');
     }
@@ -10850,17 +11109,17 @@ ${functionCallingInstructions}
         },
 
         // 朋友圈：保存个人资料
-        async saveMomentsProfile(profileData) {
+        async saveMomentsProfile(profileData, friendName = 'me') {
             if (!this.db) await this.init();
             return new Promise((resolve, reject) => {
                  const transaction = this.db.transaction(['moments_profile'], 'readwrite');
                  const store = transaction.objectStore('moments_profile');
                  
                  // 先读取再合并，确保不覆盖其他字段
-                 const getReq = store.get('me');
+                 const getReq = store.get(friendName);
                  getReq.onsuccess = (e) => {
-                     const existing = e.target.result || { id: 'me' };
-                     const updated = { ...existing, ...profileData, id: 'me' };
+                     const existing = e.target.result || { id: friendName };
+                     const updated = { ...existing, ...profileData, id: friendName };
                      const putReq = store.put(updated);
                      putReq.onsuccess = () => resolve(updated);
                      putReq.onerror = (err) => reject(err.target.error);
@@ -10870,15 +11129,15 @@ ${functionCallingInstructions}
         },
 
         // 朋友圈：获取个人资料
-        async getMomentsProfile() {
+        async getMomentsProfile(friendName = 'me') {
             if (!this.db) await this.init();
              return new Promise((resolve, reject) => {
                  const transaction = this.db.transaction(['moments_profile'], 'readonly');
                  const store = transaction.objectStore('moments_profile');
-                 const request = store.get('me');
+                 const request = store.get(friendName);
                  request.onsuccess = (e) => resolve(e.target.result || {});
                  request.onerror = (e) => reject(e.target.error);
-            });
+             });
         },
 
         // 朋友圈：保存帖子
@@ -10894,14 +11153,19 @@ ${functionCallingInstructions}
         },
 
         // 朋友圈：获取所有帖子
-        async getPosts() {
+        async getPosts(friendName = 'me') {
             if (!this.db) await this.init();
             return new Promise((resolve, reject) => {
                  const transaction = this.db.transaction(['moments_posts'], 'readonly');
                  const store = transaction.objectStore('moments_posts');
                  const request = store.getAll();
                  request.onsuccess = (e) => {
-                     const posts = e.target.result || [];
+                     const allPosts = e.target.result || [];
+                     // 过滤出指定角色的帖子（兼容旧数据：没有owner字段的默认为'me'）
+                     const posts = allPosts.filter(post => {
+                         const postOwner = post.owner || 'me';
+                         return postOwner === friendName;
+                     });
                      // 按时间倒序
                      posts.sort((a, b) => b.id - a.id);
                      resolve(posts);
@@ -11130,7 +11394,8 @@ ${functionCallingInstructions}
             remindFriends: postRemindFriends.length > 0 ? [...postRemindFriends] : null,
             visibility: postVisibility,
             visibleTags: postVisibleTags.length > 0 ? [...postVisibleTags] : null,
-            excludeTags: postExcludeTags.length > 0 ? [...postExcludeTags] : null
+            excludeTags: postExcludeTags.length > 0 ? [...postExcludeTags] : null,
+            owner: 'me' // 用户自己的朋友圈
         };
         
         // 保存到 IndexedDB (ChatStorage)
