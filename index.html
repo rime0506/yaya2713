@@ -259,6 +259,11 @@
             transform: translateX(100%);
             transition: transform 0.4s ease;
         }
+        
+        /* 朋友资料页面应该在聊天详细页面之上 */
+        #friendProfilePage {
+            z-index: 50;
+        }
 
         .wechat-page.active {
             transform: translateX(0);
@@ -291,18 +296,19 @@
         }
 
         .wechat-header {
-            height: 88px; /* 增加高度适配灵动岛 */
+            height: 88px; /* 顶栏高度，和聊天页面一样 */
             display: flex;
             align-items: center; /* 垂直居中 */
             justify-content: space-between;
             padding: 0 15px;
-            padding-top: 44px; /* 顶部留出灵动岛空间 */
+            padding-top: 44px; /* 顶部留出44px空间，避免被灵动岛挡住 */
             background-color: var(--pure-pink);
             border-bottom: 1px solid var(--border-pink);
             box-sizing: border-box;
             position: relative;
+            margin-top: 0; /* 确保紧贴顶部 */
         }
-
+        
         .wechat-header-btn {
             font-size: 16px;
             color: var(--deep-pink);
@@ -500,7 +506,7 @@
 
         .chat-back-btn {
             font-size: 18px;
-            color: var(--deep-pink);
+            color: #999;
             cursor: pointer;
             padding: 5px;
             display: flex;
@@ -510,7 +516,7 @@
         .chat-name {
             font-size: 17px;
             font-weight: 600;
-            color: var(--deep-pink);
+            color: #999;
             flex: 1;
             text-align: center;
         }
@@ -522,7 +528,7 @@
         }
 
         .chat-header-btn {
-            color: var(--deep-pink);
+            color: #999;
             cursor: pointer;
             padding: 5px;
             display: flex;
@@ -1490,16 +1496,17 @@
         .chat-detail-header {
             background: var(--widget-bg);
             padding: 12px 15px;
-            padding-top: 56px;
+            padding-top: 56px; /* 和聊天页面一样，顶部留出空间 */
             font-size: 17px;
             display: flex;
             align-items: center;
             border-radius: 0 0 15px 15px;
             margin-bottom: 5px;
+            margin-top: 0; /* 确保紧贴顶部 */
         }
 
         .detail-back-icon {
-            color: var(--deep-pink);
+            color: #999;
             font-size: 20px;
             cursor: pointer;
             margin-right: 12px;
@@ -1513,7 +1520,7 @@
         }
 
         .chat-detail-title {
-            color: var(--deep-pink);
+            color: #999;
             flex: 1;
             text-align: center;
             margin-right: 20px;
@@ -1560,14 +1567,34 @@
 
         .detail-friend-name {
             font-size: 15px;
-            color: var(--deep-pink);
+            color: #999;
             font-weight: 500;
             margin-bottom: 2px;
         }
 
         .detail-friend-id {
             font-size: 11px;
-            color: var(--text-color);
+            color: #aaa;
+        }
+        
+        /* 朋友资料页面按钮样式 */
+        .friend-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .friend-action-btn:active {
+            background: #f5f5f5;
+            transform: scale(0.98);
         }
 
         .option-list {
@@ -1589,7 +1616,7 @@
             border-bottom: 1px solid var(--border-pink);
             font-size: 15px;
             cursor: pointer;
-            color: var(--deep-pink);
+            color: #999;
         }
 
         .option-item:last-child {
@@ -1643,7 +1670,7 @@
 
         .detail-arrow {
             font-size: 14px;
-            color: var(--text-color);
+            color: #aaa;
         }
 
         .danger-text {
@@ -1888,7 +1915,7 @@
             align-items: center;
             padding: 15px 20px;
             border-bottom: 1px solid var(--border-pink);
-            color: var(--deep-pink);
+            color: #999;
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.2s ease;
@@ -1909,7 +1936,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--deep-pink);
+            color: #999;
             font-size: 18px;
         }
 
@@ -1918,7 +1945,7 @@
         }
 
         .me-func-arrow {
-            color: var(--text-color);
+            color: #aaa;
             font-size: 16px;
             margin-left: 10px;
         }
@@ -2127,7 +2154,7 @@
         .wechat-title {
             font-size: 17px;
             font-weight: 600;
-            color: var(--deep-pink);
+            color: #999;
         }
 
         .wechat-content {
@@ -3057,22 +3084,12 @@
                         <div class="me-func-text">收藏</div>
                         <div class="me-func-arrow">→</div>
                     </div>
-                    <div class="me-func-item" onclick="showImportForMePage()">
-                        <div class="me-func-icon">📥</div>
-                        <div class="me-func-text">高级导入</div>
-                        <div class="me-func-arrow">→</div>
-                    </div>
                     <div class="me-func-item" onclick="openWalletPage()">
                         <div class="me-func-icon">💳</div>
                         <div class="me-func-text">服务</div>
                         <div class="me-func-arrow">→</div>
                     </div>
-                    <div class="me-func-item" onclick="alert('世界书功能开发中...')">
-                        <div class="me-func-icon">📖</div>
-                        <div class="me-func-text">世界书</div>
-                        <div class="me-func-arrow">→</div>
-                    </div>
-                    <div class="me-func-item" onclick="openSettingsPage()">
+                    <div class="me-func-item" onclick="openMeSettingsPage()">
                         <div class="me-func-icon">⚙</div>
                         <div class="me-func-text">设置</div>
                         <div class="me-func-arrow">→</div>
@@ -3257,7 +3274,7 @@
             <div class="chat-detail-title">聊天详情</div>
         </div>
 
-        <div class="avatar-area">
+        <div class="avatar-area" onclick="openFriendProfilePage(event)" style="cursor: pointer;">
             <div class="detail-avatar" id="detailAvatar">
                 <!-- 头像将动态显示 -->
             </div>
@@ -3356,6 +3373,80 @@
             <div class="option-item" onclick="addToBlacklist()">
                 <span class="danger-text">拉入黑名单</span>
                 <span class="detail-arrow">→</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 朋友资料页面 -->
+    <div class="wechat-page" id="friendProfilePage">
+        <div class="wechat-header">
+            <div class="wechat-header-btn" onclick="closeFriendProfilePage()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+            </div>
+            <div class="wechat-title"></div>
+            <div class="wechat-header-btn" onclick="showFriendProfileMenu()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="5" r="1" />
+                    <circle cx="12" cy="12" r="1" />
+                    <circle cx="12" cy="19" r="1" />
+                </svg>
+            </div>
+        </div>
+        
+        <div class="wechat-content" style="background: #f7f7f7; padding: 0;">
+            <!-- 头像信息区域 -->
+            <div style="background: white; padding: 20px 15px; display: flex; align-items: center; gap: 15px;">
+                <div class="detail-avatar" id="friendProfileAvatar" style="width: 60px; height: 60px;">
+                    <!-- 头像将动态显示 -->
+                </div>
+                <div style="flex: 1;">
+                    <div class="detail-friend-name" id="friendProfileName" style="font-size: 18px; color: #999; margin-bottom: 5px;">备注</div>
+                    <div class="detail-friend-id" id="friendProfileId" style="font-size: 14px; color: #aaa;">id:xxx</div>
+                </div>
+            </div>
+            
+            <!-- 朋友资料区域 -->
+            <div style="background: white; margin-top: 10px;">
+                <div style="padding: 15px; border-bottom: 1px solid #f0f0f0;">
+                    <div style="font-size: 15px; color: #999; margin-bottom: 10px;">朋友资料</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+                        <span style="font-size: 15px; color: #999;">标签</span>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <span style="font-size: 15px; color: #aaa;" id="friendProfileTags">不可以,不给</span>
+                            <span style="color: #aaa;">→</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 朋友圈区域 -->
+            <div style="background: white; margin-top: 10px;">
+                <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 15px; color: #999;">朋友圈</span>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <span style="font-size: 14px; color: #aaa;" id="friendProfileMoments">可以是文字可以是文字图片</span>
+                        <span style="color: #aaa;">→</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 操作按钮区域 -->
+            <div style="padding: 20px 15px; display: flex; gap: 15px;">
+                <button class="friend-action-btn" onclick="sendMessageFromProfile()" style="flex: 1;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 5px;">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    发消息
+                </button>
+                <button class="friend-action-btn" onclick="startVideoCall()" style="flex: 1;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 5px;">
+                        <path d="M23 7l-7 5 7 5V7z" />
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                    </svg>
+                    音视频通话
+                </button>
             </div>
         </div>
     </div>
@@ -7170,6 +7261,12 @@ ${functionCallingInstructions}
 
     // 关闭聊天详情页面
     function closeChatDetailPage() {
+        // 如果朋友资料页面是打开的，先关闭它
+        if (document.getElementById('friendProfilePage').classList.contains('active')) {
+            document.getElementById('friendProfilePage').classList.remove('active');
+            return; // 只关闭朋友资料页面，不关闭聊天详细页面
+        }
+        // 否则关闭聊天详细页面
         document.getElementById('chatDetailPage').classList.remove('active');
         document.getElementById('chatPage').classList.add('active');
     }
@@ -7208,6 +7305,72 @@ ${functionCallingInstructions}
     function closeProfileModal(event) {
         if (event && event.target !== event.currentTarget) return;
         document.getElementById('profileModal').classList.remove('active');
+    }
+    
+    // 打开朋友资料页面
+    async function openFriendProfilePage(event) {
+        if (event) {
+            event.stopPropagation(); // 阻止事件冒泡
+        }
+        if (!currentChatFriend) return;
+        
+        const friends = getFriendList();
+        const friend = friends.find(f => f.name === currentChatFriend);
+        
+        if (friend) {
+            // 设置头像
+            const avatarEl = document.getElementById('friendProfileAvatar');
+            if (friend.avatar) {
+                avatarEl.innerHTML = `<img src="${friend.avatar}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+            } else {
+                avatarEl.innerHTML = `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 50%; color: #999; font-size: 24px;">${friend.name.charAt(0)}</div>`;
+            }
+            
+            // 设置名称和ID
+            document.getElementById('friendProfileName').textContent = friend.remark || friend.name;
+            document.getElementById('friendProfileId').textContent = `id:${friend.wechatId || friend.name}`;
+            
+            // 设置标签
+            const tags = friend.tag ? friend.tag.split(',').map(t => t.trim()).filter(t => t) : [];
+            document.getElementById('friendProfileTags').textContent = tags.length > 0 ? tags.join(',') : '无';
+            
+            // 设置朋友圈（暂时显示占位文本）
+            document.getElementById('friendProfileMoments').textContent = '可以是文字可以是文字图片';
+        }
+        
+        // 显示页面（不关闭聊天详细页面）
+        document.getElementById('friendProfilePage').classList.add('active');
+    }
+    
+    // 关闭朋友资料页面
+    function closeFriendProfilePage() {
+        document.getElementById('friendProfilePage').classList.remove('active');
+        // 返回到聊天详细页面（如果聊天详细页面是打开的）
+        if (document.getElementById('chatDetailPage').classList.contains('active')) {
+            // 保持聊天详细页面打开
+        } else {
+            // 如果聊天详细页面没打开，返回到聊天页面
+            document.getElementById('chatPage').classList.add('active');
+        }
+    }
+    
+    // 显示朋友资料菜单
+    function showFriendProfileMenu() {
+        // 可以添加更多选项菜单
+        alert('更多选项');
+    }
+    
+    // 从资料页面发消息
+    function sendMessageFromProfile() {
+        closeFriendProfilePage();
+        closeChatDetailPage();
+        // 打开聊天页面
+        openChatPage(currentChatFriend);
+    }
+    
+    // 音视频通话
+    function startVideoCall() {
+        alert('音视频通话功能开发中...');
     }
 
     // 处理头像上传
@@ -7403,14 +7566,15 @@ ${functionCallingInstructions}
                 let summaries = [];
                 let memories = [];
                 
-                // 检查是否包含总结记忆数据
+                // 检查是否包含总结记忆数据（支持多种格式和路径）
+                // 1. 顶层字段
                 if (data.summaries && Array.isArray(data.summaries)) {
                     summaries = data.summaries;
-                    console.log(`检测到 ${summaries.length} 条总结`);
+                    console.log(`检测到 ${summaries.length} 条总结（顶层）`);
                 }
                 if (data.memories && Array.isArray(data.memories)) {
                     memories = data.memories;
-                    console.log(`检测到 ${memories.length} 条记忆`);
+                    console.log(`检测到 ${memories.length} 条记忆（顶层）`);
                 }
                 if (data.summary && typeof data.summary === 'string') {
                     summaries.push({
@@ -7418,7 +7582,7 @@ ${functionCallingInstructions}
                         title: data.summaryTitle || `总结 - ${new Date().toLocaleString()}`,
                         createdAt: data.summaryDate || new Date().toISOString()
                     });
-                    console.log('检测到总结数据');
+                    console.log('检测到总结数据（顶层字符串）');
                 }
                 if (data.memory && typeof data.memory === 'string') {
                     memories.push({
@@ -7426,38 +7590,130 @@ ${functionCallingInstructions}
                         title: data.memoryTitle || `记忆 - ${new Date().toLocaleString()}`,
                         createdAt: data.memoryDate || new Date().toISOString()
                     });
-                    console.log('检测到记忆数据');
+                    console.log('检测到记忆数据（顶层字符串）');
+                }
+                
+                // 2. chatData 内的字段
+                if (data.chatData) {
+                    if (data.chatData.summaries && Array.isArray(data.chatData.summaries)) {
+                        summaries = summaries.concat(data.chatData.summaries);
+                        console.log(`检测到 ${data.chatData.summaries.length} 条总结（chatData内）`);
+                    }
+                    if (data.chatData.memories && Array.isArray(data.chatData.memories)) {
+                        memories = memories.concat(data.chatData.memories);
+                        console.log(`检测到 ${data.chatData.memories.length} 条记忆（chatData内）`);
+                    }
+                    if (data.chatData.summary && typeof data.chatData.summary === 'string') {
+                        summaries.push({
+                            content: data.chatData.summary,
+                            title: data.chatData.summaryTitle || `总结 - ${new Date().toLocaleString()}`,
+                            createdAt: data.chatData.summaryDate || new Date().toISOString()
+                        });
+                        console.log('检测到总结数据（chatData内字符串）');
+                    }
+                    if (data.chatData.memory && typeof data.chatData.memory === 'string') {
+                        memories.push({
+                            content: data.chatData.memory,
+                            title: data.chatData.memoryTitle || `记忆 - ${new Date().toLocaleString()}`,
+                            createdAt: data.chatData.memoryDate || new Date().toISOString()
+                        });
+                        console.log('检测到记忆数据（chatData内字符串）');
+                    }
+                }
+                
+                // 3. 其他可能的字段名
+                const possibleSummaryFields = ['summaryList', 'summaryData', 'summariesList', 'chatSummaries'];
+                const possibleMemoryFields = ['memoryList', 'memoryData', 'memoriesList', 'chatMemories'];
+                
+                for (const field of possibleSummaryFields) {
+                    if (data[field] && Array.isArray(data[field])) {
+                        summaries = summaries.concat(data[field]);
+                        console.log(`检测到 ${data[field].length} 条总结（字段：${field}）`);
+                    }
+                    if (data.chatData && data.chatData[field] && Array.isArray(data.chatData[field])) {
+                        summaries = summaries.concat(data.chatData[field]);
+                        console.log(`检测到 ${data.chatData[field].length} 条总结（chatData.${field}）`);
+                    }
+                }
+                
+                for (const field of possibleMemoryFields) {
+                    if (data[field] && Array.isArray(data[field])) {
+                        memories = memories.concat(data[field]);
+                        console.log(`检测到 ${data[field].length} 条记忆（字段：${field}）`);
+                    }
+                    if (data.chatData && data.chatData[field] && Array.isArray(data.chatData[field])) {
+                        memories = memories.concat(data.chatData[field]);
+                        console.log(`检测到 ${data.chatData[field].length} 条记忆（chatData.${field}）`);
+                    }
                 }
                 
                 // 处理总结记忆数据（保存到收藏）
                 if (summaries.length > 0 || memories.length > 0) {
                     try {
+                        let savedSummaries = 0;
+                        let savedMemories = 0;
+                        
                         for (const summary of summaries) {
-                            await db.favorites.add({
-                                friendName: currentChatFriend,
-                                title: summary.title || summary.summaryTitle || `总结 - ${new Date(summary.createdAt || Date.now()).toLocaleString()}`,
-                                content: summary.content || summary.text || summary.summary || '',
-                                summaryType: 'imported',
-                                messageCount: summary.messageCount || 0,
-                                createdAt: summary.createdAt || summary.date || new Date().toISOString()
-                            });
+                            try {
+                                // 支持多种字段名
+                                const title = summary.title || summary.summaryTitle || summary.name || 
+                                            `总结 - ${new Date(summary.createdAt || summary.date || summary.timestamp || Date.now()).toLocaleString()}`;
+                                const content = summary.content || summary.text || summary.summary || summary.body || summary.message || '';
+                                const createdAt = summary.createdAt || summary.date || summary.timestamp || new Date().toISOString();
+                                
+                                if (content && content.trim()) {
+                                    await db.favorites.add({
+                                        friendName: currentChatFriend,
+                                        title: title,
+                                        content: content,
+                                        summaryType: 'imported',
+                                        messageCount: summary.messageCount || summary.count || 0,
+                                        createdAt: createdAt
+                                    });
+                                    savedSummaries++;
+                                    console.log(`已保存总结: ${title.substring(0, 30)}...`);
+                                }
+                            } catch (e) {
+                                console.error('保存单条总结失败:', e, summary);
+                            }
                         }
+                        
                         for (const memory of memories) {
-                            await db.favorites.add({
-                                friendName: currentChatFriend,
-                                title: memory.title || memory.memoryTitle || `记忆 - ${new Date(memory.createdAt || Date.now()).toLocaleString()}`,
-                                content: memory.content || memory.text || memory.memory || '',
-                                summaryType: 'imported',
-                                messageCount: memory.messageCount || 0,
-                                createdAt: memory.createdAt || memory.date || new Date().toISOString()
-                            });
+                            try {
+                                // 支持多种字段名
+                                const title = memory.title || memory.memoryTitle || memory.name || 
+                                            `记忆 - ${new Date(memory.createdAt || memory.date || memory.timestamp || Date.now()).toLocaleString()}`;
+                                const content = memory.content || memory.text || memory.memory || memory.body || memory.message || '';
+                                const createdAt = memory.createdAt || memory.date || memory.timestamp || new Date().toISOString();
+                                
+                                if (content && content.trim()) {
+                                    await db.favorites.add({
+                                        friendName: currentChatFriend,
+                                        title: title,
+                                        content: content,
+                                        summaryType: 'imported',
+                                        messageCount: memory.messageCount || memory.count || 0,
+                                        createdAt: createdAt
+                                    });
+                                    savedMemories++;
+                                    console.log(`已保存记忆: ${title.substring(0, 30)}...`);
+                                }
+                            } catch (e) {
+                                console.error('保存单条记忆失败:', e, memory);
+                            }
                         }
-                        if (summaries.length > 0 || memories.length > 0) {
-                            console.log(`已导入 ${summaries.length} 条总结和 ${memories.length} 条记忆到收藏`);
+                        
+                        if (savedSummaries > 0 || savedMemories > 0) {
+                            console.log(`✅ 成功导入 ${savedSummaries} 条总结和 ${savedMemories} 条记忆到收藏`);
+                        } else {
+                            console.warn('⚠️ 检测到总结记忆数据，但内容为空，未保存');
                         }
                     } catch (e) {
                         console.error('保存总结记忆失败:', e);
+                        alert('保存总结记忆时出错：' + (e.message || '未知错误') + '\n请查看控制台获取详细信息');
                     }
+                } else {
+                    console.log('未检测到总结记忆数据');
                 }
                 
                 let messages = [];
@@ -7476,7 +7732,7 @@ ${functionCallingInstructions}
                                       (msg.role && msg.role.toLowerCase() === 'user');
                         
                         // 尝试多种可能的文本字段
-                        const text = msg.content || msg.text || msg.message || msg.body || 
+                        let text = msg.content || msg.text || msg.message || msg.body || 
                                     msg.data?.content || msg.data?.text || '';
                         
                         // 尝试多种可能的时间戳
@@ -7730,7 +7986,7 @@ ${functionCallingInstructions}
                                 const sender = msg.sender || msg.role || msg.from || '';
                                 const isSelf = sender === 'user' || sender === 'me' || sender === 'User' || 
                                               msg.isSelf === true || msg.isUser === true;
-                                const text = msg.content || msg.text || msg.message || msg.body || '';
+                                let text = msg.content || msg.text || msg.message || msg.body || '';
                                 const timestamp = msg.timestamp || msg.time || msg.createdAt || Date.now();
                                 const id = msg.id || msg.messageId || 
                                           timestamp.toString() + '-' + index + '-' + Math.random().toString(36).substr(2, 9);
@@ -7802,10 +8058,22 @@ ${functionCallingInstructions}
                     }
                 }
                 
+                // 如果只有总结记忆没有消息，也允许导入
                 if (messages.length === 0) {
-                    console.error('未找到消息数据，数据结构:', data);
-                    alert('文件中没有找到消息数据。\n请检查文件格式，或打开浏览器控制台查看详细信息。');
-                    return;
+                    if (summaries.length > 0 || memories.length > 0) {
+                        // 只有总结记忆，没有消息，也允许导入
+                        console.log('未找到消息数据，但检测到总结记忆，继续导入总结记忆');
+                        let successMsg = `导入完成！\n已导入 ${summaries.length} 条总结和 ${memories.length} 条记忆到收藏`;
+                        successMsg += '\n\n注意：文件中没有找到聊天消息数据。';
+                        alert(successMsg);
+                        return;
+                    } else {
+                        // 既没有消息也没有总结记忆
+                        console.error('未找到消息数据，数据结构:', data);
+                        console.error('数据键:', Object.keys(data));
+                        alert('文件中没有找到消息数据或总结记忆。\n\n请检查文件格式，或打开浏览器控制台（F12）查看详细信息。\n\n支持的数据格式：\n- messages 数组\n- chatData.messages 数组\n- summaries 数组（总结）\n- memories 数组（记忆）');
+                        return;
+                    }
                 }
                 
                 // 过滤掉系统提示和思考类消息
@@ -7849,8 +8117,16 @@ ${functionCallingInstructions}
                 });
                 
                 if (messages.length === 0) {
-                    alert('文件中没有有效的消息数据（所有消息都为空）');
-                    return;
+                    // 如果过滤后没有消息，但之前有总结记忆，也允许导入
+                    if (summaries.length > 0 || memories.length > 0) {
+                        let successMsg = `导入完成！\n已导入 ${summaries.length} 条总结和 ${memories.length} 条记忆到收藏`;
+                        successMsg += '\n\n注意：所有消息都被过滤掉了（可能是系统提示或思考类消息）。';
+                        alert(successMsg);
+                        return;
+                    } else {
+                        alert('文件中没有有效的消息数据（所有消息都为空或被过滤）\n\n如果文件包含总结或记忆数据，它们应该会被自动导入到收藏中。');
+                        return;
+                    }
                 }
                 
                 console.log(`成功解析 ${messages.length} 条消息`);
@@ -9763,16 +10039,19 @@ ${functionCallingInstructions}
     let settingsPageSource = 'desktop';
 
     // 打开设置页面
+    // 打开"我"页面的设置（独立设置页面）
+    function openMeSettingsPage() {
+        // 这里可以打开一个独立的"我"页面设置
+        // 目前先提示，用户可以根据需要实现
+        alert('"我"页面的设置功能（待实现）');
+        // 如果需要打开不同的设置页面，可以创建新的页面ID，例如：
+        // document.getElementById('meSettingsPage').classList.add('active');
+    }
+    
+    // 打开桌面/系统设置页面
     function openSettingsPage() {
-        // 判断是从哪里打开的
-        if (document.getElementById('mePage').classList.contains('active')) {
-            settingsPageSource = 'me';
-            // 从"我"页面打开设置，关闭wechatPage
-            document.getElementById('wechatPage').classList.remove('active');
-        } else {
-            settingsPageSource = 'desktop';
+        settingsPageSource = 'desktop';
         document.getElementById('desktop').classList.add('hidden');
-        }
         document.getElementById('settingsPage').classList.add('active');
     }
 
