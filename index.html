@@ -24,15 +24,18 @@
         }
 
         body, html {
-            margin: 0; padding: 0; width: 100vw; height: 100vh;
+            margin: 0; padding: 0; width: 100%; 
+            min-height: 100vh;
+            min-height: 100dvh;
             padding-top: env(safe-area-inset-top);
             font-family: -apple-system, "Helvetica Neue", sans-serif;
-            background-color: #ffffff;
+            background-color: var(--pure-pink);
             overflow: hidden;
             box-sizing: border-box;
             position: fixed;
             touch-action: none;
             -webkit-overflow-scrolling: none;
+            overscroll-behavior-y: none;
         }
 
         /* 主页面 */
@@ -227,7 +230,7 @@
 
         .dock-container {
             position: absolute;
-            bottom: 15px;
+            bottom: calc(15px + env(safe-area-inset-bottom));
             left: 50%;
             transform: translateX(-50%);
             width: 88%;
