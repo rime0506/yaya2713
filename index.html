@@ -2830,6 +2830,107 @@
             font-size: 16px;
         }
 
+        /* 切换开关样式 */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-switch .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 28px;
+        }
+
+        .toggle-switch .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .slider {
+            background-color: var(--deep-pink);
+        }
+
+        .toggle-switch input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        /* 通知状态显示 */
+        #notification-status-display {
+            margin-top: 10px;
+            padding: 12px;
+            background-color: rgba(240, 200, 214, 0.1);
+            border-radius: 12px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .notification-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .notification-btn {
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .notification-btn-primary {
+            background-color: var(--deep-pink);
+            color: white;
+        }
+
+        .notification-btn-primary:hover {
+            background-color: #e8b8d0;
+        }
+
+        .notification-btn-test {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #90caf9;
+        }
+
+        .notification-btn-test:hover {
+            background-color: #bbdefb;
+        }
+
+        .notification-btn-bg-test {
+            background-color: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffb74d;
+        }
+
+        .notification-btn-bg-test:hover {
+            background-color: #ffe0b2;
+        }
+
         /* API验证结果显示 */
         #apiUrlValidationResult {
             padding: 10px 12px;
@@ -6140,6 +6241,32 @@
                                 <option value="enabled">开启</option>
                                 <option value="disabled">关闭</option>
                             </select>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="section-title">后台通知与保活</div>
+                        
+                        <div class="settings-item" style="display: flex; justify-content: space-between; align-items: center;">
+                            <label style="margin-bottom: 0; flex: 1;">
+                                <div class="settings-label">后台通知与保活</div>
+                                <p style="font-size: 12px; font-weight: normal; color: #999; margin-top: 5px;">
+                                    开启后，当页面切到后台时将通过静音音频和心跳保持运行，并发送通知。需要浏览器授权通知权限。
+                                </p>
+                            </label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="notification-permission-switch">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div id="notification-status-display" style="display: none;">
+                            <div id="notification-status-text">通知状态：未授权</div>
+                            <div class="notification-buttons">
+                                <button id="notification-request-btn" class="notification-btn notification-btn-primary" style="display: none;">开启通知</button>
+                                <button id="notification-test-btn" class="notification-btn notification-btn-test" style="display: none;">测试通知</button>
+                                <button id="notification-background-test-btn" class="notification-btn notification-btn-bg-test" style="display: none;">🔒 测试后台通知（10秒）</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -17291,6 +17418,581 @@ ${recentMessages || '暂无聊天记录'}`;
                 wyyPlaylistManageModal.style.display = 'none';
             }
         });
+    }
+
+    // ============================================
+    // 后台通知与保活系统
+    // ============================================
+    
+    // 静音音频元素（用于后台保活）
+    const silentAudio = document.createElement('audio');
+    silentAudio.id = 'silent-audio-player';
+    silentAudio.loop = true;
+    silentAudio.preload = 'auto';
+    silentAudio.style.display = 'none';
+    // 创建静音音频源（使用data URI）
+    silentAudio.src = 'data:audio/wav;base64,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';
+    document.body.appendChild(silentAudio);
+    
+    // 检查浏览器是否支持通知
+    function isNotificationSupported() {
+        return 'Notification' in window;
+    }
+    
+    // 更新通知开关和状态显示
+    function updateNotificationButton() {
+        const switchEl = document.getElementById('notification-permission-switch');
+        const statusDisplay = document.getElementById('notification-status-display');
+        const statusText = document.getElementById('notification-status-text');
+        const requestBtn = document.getElementById('notification-request-btn');
+        const testBtn = document.getElementById('notification-test-btn');
+        const bgTestBtn = document.getElementById('notification-background-test-btn');
+        
+        if (!switchEl || !statusDisplay || !statusText) return;
+        
+        if (!isNotificationSupported()) {
+            statusDisplay.style.display = 'none';
+            if (switchEl) switchEl.disabled = true;
+            return;
+        }
+        
+        const permission = Notification.permission;
+        statusDisplay.style.display = 'block';
+        
+        switch (permission) {
+            case 'granted':
+                if (switchEl) switchEl.checked = true;
+                statusText.textContent = '通知状态：已授权 ✅';
+                statusText.style.color = '#4cd964';
+                if (requestBtn) requestBtn.style.display = 'none';
+                if (testBtn) testBtn.style.display = 'block';
+                if (bgTestBtn) bgTestBtn.style.display = 'block';
+                break;
+            case 'denied':
+                if (switchEl) switchEl.checked = false;
+                statusText.textContent = '通知状态：已拒绝 ❌（请在浏览器设置中手动开启）';
+                statusText.style.color = '#ff3b30';
+                if (requestBtn) requestBtn.style.display = 'none';
+                if (testBtn) testBtn.style.display = 'none';
+                if (bgTestBtn) bgTestBtn.style.display = 'none';
+                break;
+            default:
+                if (switchEl) switchEl.checked = false;
+                statusText.textContent = '通知状态：未授权';
+                statusText.style.color = '#666';
+                if (requestBtn) requestBtn.style.display = 'block';
+                if (testBtn) testBtn.style.display = 'none';
+                if (bgTestBtn) bgTestBtn.style.display = 'none';
+        }
+    }
+    
+    // 请求通知权限
+    async function requestNotificationPermission() {
+        if (!isNotificationSupported()) {
+            alert('您的浏览器不支持通知功能');
+            return;
+        }
+        
+        if (Notification.permission === 'granted') {
+            alert('通知权限已授予');
+            return;
+        }
+        
+        if (Notification.permission === 'denied') {
+            alert('通知权限已被拒绝，请在浏览器设置中手动开启');
+            return;
+        }
+        
+        const permission = await Notification.requestPermission();
+        updateNotificationButton();
+        
+        if (permission === 'granted') {
+            showSystemNotification('后台通知已开启', '当页面切到后台时，您将收到通知提醒');
+            startKeepAlive();
+        }
+    }
+    
+    // 显示系统通知
+    function showSystemNotification(title, body) {
+        if (Notification.permission !== 'granted') return;
+        try {
+            new Notification(title, { body: body, tag: 'system-notification' });
+        } catch (error) {
+            console.error('发送通知失败:', error);
+        }
+    }
+    
+    // 发送测试通知
+    function sendTestNotification() {
+        if (Notification.permission !== 'granted') {
+            alert('请先开启通知权限');
+            return;
+        }
+        
+        try {
+            const notification = new Notification('测试通知', {
+                body: '这是一条测试通知。如果您看到这条消息，说明通知功能正常工作！',
+                tag: 'test-notification',
+                requireInteraction: false,
+                silent: false
+            });
+            
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
+            
+            setTimeout(() => notification.close(), 5000);
+            console.log('✅ 测试通知已发送');
+        } catch (error) {
+            console.error('❌ 发送测试通知失败:', error);
+            alert('发送测试通知失败：' + error.message);
+        }
+    }
+    
+    // 后台保活系统
+    const BackgroundSystem = {
+        heartbeat: {
+            baseInterval: 30000,      // 基准心跳间隔：30秒
+            jitterRange: 10000,       // 随机抖动范围：±10秒
+            timeoutId: null,
+            isRunning: false,
+            lastBeat: Date.now(),
+            beatCount: 0
+        },
+        audio: {
+            context: null,
+            source: null,
+            gainNode: null,
+            isActive: false
+        },
+        state: {
+            isBackground: document.hidden,
+            lastActivity: Date.now(),
+            networkOnline: navigator.onLine
+        }
+    };
+    
+    // 计算带随机抖动的下次心跳间隔
+    function getNextHeartbeatInterval() {
+        const { baseInterval, jitterRange } = BackgroundSystem.heartbeat;
+        const jitter = Math.random() * jitterRange * 2 - jitterRange;
+        const interval = baseInterval + jitter;
+        return Math.max(15000, Math.min(60000, interval));
+    }
+    
+    // 执行一次心跳
+    function performHeartbeat() {
+        const now = Date.now();
+        BackgroundSystem.heartbeat.lastBeat = now;
+        BackgroundSystem.heartbeat.beatCount++;
+        
+        const state = {
+            timestamp: now,
+            isBackground: document.hidden,
+            beatCount: BackgroundSystem.heartbeat.beatCount,
+            networkOnline: navigator.onLine
+        };
+        
+        try {
+            localStorage.setItem('app_heartbeat', JSON.stringify(state));
+        } catch (e) {
+            console.warn('心跳状态存储失败:', e);
+        }
+        
+        console.log(`💓 后台心跳 #${state.beatCount} | 下次间隔: ${getNextHeartbeatInterval() / 1000}秒`);
+        
+        scheduleNextHeartbeat();
+    }
+    
+    // 调度下次心跳
+    function scheduleNextHeartbeat() {
+        if (BackgroundSystem.heartbeat.timeoutId) {
+            clearTimeout(BackgroundSystem.heartbeat.timeoutId);
+        }
+        
+        const interval = getNextHeartbeatInterval();
+        
+        BackgroundSystem.heartbeat.timeoutId = setTimeout(() => {
+            performHeartbeat();
+        }, interval);
+    }
+    
+    // 启动心跳系统
+    function startHeartbeat() {
+        if (BackgroundSystem.heartbeat.isRunning) {
+            console.log('心跳已在运行中');
+            return;
+        }
+        
+        BackgroundSystem.heartbeat.isRunning = true;
+        console.log('🚀 启动后台心跳系统（随机抖动模式）');
+        performHeartbeat();
+    }
+    
+    // 停止心跳系统
+    function stopHeartbeat() {
+        if (!BackgroundSystem.heartbeat.isRunning) {
+            return;
+        }
+        
+        if (BackgroundSystem.heartbeat.timeoutId) {
+            clearTimeout(BackgroundSystem.heartbeat.timeoutId);
+            BackgroundSystem.heartbeat.timeoutId = null;
+        }
+        
+        BackgroundSystem.heartbeat.isRunning = false;
+        console.log('⏹️ 停止后台心跳系统');
+    }
+    
+    // 初始化音频保活
+    function initAudioKeepAlive() {
+        if (BackgroundSystem.audio.context) {
+            return true;
+        }
+        
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            BackgroundSystem.audio.context = new AudioContext();
+            
+            const sampleRate = BackgroundSystem.audio.context.sampleRate;
+            const buffer = BackgroundSystem.audio.context.createBuffer(1, sampleRate * 0.1, sampleRate);
+            
+            const source = BackgroundSystem.audio.context.createBufferSource();
+            source.buffer = buffer;
+            source.loop = true;
+            
+            const gainNode = BackgroundSystem.audio.context.createGain();
+            gainNode.gain.value = 0;
+            
+            source.connect(gainNode);
+            gainNode.connect(BackgroundSystem.audio.context.destination);
+            
+            BackgroundSystem.audio.source = source;
+            BackgroundSystem.audio.gainNode = gainNode;
+            
+            console.log('✅ 音频上下文初始化成功');
+            return true;
+        } catch (error) {
+            console.warn('❌ 音频上下文初始化失败:', error);
+            return false;
+        }
+    }
+    
+    // 启动音频保活
+    function startAudioKeepAlive() {
+        if (BackgroundSystem.audio.isActive) {
+            return;
+        }
+        
+        // 尝试使用Web Audio API
+        if (initAudioKeepAlive()) {
+            try {
+                const { context, source } = BackgroundSystem.audio;
+                
+                if (context.state === 'suspended') {
+                    context.resume();
+                }
+                
+                source.start(0);
+                BackgroundSystem.audio.isActive = true;
+                console.log('✅ Web Audio API保活已启动');
+                return;
+            } catch (error) {
+                console.warn('Web Audio API启动失败，尝试使用HTML5音频:', error);
+            }
+        }
+        
+        // 降级到HTML5音频
+        try {
+            silentAudio.volume = 0;
+            silentAudio.play().then(() => {
+                console.log('✅ HTML5音频保活已启动');
+            }).catch(error => {
+                console.warn('HTML5音频启动失败:', error);
+            });
+        } catch (error) {
+            console.warn('音频保活启动失败:', error);
+        }
+    }
+    
+    // 停止音频保活
+    function stopAudioKeepAlive() {
+        if (BackgroundSystem.audio.isActive && BackgroundSystem.audio.source) {
+            try {
+                BackgroundSystem.audio.source.stop();
+                BackgroundSystem.audio.isActive = false;
+                console.log('⏹️ Web Audio API保活已停止');
+            } catch (error) {
+                console.warn('停止Web Audio API失败:', error);
+            }
+        }
+        
+        try {
+            silentAudio.pause();
+            silentAudio.currentTime = 0;
+        } catch (error) {
+            console.warn('停止HTML5音频失败:', error);
+        }
+    }
+    
+    // 启动保活系统
+    function startKeepAlive() {
+        if (Notification.permission !== 'granted') {
+            console.warn('通知权限未授予，无法启动保活');
+            return;
+        }
+        
+        startHeartbeat();
+        startAudioKeepAlive();
+        localStorage.setItem('enable_background_system', 'true');
+        console.log('✅ 后台保活系统已启动');
+    }
+    
+    // 停止保活系统
+    function stopKeepAlive() {
+        stopHeartbeat();
+        stopAudioKeepAlive();
+        localStorage.setItem('enable_background_system', 'false');
+        console.log('⏹️ 后台保活系统已停止');
+    }
+    
+    // 监听页面可见性变化
+    document.addEventListener('visibilitychange', () => {
+        BackgroundSystem.state.isBackground = document.hidden;
+        
+        const isEnabled = localStorage.getItem('enable_background_system') === 'true';
+        if (isEnabled && Notification.permission === 'granted') {
+            if (document.hidden) {
+                console.log('页面切到后台，保活系统继续运行');
+            } else {
+                console.log('页面切到前台');
+            }
+        }
+    });
+    
+    // 绑定通知权限开关事件
+    const notificationSwitch = document.getElementById('notification-permission-switch');
+    if (notificationSwitch) {
+        notificationSwitch.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                requestNotificationPermission().then(() => {
+                    if (Notification.permission === 'granted') {
+                        startKeepAlive();
+                    }
+                });
+            } else {
+                stopKeepAlive();
+            }
+        });
+    }
+    
+    // 绑定开启通知按钮
+    const requestBtn = document.getElementById('notification-request-btn');
+    if (requestBtn) {
+        requestBtn.addEventListener('click', requestNotificationPermission);
+    }
+    
+    // 绑定测试按钮
+    const testBtn = document.getElementById('notification-test-btn');
+    if (testBtn) {
+        testBtn.addEventListener('click', sendTestNotification);
+    }
+    
+    // 绑定后台测试按钮
+    const bgTestBtn = document.getElementById('notification-background-test-btn');
+    if (bgTestBtn) {
+        bgTestBtn.addEventListener('click', function() {
+            alert('点击确定后，请立即切换到其他应用或锁屏！\n\n10秒后会发送通知，测试后台通知功能是否正常。');
+            
+            console.log('🧪 后台通知测试：10秒倒计时开始');
+            
+            let countdown = 10;
+            const countdownInterval = setInterval(() => {
+                console.log(`⏰ 倒计时: ${countdown} 秒`);
+                countdown--;
+                
+                if (countdown < 0) {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+            
+            setTimeout(() => {
+                console.log('📤 10秒已到，发送后台测试通知...');
+                
+                try {
+                    const notification = new Notification('后台通知测试', {
+                        body: '如果你在锁屏/其他应用看到这条通知，说明后台通知功能完全正常！🎉',
+                        tag: 'background-test',
+                        requireInteraction: false,
+                        silent: false
+                    });
+                    
+                    notification.onclick = function() {
+                        window.focus();
+                        notification.close();
+                    };
+                    
+                    setTimeout(() => notification.close(), 10000);
+                    
+                    console.log('✅ 后台测试通知已发送');
+                } catch (error) {
+                    console.error('❌ 发送测试通知失败:', error);
+                }
+            }, 10000);
+        });
+    }
+    
+    // Service Worker 注册
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            const serviceWorkerCode = `
+// Service Worker for Background Tasks
+const CACHE_NAME = 'yaya-cache-v1';
+
+// 安装 Service Worker
+self.addEventListener('install', function(event) {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(function(cache) {
+        console.log('Service Worker: 缓存已打开');
+        return cache.addAll(['/']);
+      })
+  );
+});
+
+// 激活 Service Worker
+self.addEventListener('activate', function(event) {
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          if (cacheName !== CACHE_NAME) {
+            console.log('Service Worker: 删除旧缓存', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
+// 处理推送通知
+self.addEventListener('push', function(event) {
+  console.log('Service Worker: 收到推送通知', event);
+  
+  let data = {};
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch (e) {
+      data = { title: '通知', body: event.data.text() || '您有新的消息' };
+    }
+  } else {
+    data = { title: '通知', body: '您有新的消息' };
+  }
+
+  const options = {
+    body: data.body || '您有新的消息',
+    icon: data.icon || '/icon.png',
+    badge: '/badge.png',
+    tag: data.tag || 'notification',
+    requireInteraction: data.requireInteraction || false,
+    data: data.data || {}
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title || '通知', options)
+  );
+});
+
+// 处理通知点击
+self.addEventListener('notificationclick', function(event) {
+  console.log('Service Worker: 通知被点击', event);
+  
+  event.notification.close();
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+      for (let i = 0; i < clientList.length; i++) {
+        const client = clientList[i];
+        if (client.url.indexOf(self.location.origin) === 0 && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow('/');
+      }
+    })
+  );
+});
+
+// 处理消息传递
+self.addEventListener('message', function(event) {
+  console.log('Service Worker: 收到消息', event.data);
+  
+  if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
+    const notificationData = event.data.data;
+    const options = {
+      body: notificationData.body || '',
+      icon: notificationData.icon || '/icon.png',
+      badge: '/badge.png',
+      tag: notificationData.tag || 'chat-notification',
+      requireInteraction: false,
+      data: notificationData.data || {}
+    };
+    
+    event.waitUntil(
+      self.registration.showNotification(notificationData.title || '新消息', options)
+    );
+  }
+});
+`;
+            
+            const blob = new Blob([serviceWorkerCode], { type: 'application/javascript' });
+            const serviceWorkerUrl = URL.createObjectURL(blob);
+            
+            navigator.serviceWorker.register(serviceWorkerUrl)
+                .then(registration => {
+                    console.log('✅ Service Worker 注册成功:', registration.scope);
+                    
+                    // 监听来自 Service Worker 的消息
+                    navigator.serviceWorker.addEventListener('message', event => {
+                        console.log('收到 Service Worker 消息:', event.data);
+                    });
+                })
+                .catch(error => {
+                    console.error('❌ Service Worker 注册失败:', error);
+                });
+        });
+    }
+    
+    // 页面加载时初始化
+    window.addEventListener('load', () => {
+        updateNotificationButton();
+        
+        // 如果之前已启用，自动启动保活
+        const isEnabled = localStorage.getItem('enable_background_system') === 'true';
+        if (isEnabled && Notification.permission === 'granted') {
+            const switchEl = document.getElementById('notification-permission-switch');
+            if (switchEl) {
+                switchEl.checked = true;
+            }
+            startKeepAlive();
+        }
+        
+        console.log('通知系统已初始化');
+    });
+    
+    // 当打开设置页面时，更新通知状态
+    const originalOpenSettingsPage = window.openSettingsPage;
+    if (typeof originalOpenSettingsPage === 'function') {
+        window.openSettingsPage = function() {
+            originalOpenSettingsPage.call(this);
+            setTimeout(() => {
+                updateNotificationButton();
+            }, 100);
+        };
     }
 
     </script>
