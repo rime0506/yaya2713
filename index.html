@@ -26,7 +26,6 @@
         body, html {
             margin: 0; padding: 0; width: 100vw; height: 100vh;
             padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
             font-family: -apple-system, "Helvetica Neue", sans-serif;
             background-color: #ffffff;
             overflow: hidden;
@@ -44,7 +43,7 @@
             display: flex; 
             flex-direction: column;
             padding: 15px 5% 0;
-            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+            padding-bottom: 15px;
             box-sizing: border-box;
             transition: transform 0.4s ease;
             overflow: hidden;
@@ -308,7 +307,7 @@
             flex: 1;
             overflow-y: auto;
             background-color: #fff;
-            padding-bottom: calc(60px + env(safe-area-inset-bottom)); /* 留出底部导航栏高度 + 安全区域 */
+            padding-bottom: 60px; /* 留出底部导航栏高度 */
             position: relative; /* 为子页面绝对定位提供基准 */
         }
 
@@ -774,7 +773,6 @@
             right: 0;
             min-height: 60px;
             height: calc(60px + env(safe-area-inset-bottom));
-            padding-bottom: env(safe-area-inset-bottom);
             background-color: var(--pure-pink);
             border-top: 1px solid var(--border-pink);
             display: flex;
