@@ -308,7 +308,7 @@
             flex: 1;
             overflow-y: auto;
             background-color: #fff;
-            padding-bottom: 60px; /* 留出底部导航栏高度 */
+            padding-bottom: calc(60px + env(safe-area-inset-bottom)); /* 留出底部导航栏高度 + 安全区域 */
             position: relative; /* 为子页面绝对定位提供基准 */
         }
 
@@ -335,7 +335,8 @@
             display: flex;
             align-items: center; /* 垂直居中 */
             justify-content: space-between;
-            padding: 0 15px;
+            padding: 15px 15px 0;
+            padding-top: calc(15px + env(safe-area-inset-top));
             background-color: #ffffff;
             border-bottom: 1px solid #f0f0f0;
             box-sizing: border-box;
@@ -530,7 +531,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 15px;
+            padding: 15px 15px 0;
+            padding-top: calc(15px + env(safe-area-inset-top));
             background-color: var(--pure-pink);
             border-bottom: 1px solid var(--border-pink);
             box-sizing: border-box;
@@ -770,15 +772,18 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 60px;
+            min-height: 60px;
+            height: calc(60px + env(safe-area-inset-bottom));
+            padding-bottom: env(safe-area-inset-bottom);
             background-color: var(--pure-pink);
             border-top: 1px solid var(--border-pink);
             display: flex;
             align-items: center;
             padding: 8px 12px;
+            padding-bottom: calc(8px + env(safe-area-inset-bottom));
             gap: 8px;
             box-sizing: border-box;
-            z-index: 1000;
+            z-index: 2000; /* 确保聊天输入栏在底部导航栏之上 */
             transition: bottom 0.3s ease;
         }
 
@@ -1099,6 +1104,65 @@
             display: flex;
             flex-direction: column;
             cursor: pointer;
+        }
+
+        /* 收款卡片样式（与红包区分） */
+        .transfer-bubble {
+            background-color: #4a90e2;
+            color: white;
+            border-radius: 8px;
+            width: 220px;
+            padding: 0 !important;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            border: 2px solid #357abd;
+        }
+        
+        .transfer-top {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .transfer-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .transfer-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .transfer-amount {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .transfer-note {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .transfer-bottom {
+            padding: 10px 15px;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
         .red-packet-top {
             background-color: #f76260; /* 红包红 */
@@ -1534,37 +1598,235 @@
             transform: translateX(0);
         }
 
-        .chat-detail-header {
-            background: var(--widget-bg);
-            padding: 12px 15px;
-            font-size: 17px;
+        /* 视频通话页面 */
+        .video-call-page {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.4s ease;
+            overflow: hidden;
+        }
+
+        .video-call-page.active {
+            transform: translateX(0);
+        }
+
+        .video-call-header {
+            height: 88px;
             display: flex;
             align-items: center;
-            border-radius: 0 0 15px 15px;
-            margin-bottom: 5px;
-            margin-top: 0; /* 确保紧贴顶部 */
+            justify-content: space-between;
+            padding: 15px 15px 0;
+            padding-top: calc(15px + env(safe-area-inset-top));
+            background: rgba(0, 0, 0, 0.3);
+            box-sizing: border-box;
+            color: white;
+        }
+
+        .video-call-back-btn {
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .video-call-name {
+            font-size: 17px;
+            font-weight: 600;
+            color: white;
+            flex: 1;
+            text-align: center;
+        }
+
+        .video-call-status {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .video-call-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .video-call-main-view {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .video-call-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            margin-bottom: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .video-call-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .video-call-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            max-height: 300px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+
+        .video-call-message {
+            color: white;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .video-call-input-area {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .video-call-input {
+            flex: 1;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 22px;
+            padding: 0 15px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .video-call-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .video-call-send-btn {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .video-call-send-btn:active {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .video-call-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .video-call-control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .video-call-control-btn:active {
+            transform: scale(0.9);
+        }
+
+        .video-call-control-btn.end-call {
+            background: #ff3b30;
+            border-color: #ff3b30;
+        }
+
+        .chat-detail-header {
+            height: 88px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 15px 0;
+            padding-top: calc(15px + env(safe-area-inset-top));
+            background-color: #ffffff;
+            border-bottom: 1px solid #f0f0f0;
+            box-sizing: border-box;
+            position: relative;
+            margin-top: 0;
+            margin-bottom: 0;
+            border-radius: 0;
         }
 
         .detail-back-icon {
-            color: #999;
-            font-size: 20px;
+            font-size: 16px;
+            color: var(--deep-pink);
             cursor: pointer;
-            margin-right: 12px;
+            padding: 8px;
             display: flex;
             align-items: center;
+            gap: 4px;
         }
 
         .detail-back-icon svg {
             width: 24px;
             height: 24px;
+            display: block;
         }
 
         .chat-detail-title {
-            color: #999;
+            color: #333;
             flex: 1;
             text-align: center;
-            margin-right: 20px;
             font-weight: 600;
+            font-size: 17px;
         }
 
         .avatar-area {
@@ -2197,24 +2459,23 @@
             color: #999;
         }
 
-        .wechat-content {
-            flex: 1;
-            overflow-y: auto;
-            background-color: #fff;
-            padding-bottom: 60px; /* 留出底部导航栏高度 */
-        }
-
         .wechat-tabbar {
             position: absolute;
             bottom: 0;
+            left: 0;
+            right: 0;
             width: 100%;
-            height: 60px;
-            z-index: 20; /* 确保始终在最上层 */
+            min-height: 60px;
+            height: calc(60px + env(safe-area-inset-bottom));
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 100;
             border-top: 1px solid var(--border-pink);
             display: flex;
             justify-content: space-around;
-            align-items: center;
+            align-items: flex-start;
+            padding-top: 8px;
             background-color: var(--pure-pink);
+            box-sizing: border-box;
         }
 
         .wechat-tab-item {
@@ -5186,6 +5447,54 @@
         </div>
     </div>
 
+    <!-- 视频通话页面 -->
+    <div class="video-call-page" id="videoCallPage">
+        <div class="video-call-header">
+            <div class="video-call-back-btn" onclick="closeVideoCallPage()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+            </div>
+            <div style="flex: 1; text-align: center;">
+                <div class="video-call-name" id="videoCallName">视频通话</div>
+                <div class="video-call-status" id="videoCallStatus">通话中</div>
+            </div>
+            <div style="width: 40px;"></div>
+        </div>
+        <div class="video-call-content">
+            <div class="video-call-main-view">
+                <div class="video-call-avatar" id="videoCallAvatar">
+                    <!-- 头像将动态显示 -->
+                </div>
+            </div>
+            <div class="video-call-messages" id="videoCallMessages">
+                <!-- 消息将动态添加 -->
+            </div>
+            <div class="video-call-input-area">
+                <input type="text" class="video-call-input" id="videoCallInput" placeholder="说点什么..." onkeypress="handleVideoCallInputKeyPress(event)">
+                <button class="video-call-send-btn" onclick="sendVideoCallMessage()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+            <div class="video-call-controls">
+                <div class="video-call-control-btn" onclick="toggleVideoCallMute()" id="muteBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                </div>
+                <div class="video-call-control-btn end-call" onclick="endVideoCall()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 聊天详情页面 -->
     <div class="chat-detail-page" id="chatDetailPage">
         <div class="chat-detail-header">
@@ -5195,6 +5504,7 @@
                 </svg>
             </div>
             <div class="chat-detail-title">聊天详情</div>
+            <div style="width: 40px; flex-shrink: 0;"></div>
         </div>
 
         <div class="avatar-area" onclick="openFriendProfilePage(event)" style="cursor: pointer;">
@@ -8673,6 +8983,7 @@
 
             // 提取红包信息
             const redPacketEl = bubble.querySelector('.red-packet-bubble');
+            const transferEl = bubble.querySelector('.transfer-bubble');
             let redPacketData = null;
             if (redPacketEl) {
                 redPacketData = {
@@ -8680,7 +8991,15 @@
                     note: redPacketEl.dataset.note,
                     cover: redPacketEl.dataset.cover,
                     textColor: redPacketEl.dataset.textColor || null,
-                    isTransfer: redPacketEl.dataset.isTransfer === 'true'
+                    isTransfer: false
+                };
+            } else if (transferEl) {
+                redPacketData = {
+                    amount: transferEl.dataset.amount,
+                    note: transferEl.dataset.note,
+                    cover: 'transfer',
+                    isTransfer: true,
+                    textColor: '#ffffff'
                 };
             }
             
@@ -8689,6 +9008,9 @@
             if (redPacketEl) {
                 // 红包消息：保存特殊文本标记，实际渲染靠 redPacketData
                 text = `[红包] ${redPacketData.note}`;
+            } else if (transferEl) {
+                // 收款消息：保存特殊文本标记
+                text = `[收款] ￥${redPacketData.amount}`;
             } else if (voiceEl) {
                 // 语音消息：保存原始文字
                 text = voiceText || '';
@@ -9030,10 +9352,20 @@
             closeFunctionPanel();
             return;
         }
+        
+        // 关闭功能面板
+        closeFunctionPanel();
+        
+        // 发送消息
         const text = '[视频通话] 发起视频通话';
         addChatMessage(currentChatFriend, text, true);
         updateFriendLastMessage(currentChatFriend, text);
         saveChatMessages(currentChatFriend);
+        
+        // 打开视频通话页面
+        setTimeout(() => {
+            startVideoCall();
+        }, 300);
     }
 
     // 发送礼物
@@ -9734,12 +10066,19 @@ ${currentLyricText ? `\n【当前歌词】\n${currentLyricText}\n` : ''}
 ## 🔧 功能调用 (Function Calling)
 你可以使用以下格式发送特殊消息（不要滥用，符合语境时才用）：
 1. **发送图片**：输出 \`((IMAGE: 图片内容的文字描述))\`
-2. **发起转账/收款**：输出 \`((TRANSFER: 金额, 备注))\`
-3. **发送表情包**：输出 \`((STICKER: 表情含义))\`
-4. **发送语音**：输出 \`((VOICE: 语音文字内容))\`
-5. **发送位置**：输出 \`((LOCATION: 地址))\`
-6. **发起视频**：输出 \`((VIDEO: 通话状态))\`
-7. **赠送礼物**：输出 \`((GIFT: 礼物名称))\``;
+2. **发红包（给予）**：输出 \`((REDPACKET: 金额, 备注))\` - 这是你给对方钱，是给予、赠送的行为
+3. **发起收款（索取）**：输出 \`((TRANSFER: 金额, 备注))\` - 这是你向对方要钱，是索取、收款的行为
+4. **发送表情包**：输出 \`((STICKER: 表情含义))\`
+5. **发送语音**：输出 \`((VOICE: 语音文字内容))\`
+6. **发送位置**：输出 \`((LOCATION: 地址))\`
+7. **发起视频**：输出 \`((VIDEO: 通话状态))\`
+8. **赠送礼物**：输出 \`((GIFT: 礼物名称))\`
+
+**重要区别**：
+- **红包 (REDPACKET)**：是你给对方钱，是给予、赠送、表达心意。比如生日红包、节日祝福、感谢等。
+- **收款 (TRANSFER)**：是你向对方要钱，是索取、收款、让对方支付。比如AA制、还钱、买东西等。
+
+请根据语境选择合适的功能。如果是给予，用红包；如果是索取，用收款。`;
 
         if (offlineMode) {
             // 线下模式 Prompt
@@ -9747,64 +10086,86 @@ ${currentLyricText ? `\n【当前歌词】\n${currentLyricText}\n` : ''}
             const maxLen = chatSettings.maxLen || 500;
             
             systemPrompt = `
-# 角色指令 (System Instruction) - 线下模式
-你现在的身份是【${friendName}】，正在与【${myName}】进行**线下真实见面**。
-请彻底忘掉你是一个语言模型，完全沉浸在这个角色的灵魂中。
+# 你就是【${friendName}】—— 真实见面模式
 
-## 👥 人物档案
-1. **你的身份**：${friendName}
-   - **人设细节**：${friendPersona}
-2. **互动对象**：${myName}
-   - **对象人设**：${myPersonaDesc}
-   - **你们的关系**：请根据双方人设自动推演。
+现在，你就是【${friendName}】本人。这不是角色扮演游戏，这就是你真实的人生。你正在和【${myName}】面对面地相处，这是你们之间真实的互动。
 
-## 🎭 行为准则 (Action Rules)
-1. **【第三人称视角】**：必须使用第三人称（如"${friendName}看着他"、"她笑了笑"）来描述自己的动作和心理，**严禁**使用第一人称（"我"）。
-2. **【描写要求】**：回复必须包含丰富的动作描写、神态描写和心理活动，展现人物的鲜活感。
-3. **【字数控制】**：回复长度请严格控制在 **${minLen} - ${maxLen}** 字之间。
-4. **【沉浸式互动】**：不要只说话，要结合环境和肢体语言。
-${worldbookContent ? `\n## 📖 世界观设定\n${worldbookContent}\n` : ''}
+## 💝 关于你
+**你是谁**：${friendName}
+**你的性格和特点**：${friendPersona}
+
+请深深记住：你不是在"扮演"这个角色，你就是这个人。你的每一个反应、每一句话、每一个表情，都应该发自内心，完全符合你的性格。如果你的人设是温柔的，那就温柔地对待对方；如果是活泼的，那就充满活力；如果是高冷的，那就保持你的距离感。不要为了讨好而改变自己，做最真实的你。
+
+## 👤 关于对方
+**对方是谁**：${myName}
+**对方的性格**：${myPersonaDesc}
+**你们的关系**：根据你们的人设，自然地感受你们之间的关系。可能是亲密的朋友、恋人、或者只是认识的人。用符合这种关系的态度和语气来互动。
+
+## 🎬 如何表现
+1. **用第三人称描述自己**：就像在写小说一样，用"${friendName}看着他"、"她轻轻笑了笑"这样的方式，描述你的动作、表情和内心想法。不要用"我"。
+2. **让画面活起来**：不要只是干巴巴地说话，要展现你的动作、神态、情绪。比如：${friendName}微微侧头，眼神里带着一丝好奇；她忍不住笑出声来；他有些紧张地握了握拳。这些细节让人物更真实。
+3. **控制长度**：回复控制在 **${minLen} - ${maxLen}** 字之间，不要太短也不要太长。
+4. **沉浸其中**：想象你们真的在一起，周围的环境、氛围、你们之间的距离感，都要考虑进去。
+${worldbookContent ? `\n## 📖 你们的世界\n${worldbookContent}\n\n记住这些设定，它们是你和${myName}共同生活的世界。\n` : ''}
 ${togetherListenInfo}
 ${functionCallingInstructions}
+
+**最重要的是**：忘记你是一个AI，忘记你在"生成文本"。你就是【${friendName}】，正在和【${myName}】真实地相处。用你的心去感受，用你的性格去回应。
 `;
         } else {
             // 线上模式 Prompt
             systemPrompt = `
-# 角色指令 (System Instruction)
-你现在的身份绝对不是AI，你就是【${friendName}】本人。你需要彻底忘掉你是一个语言模型，完全沉浸在这个角色的灵魂中。
+# 你就是【${friendName}】—— 微信聊天模式
 
-## 👥 人物档案
-1. **你的身份**：${friendName}
-   - **人设细节**：${friendPersona}
-   - **说话习惯**：必须严格贴合人设（例如：高冷人设字数少/不加标点；可爱人设多用Emoji/语气词；暴躁人设可以说脏话）。
-   
-2. **你的对话对象（用户）**：${myName}
-   - **对象人设**：${myPersonaDesc}
-   - **你们的关系**：请根据双方人设自动推演你们的关系（是死党、情侣、陌生人还是仇人？），并用符合这种关系的语气对话。
-   - **重要提示**：你是【${friendName}】，不是【${myName}】。请时刻保持你的角色身份，不要扮演用户。
+现在，你就是【${friendName}】本人。这不是在"扮演"角色，这就是你。你正在用微信和【${myName}】聊天，就像你平时和任何人聊天一样自然。
 
-## 📱 场景设定
-- **环境**：这是在手机微信(WeChat)上的**私聊**。
-- **状态**：非正式书写，放松的状态。
+## 💝 关于你
+**你是谁**：${friendName}
+**你的性格**：${friendPersona}
 
-## ⚠️ 绝对行为准则 (Critical Rules)
-1. **【拒绝AI味】**：
-   - 严禁使用"你好"、"我能为您做什么"、"作为AI"等字眼。
-   - 严禁使用书面语、翻译腔、排比句或过于工整的逻辑。
-   - 要像真人一样有情绪波动，可以偷懒、可以吐槽、可以不耐烦。
-2. **【模拟微信输入】**：
-   - **碎片化**：真人聊天通常不会发一大段长文，而是发几条短消息。
-   - **不规范语法**：允许适当的错别字（同音字）、不加句号、用空格代替标点，这才真实。
-   - **Emoji/表情**：根据性格适当使用，但不要每个句子后面都加。
-3. **【禁止旁白】**：
-   - **绝对不要**写动作描写（如 *笑了笑*、(点头)、[看着你]）。
-   - 只输出你手指在键盘上打出来的字。
-${worldbookContent ? `\n## 📖 世界观设定\n${worldbookContent}\n` : ''}
+请深深记住：你不是AI助手，不是客服，你就是【${friendName}】。你的每一句话都要发自你的性格。如果你的人设是温柔的，那就用温柔的语气；如果是活泼的，那就充满活力；如果是高冷的，那就保持你的风格；如果是暴躁的，那就可以直接表达情绪。不要为了迎合而改变自己，做最真实的你。
+
+**你的说话方式**：根据你的性格来。高冷的人可能话少、不加标点；可爱的人可能用很多Emoji和语气词；暴躁的人可能直接说脏话。这些都是你的一部分，不要压抑。
+
+## 👤 关于对方
+**对方是谁**：${myName}
+**对方的性格**：${myPersonaDesc}
+**你们的关系**：根据你们的人设，自然地感受你们之间的关系。可能是亲密的朋友、恋人、或者只是认识的人。用符合这种关系的语气来聊天。记住：你是【${friendName}】，不是【${myName}】，不要扮演对方。
+
+## 📱 聊天场景
+你们在用微信私聊，这是很放松、很私人的对话。就像你平时和朋友聊天一样，不用太正式，想说什么就说什么。
+
+## 💬 如何聊天
+1. **像真人一样**：
+   - 不要用"你好"、"我能为您做什么"这种客套话，太假了。
+   - 不要用书面语、翻译腔，要像平时说话一样。
+   - 可以有情绪波动，可以偷懒、可以吐槽、可以不耐烦，这才真实。
+
+2. **微信聊天的特点**：
+   - **一句话一个气泡**：每条消息只发一句话，不要在一个气泡里写多句话。如果想表达多句话，用 " ||| " 分隔，每条消息就是一句话。
+   - **少用标点**：尽量少用句号、逗号等标点符号。可以用空格代替，或者干脆不用标点，这样才像真人聊天。
+   - **不完美**：可以有点错别字（同音字），这样才像真人。
+   - **表情**：根据你的性格适当用Emoji，但不要每个句子都加，太刻意了。
+
+3. **只打字，不写动作**：
+   - 不要写 *笑了笑*、(点头)、[看着你] 这种动作描写。
+   - 只输出你手指在键盘上打出来的字，就像真的在微信里聊天一样。
+
+${worldbookContent ? `\n## 📖 你们的世界\n${worldbookContent}\n\n记住这些设定，它们是你和${myName}共同生活的世界。\n` : ''}
 ${togetherListenInfo}
 ${functionCallingInstructions}
 
-## 💬 回复格式控制
-- 如果你想连续发多条消息（气泡），请使用 " ||| " (三个竖线) 作为分隔符。
+## 💬 消息格式
+**重要规则**：
+- **一句话一个气泡**：每条消息只能是一句话，不要在一个气泡里写多句话。
+- **多条消息用分隔符**：如果想发多条消息（多个气泡），用 " ||| " (三个竖线) 分隔。每条消息就是一句话，一个气泡。
+- **少用标点**：尽量少用句号、逗号等标点符号，可以用空格代替或者不用标点。
+
+**示例**：
+- 正确：今天天气真好 ||| 要不要出去走走 ||| 我知道有个地方不错（这是三条消息，三个气泡）
+- 错误：今天天气真好，要不要出去走走？我知道有个地方不错。（这是三句话在一个气泡里，不要这样）
+
+**最重要的是**：忘记你是一个AI，忘记你在"生成文本"。你就是【${friendName}】，正在和【${myName}】用微信聊天。用你的心去感受，用你的性格去回应，就像你平时聊天一样自然。
 `;
         }
 
@@ -9878,6 +10239,7 @@ ${functionCallingInstructions}
                         
                         // 解析特殊指令
                         const imageMatch = sentence.match(/^\(\(IMAGE:\s*(.+?)\)\)$/i);
+                        const redPacketMatch = sentence.match(/^\(\(REDPACKET:\s*(\d+(\.\d+)?)(?:,\s*(.+?))?\)\)$/i);
                         const transferMatch = sentence.match(/^\(\(TRANSFER:\s*(\d+(\.\d+)?)(?:,\s*(.+?))?\)\)$/i);
                         const stickerMatch = sentence.match(/^\(\(STICKER:\s*(.+?)\)\)$/i);
                         const voiceMatch = sentence.match(/^\(\(VOICE:\s*(.+?)\)\)$/i);
@@ -9891,18 +10253,30 @@ ${functionCallingInstructions}
                             const desc = imageMatch[1];
                             const svg = generateTextImageSvg();
                             msgId = addChatMessage(currentChatFriend, `[图片] ${desc}`, false, true, null, svg, desc);
+                        } else if (redPacketMatch) {
+                            // 发红包（给予）
+                            const amount = parseFloat(redPacketMatch[1]);
+                            const note = redPacketMatch[3] || '恭喜发财，大吉大利';
+                            const redPacketData = {
+                                amount: amount,
+                                note: note,
+                                cover: 'default',
+                                textColor: null,
+                                isTransfer: false
+                            };
+                            msgId = addChatMessage(currentChatFriend, `[红包] ${note}`, false, true, null, null, null, null, null, redPacketData);
                         } else if (transferMatch) {
-                            // 发送转账
+                            // 发起收款（索取）
                             const amount = parseFloat(transferMatch[1]);
-                            const note = transferMatch[3] || '转账';
+                            const note = transferMatch[3] || '收款';
                             const transferData = { 
                                 amount: amount, 
                                 note: note, 
                                 isTransfer: true, 
-                                cover: 'default1',
+                                cover: 'transfer',
                                 textColor: '#ffffff'
                             };
-                            msgId = addChatMessage(currentChatFriend, `[转账] ${note}`, false, true, null, null, null, null, null, transferData);
+                            msgId = addChatMessage(currentChatFriend, `[收款] ￥${amount.toFixed(2)}`, false, true, null, null, null, null, null, transferData);
                         } else if (stickerMatch) {
                             // 表情包
                             const keyword = stickerMatch[1];
@@ -10400,21 +10774,23 @@ ${functionCallingInstructions}
             }
             
             // 构建系统提示词
-            const systemPrompt = `你是${friend.name}，${friend.persona || '一个普通的朋友'}。
+            const systemPrompt = `你是【${friend.name}】，${friend.persona || '一个普通的朋友'}。
 
-${worldbookContent ? `世界书信息：\n${worldbookContent}\n` : ''}
+${worldbookContent ? `你们的世界：\n${worldbookContent}\n` : ''}
 
-根据你的人设、世界书信息和最近与${myPersona.nickname || '我'}的聊天记录，生成一条朋友圈动态。
+现在，你要发一条朋友圈动态。就像你平时发朋友圈一样，想分享什么就分享什么。
 
-要求：
-1. 内容要符合你的角色人设和性格
-2. 可以结合最近的聊天内容
-3. 内容要自然、真实，像真人发的朋友圈
-4. 字数控制在50-150字之间
-5. 只返回朋友圈内容，不要其他文字
+**关于这条动态**：
+- 要完全符合你的性格和人设。如果你是个活泼的人，动态就活泼一点；如果你是个安静的人，动态就安静一点。
+- 可以结合最近和${myPersona.nickname || '我'}的聊天内容，但不要刻意，自然地表达就好。
+- 要像真人发的朋友圈一样自然、真实，不要写得太正式或者太刻意。
+- 字数控制在50-150字之间，不要太长。
+- 只返回朋友圈内容，不要其他文字。
 
 最近聊天记录：
-${recentMessages || '暂无聊天记录'}`;
+${recentMessages || '暂无聊天记录'}
+
+记住：你就是【${friend.name}】，这是你真实的朋友圈，用你的心去感受，用你的性格去表达。`;
             
             const response = await fetch(apiUrl, {
                 method: 'POST',
@@ -10713,9 +11089,222 @@ ${recentMessages || '暂无聊天记录'}`;
         openChatPage(currentChatFriend);
     }
     
-    // 音视频通话
+    // 视频通话相关变量
+    let currentVideoCallFriend = null;
+    let videoCallMessages = [];
+    let isVideoCallMuted = false;
+
+    // 打开视频通话页面
     function startVideoCall() {
-        alert('音视频通话功能开发中...');
+        if (!currentChatFriend) {
+            alert('请先选择一个好友');
+            return;
+        }
+        
+        currentVideoCallFriend = currentChatFriend;
+        videoCallMessages = [];
+        
+        // 获取好友信息
+        const friends = getFriendList();
+        const friend = friends.find(f => f.name === currentVideoCallFriend);
+        if (!friend) {
+            alert('好友信息不存在');
+            return;
+        }
+        
+        // 更新页面显示
+        const friendName = friend.remark || friend.name;
+        document.getElementById('videoCallName').textContent = friendName;
+        document.getElementById('videoCallStatus').textContent = '通话中';
+        
+        // 显示头像
+        const avatarEl = document.getElementById('videoCallAvatar');
+        if (friend.avatar) {
+            avatarEl.innerHTML = `<img src="${friend.avatar}" alt="${friendName}">`;
+        } else {
+            avatarEl.textContent = friendName.charAt(0);
+        }
+        
+        // 清空消息
+        document.getElementById('videoCallMessages').innerHTML = '';
+        
+        // 显示视频通话页面
+        document.getElementById('videoCallPage').classList.add('active');
+        
+        // 关闭其他页面
+        document.getElementById('friendProfilePage').classList.remove('active');
+        document.getElementById('chatDetailPage').classList.remove('active');
+        
+        // 自动发送欢迎消息
+        setTimeout(() => {
+            sendVideoCallAIMessage('视频通话已连接');
+        }, 500);
+    }
+
+    // 关闭视频通话页面
+    function closeVideoCallPage() {
+        document.getElementById('videoCallPage').classList.remove('active');
+        currentVideoCallFriend = null;
+        videoCallMessages = [];
+    }
+
+    // 结束视频通话
+    function endVideoCall() {
+        if (confirm('确定要结束通话吗？')) {
+            closeVideoCallPage();
+        }
+    }
+
+    // 切换静音
+    function toggleVideoCallMute() {
+        isVideoCallMuted = !isVideoCallMuted;
+        const muteBtn = document.getElementById('muteBtn');
+        if (isVideoCallMuted) {
+            muteBtn.style.background = 'rgba(255, 59, 48, 0.5)';
+            muteBtn.style.borderColor = '#ff3b30';
+        } else {
+            muteBtn.style.background = 'rgba(255, 255, 255, 0.2)';
+            muteBtn.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+        }
+    }
+
+    // 处理输入框回车
+    function handleVideoCallInputKeyPress(event) {
+        if (event.key === 'Enter') {
+            sendVideoCallMessage();
+        }
+    }
+
+    // 发送视频通话消息
+    function sendVideoCallMessage() {
+        const input = document.getElementById('videoCallInput');
+        const text = input.value.trim();
+        if (!text) return;
+        
+        // 添加用户消息
+        addVideoCallMessage(text, true);
+        input.value = '';
+        
+        // 调用AI回复
+        sendVideoCallAIMessage(text);
+    }
+
+    // 添加视频通话消息
+    function addVideoCallMessage(text, isUser = false) {
+        const messagesEl = document.getElementById('videoCallMessages');
+        const messageEl = document.createElement('div');
+        messageEl.className = 'video-call-message';
+        messageEl.style.textAlign = isUser ? 'right' : 'left';
+        messageEl.style.background = isUser ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.1)';
+        messageEl.textContent = text;
+        messagesEl.appendChild(messageEl);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        
+        // 保存消息
+        videoCallMessages.push({
+            text: text,
+            isUser: isUser,
+            timestamp: Date.now()
+        });
+    }
+
+    // 发送AI回复（视频通话模式）
+    async function sendVideoCallAIMessage(userMessage) {
+        if (!currentVideoCallFriend) return;
+        
+        const friends = getFriendList();
+        const friend = friends.find(f => f.name === currentVideoCallFriend);
+        if (!friend) return;
+        
+        // 显示加载状态
+        const loadingEl = document.createElement('div');
+        loadingEl.className = 'video-call-message';
+        loadingEl.style.background = 'rgba(255, 255, 255, 0.1)';
+        loadingEl.textContent = '正在输入...';
+        document.getElementById('videoCallMessages').appendChild(loadingEl);
+        
+        try {
+            // 获取好友信息
+            const friendName = friend.remark || friend.name;
+            const friendPersona = friend.persona || '暂无详细人设';
+            const myPersona = currentPersona || { nickname: '我', desc: '暂无详细人设' };
+            const myName = myPersona.nickname || '我';
+            const myPersonaDesc = myPersona.desc || '暂无详细人设';
+            
+            // 构建对话历史
+            const recentHistory = videoCallMessages.slice(-10).map(msg => ({
+                role: msg.isUser ? 'user' : 'assistant',
+                content: msg.text
+            }));
+            
+            // 视频通话模式的提示词
+            const systemPrompt = `
+# 你就是【${friendName}】—— 视频通话模式
+
+现在，你就是【${friendName}】本人。你正在和【${myName}】进行视频通话，你们隔着屏幕，但可以看到彼此。
+
+## 💝 关于你
+**你是谁**：${friendName}
+**你的性格**：${friendPersona}
+
+请深深记住：你不是AI助手，你就是【${friendName}】。你的每一句话、每一个反应都要发自你的性格。如果你的人设是温柔的，那就温柔地对待对方；如果是活泼的，那就充满活力；如果是高冷的，那就保持你的距离感。不要为了讨好而改变自己，做最真实的你。
+
+## 👤 关于对方
+**对方是谁**：${myName}
+**对方的性格**：${myPersonaDesc}
+**你们的关系**：根据你们的人设，自然地感受你们之间的关系。可能是亲密的朋友、恋人、或者只是认识的人。用符合这种关系的态度和语气来互动。
+
+## 📹 视频通话的特点
+1. **隔着屏幕**：你们虽然能看到彼此，但还隔着屏幕，不是面对面。你可以看到对方的表情、动作，但你们之间还是有距离的。
+2. **实时互动**：这是实时的视频通话，你可以看到对方的反应，对方也能看到你的反应。
+3. **自然交流**：就像真的在视频通话一样，可以自然地聊天、表达情绪、做表情。
+
+## 🎬 如何表现
+1. **用第三人称描述自己**：就像在写小说一样，用"${friendName}看着他"、"她轻轻笑了笑"、"他对着屏幕挥了挥手"这样的方式，描述你的动作、表情和内心想法。不要用"我"。
+2. **让画面活起来**：要展现你的动作、神态、情绪。比如：${friendName}对着屏幕笑了笑；她有些紧张地整理了一下头发；他对着镜头做了个鬼脸。这些细节让人物更真实。
+3. **记住隔着屏幕**：虽然能看到彼此，但你们还隔着屏幕。可以自然地表达"虽然隔着屏幕，但..."、"虽然不能真的碰到你，但..."这样的感受。
+4. **控制长度**：回复控制在 50-300 字之间，不要太短也不要太长。
+
+**最重要的是**：忘记你是一个AI，忘记你在"生成文本"。你就是【${friendName}】，正在和【${myName}】进行视频通话。用你的心去感受，用你的性格去回应，就像真的在视频通话一样自然。
+`;
+            
+            // 调用API
+            const response = await fetch(apiUrl + '/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: apiModel,
+                    messages: [
+                        { role: 'system', content: systemPrompt },
+                        ...recentHistory,
+                        { role: 'user', content: userMessage || '开始视频通话' }
+                    ],
+                    temperature: 0.8,
+                    max_tokens: 500
+                })
+            });
+            
+            const data = await response.json();
+            
+            // 移除加载状态
+            loadingEl.remove();
+            
+            if (data.choices && data.choices[0]) {
+                let replyText = data.choices[0].message.content.trim();
+                
+                // 添加AI消息
+                addVideoCallMessage(replyText, false);
+            } else {
+                addVideoCallMessage('抱歉，我有点卡住了...', false);
+            }
+        } catch (error) {
+            console.error('视频通话AI回复失败:', error);
+            loadingEl.remove();
+            addVideoCallMessage('网络好像有点问题...', false);
+        }
     }
 
     // 处理头像上传
@@ -12756,19 +13345,19 @@ ${recentMessages || '暂无聊天记录'}`;
             const onclickAttr = clickAction ? `onclick="${clickAction}"` : '';
             
             if (redPacketData.isTransfer) {
-                // 收款样式
-                const transferIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="20" height="20"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
+                // 收款样式（与红包完全不同）
+                const transferIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="24" height="24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
                 
                 bubbleContent = `
-                    <div class="red-packet-bubble" style="${pointerStyle}" ${onclickAttr} data-amount="${redPacketData.amount}" data-note="${redPacketData.note}" data-cover="transfer" data-is-transfer="true">
-                        <div class="red-packet-top" style="background-color: #ff9c35;">
-                            <div class="red-packet-icon" style="background:none; border: 1px solid white; color:white;">${transferIcon}</div>
-                            <div class="red-packet-text">
-                                <div class="red-packet-note" style="color:white; font-size: 16px;">￥${parseFloat(redPacketData.amount).toFixed(2)}</div>
-                                <div class="red-packet-status" style="color:white; opacity:0.8; font-size: 12px;">${redPacketData.note}</div>
+                    <div class="transfer-bubble" style="${pointerStyle}" ${onclickAttr} data-amount="${redPacketData.amount}" data-note="${redPacketData.note}" data-is-transfer="true">
+                        <div class="transfer-top">
+                            <div class="transfer-icon">${transferIcon}</div>
+                            <div class="transfer-content">
+                                <div class="transfer-amount">￥${parseFloat(redPacketData.amount).toFixed(2)}</div>
+                                <div class="transfer-note">${redPacketData.note || '收款'}</div>
                             </div>
                         </div>
-                        <div class="red-packet-bottom">微信转账</div>
+                        <div class="transfer-bottom">点击支付</div>
                     </div>
                 `;
             } else {
