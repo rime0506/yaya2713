@@ -43,6 +43,7 @@
             font-family: -apple-system, "Helvetica Neue", sans-serif;
             background-color: #ffffff;
             overflow: hidden;
+            
             box-sizing: border-box;
         }
 
@@ -1618,13 +1619,15 @@
 
         .chat-detail-header {
             background: var(--widget-bg);
-            padding: 12px 15px;
+            height: 88px; /* 顶栏高度，和聊天页面一样 */
+            padding: 0 15px;
             font-size: 17px;
             display: flex;
             align-items: center;
             border-radius: 0 0 15px 15px;
             margin-bottom: 5px;
             margin-top: 0; /* 确保紧贴顶部 */
+            box-sizing: border-box;
         }
 
         .detail-back-icon {
@@ -6796,6 +6799,12 @@
                 </div>
                 <div class="app-label">icity</div>
             </div>
+            <div class="app-item" onclick="openNovelAIApp()">
+                <div class="icon-box" id="icon-novelai" style="background-color: #FFF2F8; border: 1px solid var(--border-pink); display: flex; align-items: center; justify-content: center; color: var(--deep-pink); font-size: 28px;">
+                    🎨
+                </div>
+                <div class="app-label">表情包</div>
+            </div>
         </div>
 
         <div class="dock-container">
@@ -8358,10 +8367,11 @@
                 <span>提醒</span>
                 <div class="detail-toggle" id="remindToggle" onclick="toggleSwitch(this)"></div>
             </div>
-            <div class="option-item" onclick="alert('设置聊天背景功能开发中...')">
+            <div class="option-item" onclick="document.getElementById('chatBgInput').click()">
                 <span>设置当前聊天背景</span>
                 <span class="detail-arrow">→</span>
             </div>
+            <input type="file" id="chatBgInput" accept="image/*" style="display: none;" onchange="handleChatBackgroundUpload(this)">
             <div class="option-item" onclick="exportChatHistory()">
                 <span>导出聊天记录</span>
                 <span class="detail-arrow">→</span>
@@ -9387,6 +9397,295 @@
             </div>
             
             <button class="save-all-btn" onclick="saveSystemSettings()">保存系统设置</button>
+        </div>
+    </div>
+
+    <!-- NovelAI 表情包生成页面 -->
+    <div class="novelai-page" id="novelaiPage">
+        <style>
+            .novelai-page {
+                position: fixed;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                background: linear-gradient(135deg, #FFF2F8 0%, #F9EBF2 100%);
+                z-index: 20;
+                display: flex;
+                flex-direction: column;
+                transform: translateX(100%);
+                transition: transform 0.4s ease;
+            }
+            .novelai-page.active {
+                transform: translateX(0);
+            }
+            .novelai-header {
+                height: 88px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 15px;
+                background-color: var(--widget-bg);
+                border-bottom: 1px solid var(--border-pink);
+                box-sizing: border-box;
+            }
+            .novelai-header-btn {
+                font-size: 16px;
+                color: var(--deep-pink);
+                cursor: pointer;
+                padding: 8px;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .novelai-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--deep-pink);
+            }
+            .novelai-content {
+                flex: 1;
+                overflow-y: auto;
+                padding: 20px 15px;
+            }
+            .novelai-section {
+                background: white;
+                border-radius: 15px;
+                padding: 15px;
+                margin-bottom: 15px;
+                border: 1px solid var(--border-pink);
+            }
+            .novelai-section-title {
+                font-size: 15px;
+                font-weight: 600;
+                color: var(--deep-pink);
+                margin-bottom: 12px;
+            }
+            .novelai-input-field {
+                margin-bottom: 12px;
+            }
+            .novelai-label {
+                display: block;
+                font-size: 13px;
+                color: #999;
+                margin-bottom: 6px;
+            }
+            .novelai-input {
+                width: 100%;
+                padding: 10px 12px;
+                border: 1px solid var(--border-pink);
+                border-radius: 8px;
+                font-size: 14px;
+                color: #333;
+                background-color: #fafafa;
+                box-sizing: border-box;
+                outline: none;
+            }
+            .novelai-input:focus {
+                border-color: var(--deep-pink);
+                background-color: white;
+            }
+            .novelai-textarea {
+                width: 100%;
+                min-height: 100px;
+                padding: 10px 12px;
+                border: 1px solid var(--border-pink);
+                border-radius: 8px;
+                font-size: 14px;
+                color: #333;
+                background-color: #fafafa;
+                box-sizing: border-box;
+                outline: none;
+                resize: vertical;
+                font-family: inherit;
+            }
+            .novelai-textarea:focus {
+                border-color: var(--deep-pink);
+                background-color: white;
+            }
+            .novelai-radio-group {
+                display: flex;
+                gap: 15px;
+                margin-top: 6px;
+            }
+            .novelai-radio {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                cursor: pointer;
+            }
+            .novelai-radio input[type="radio"] {
+                accent-color: var(--deep-pink);
+            }
+            .novelai-generate-btn {
+                width: 100%;
+                height: 50px;
+                background: var(--deep-pink);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            .novelai-generate-btn:active {
+                transform: scale(0.98);
+                background: #e8b8d0;
+            }
+            .novelai-generate-btn:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+            }
+            .novelai-result {
+                margin-top: 15px;
+                text-align: center;
+            }
+            .novelai-result-img {
+                width: 100%;
+                max-width: 512px;
+                border-radius: 15px;
+                border: 2px solid var(--border-pink);
+                margin: 0 auto;
+                display: block;
+            }
+            .novelai-loading {
+                display: none;
+                text-align: center;
+                padding: 20px;
+                color: var(--deep-pink);
+                font-size: 14px;
+            }
+            .novelai-loading.active {
+                display: block;
+            }
+            .novelai-error {
+                display: none;
+                padding: 12px;
+                background: #fff0f0;
+                border: 1px solid #ffcccc;
+                border-radius: 8px;
+                color: #cc0000;
+                font-size: 13px;
+                margin-top: 10px;
+            }
+            .novelai-error.active {
+                display: block;
+            }
+            .novelai-save-btn {
+                margin-top: 10px;
+                width: 100%;
+                height: 44px;
+                background: white;
+                color: var(--deep-pink);
+                border: 1px solid var(--deep-pink);
+                border-radius: 12px;
+                font-size: 15px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            .novelai-save-btn:active {
+                transform: scale(0.98);
+                background: var(--pure-pink);
+            }
+        </style>
+
+        <div class="novelai-header">
+            <div class="novelai-header-btn" onclick="closeNovelAIApp()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+            </div>
+            <div class="novelai-title">AI 表情包生成</div>
+            <div class="novelai-header-btn" onclick="openNovelAISettings()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 1v6m0 6v6M1 12h6m6 0h6m-2.636-7.364l-4.243 4.243m0 6.364l4.243 4.243M5.636 5.636l4.243 4.243m6.364 0l4.243-4.243"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="novelai-content">
+            <!-- 设置区域 -->
+            <div class="novelai-section">
+                <div class="novelai-section-title">⚙️ 设置</div>
+                
+                <div class="novelai-input-field">
+                    <label class="novelai-label">API Key</label>
+                    <input type="password" class="novelai-input" id="novelaiApiKey" placeholder="输入你的 NovelAI API Key">
+                </div>
+                
+                <div class="novelai-input-field">
+                    <label class="novelai-label">连接模式</label>
+                    <div class="novelai-radio-group">
+                        <label class="novelai-radio">
+                            <input type="radio" name="novelaiMode" value="direct" checked>
+                            <span>直连</span>
+                        </label>
+                        <label class="novelai-radio">
+                            <input type="radio" name="novelaiMode" value="proxy">
+                            <span>跨域代理</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="novelai-input-field" id="proxyUrlField" style="display: none;">
+                    <label class="novelai-label">代理地址</label>
+                    <input type="text" class="novelai-input" id="novelaiProxyUrl" placeholder="https://your-proxy.com/api">
+                </div>
+            </div>
+
+            <!-- 生成参数 -->
+            <div class="novelai-section">
+                <div class="novelai-section-title">🎨 生成参数</div>
+                
+                <div class="novelai-input-field">
+                    <label class="novelai-label">提示词 (Prompt)</label>
+                    <textarea class="novelai-textarea" id="novelaiPrompt" placeholder="例如：1girl, cute, smile, chibi, sticker style"></textarea>
+                </div>
+                
+                <div class="novelai-input-field">
+                    <label class="novelai-label">负面提示词 (Negative Prompt)</label>
+                    <textarea class="novelai-textarea" id="novelaiNegativePrompt" placeholder="例如：nsfw, lowres, bad anatomy" style="min-height: 60px;"></textarea>
+                </div>
+                
+                <div class="novelai-input-field">
+                    <label class="novelai-label">图片尺寸</label>
+                    <select class="novelai-input" id="novelaiSize">
+                        <option value="512x512">512 × 512 (正方形)</option>
+                        <option value="512x768">512 × 768 (竖图)</option>
+                        <option value="768x512">768 × 512 (横图)</option>
+                    </select>
+                </div>
+                
+                <div class="novelai-input-field">
+                    <label class="novelai-label">生成步数 (Steps)</label>
+                    <input type="number" class="novelai-input" id="novelaiSteps" value="28" min="1" max="50">
+                </div>
+                
+                <div class="novelai-input-field">
+                    <label class="novelai-label">引导系数 (Scale)</label>
+                    <input type="number" class="novelai-input" id="novelaiScale" value="11" min="1" max="20" step="0.5">
+                </div>
+            </div>
+
+            <!-- 生成按钮 -->
+            <button class="novelai-generate-btn" id="novelaiGenerateBtn" onclick="generateNovelAIImage()">
+                🎨 生成图片
+            </button>
+
+            <!-- 加载状态 -->
+            <div class="novelai-loading" id="novelaiLoading">
+                <div style="font-size: 24px; margin-bottom: 10px;">⏳</div>
+                <div>正在生成中，请稍候...</div>
+            </div>
+
+            <!-- 错误提示 -->
+            <div class="novelai-error" id="novelaiError"></div>
+
+            <!-- 结果展示 -->
+            <div class="novelai-result" id="novelaiResult" style="display: none;">
+                <img class="novelai-result-img" id="novelaiResultImg" src="" alt="生成的图片">
+                <button class="novelai-save-btn" onclick="downloadNovelAIImage()">💾 下载图片</button>
+            </div>
         </div>
     </div>
 
@@ -12014,6 +12313,17 @@
             applyChatBubbleCss(settings.bubbleCss);
         }
         
+        // 应用聊天背景
+        const chatMessagesEl = document.getElementById('chatMessages');
+        if (settings.backgroundImage) {
+            chatMessagesEl.style.backgroundImage = `url(${settings.backgroundImage})`;
+            chatMessagesEl.style.backgroundSize = 'cover';
+            chatMessagesEl.style.backgroundPosition = 'center';
+            chatMessagesEl.style.backgroundRepeat = 'no-repeat';
+        } else {
+            chatMessagesEl.style.backgroundImage = '';
+        }
+        
         // 确保按钮状态正确
         document.getElementById('chatMenuBtn').classList.remove('hidden');
         document.getElementById('chatSendBtn').classList.add('hidden');
@@ -13680,6 +13990,31 @@ ${functionCallingInstructions}
              if (badge) badge.remove();
              renderStrategyOptions([]);
              enableChatInput(true);
+        }
+    }
+
+    // 处理聊天背景上传
+    function handleChatBackgroundUpload(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const settings = getChatSettings() || {};
+                settings.backgroundImage = e.target.result;
+                localStorage.setItem(getChatSettingsKey(), JSON.stringify(settings));
+                
+                // 如果当前正在聊天页面，立即应用
+                const chatMessagesEl = document.getElementById('chatMessages');
+                if (chatMessagesEl && currentChatFriend) {
+                     chatMessagesEl.style.backgroundImage = `url(${e.target.result})`;
+                     chatMessagesEl.style.backgroundSize = 'cover';
+                     chatMessagesEl.style.backgroundPosition = 'center';
+                     chatMessagesEl.style.backgroundRepeat = 'no-repeat';
+                }
+                
+                // 重置input，以便可以再次选择同一文件
+                input.value = '';
+            };
+            reader.readAsDataURL(input.files[0]);
         }
     }
 
@@ -25587,6 +25922,241 @@ ${recentHistory || '暂无对话记录'}
             // 替换占位符
             const html = replacePlaceholders(template, statusData);
             statusCard.innerHTML = html;
+        }
+        
+        // ==================== NovelAI 表情包生成 Logic ====================
+        
+        // 打开 NovelAI 应用
+        function openNovelAIApp() {
+            const page = document.getElementById('novelaiPage');
+            page.classList.add('active');
+            
+            // 加载保存的设置
+            loadNovelAISettings();
+        }
+        
+        // 关闭 NovelAI 应用
+        function closeNovelAIApp() {
+            const page = document.getElementById('novelaiPage');
+            page.classList.remove('active');
+        }
+        
+        // 加载设置
+        function loadNovelAISettings() {
+            const settings = JSON.parse(localStorage.getItem('novelai_settings') || '{}');
+            
+            if (settings.apiKey) {
+                document.getElementById('novelaiApiKey').value = settings.apiKey;
+            }
+            
+            if (settings.mode) {
+                const radio = document.querySelector(`input[name="novelaiMode"][value="${settings.mode}"]`);
+                if (radio) radio.checked = true;
+                
+                // 显示/隐藏代理地址字段
+                if (settings.mode === 'proxy') {
+                    document.getElementById('proxyUrlField').style.display = 'block';
+                }
+            }
+            
+            if (settings.proxyUrl) {
+                document.getElementById('novelaiProxyUrl').value = settings.proxyUrl;
+            }
+            
+            if (settings.prompt) {
+                document.getElementById('novelaiPrompt').value = settings.prompt;
+            }
+            
+            if (settings.negativePrompt) {
+                document.getElementById('novelaiNegativePrompt').value = settings.negativePrompt;
+            }
+        }
+        
+        // 保存设置
+        function saveNovelAISettings() {
+            const settings = {
+                apiKey: document.getElementById('novelaiApiKey').value,
+                mode: document.querySelector('input[name="novelaiMode"]:checked').value,
+                proxyUrl: document.getElementById('novelaiProxyUrl').value,
+                prompt: document.getElementById('novelaiPrompt').value,
+                negativePrompt: document.getElementById('novelaiNegativePrompt').value
+            };
+            
+            localStorage.setItem('novelai_settings', JSON.stringify(settings));
+        }
+        
+        // 打开设置（占位符，设置已经内置在页面中）
+        function openNovelAISettings() {
+            alert('设置区域已在页面顶部，向下滚动查看生成参数 😊');
+        }
+        
+        // 监听连接模式切换
+        document.addEventListener('DOMContentLoaded', function() {
+            const modeRadios = document.querySelectorAll('input[name="novelaiMode"]');
+            modeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const proxyField = document.getElementById('proxyUrlField');
+                    if (this.value === 'proxy') {
+                        proxyField.style.display = 'block';
+                    } else {
+                        proxyField.style.display = 'none';
+                    }
+                    saveNovelAISettings();
+                });
+            });
+            
+            // 监听输入变化，自动保存
+            const inputs = ['novelaiApiKey', 'novelaiProxyUrl', 'novelaiPrompt', 'novelaiNegativePrompt'];
+            inputs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('blur', saveNovelAISettings);
+                }
+            });
+        });
+        
+        // 生成图片
+        async function generateNovelAIImage() {
+            // 获取设置
+            const apiKey = document.getElementById('novelaiApiKey').value.trim();
+            const mode = document.querySelector('input[name="novelaiMode"]:checked').value;
+            const proxyUrl = document.getElementById('novelaiProxyUrl').value.trim();
+            const prompt = document.getElementById('novelaiPrompt').value.trim();
+            const negativePrompt = document.getElementById('novelaiNegativePrompt').value.trim();
+            const size = document.getElementById('novelaiSize').value;
+            const steps = parseInt(document.getElementById('novelaiSteps').value);
+            const scale = parseFloat(document.getElementById('novelaiScale').value);
+            
+            // 验证
+            if (!apiKey) {
+                showNovelAIError('请先输入 API Key');
+                return;
+            }
+            
+            if (!prompt) {
+                showNovelAIError('请输入提示词');
+                return;
+            }
+            
+            if (mode === 'proxy' && !proxyUrl) {
+                showNovelAIError('请输入代理地址');
+                return;
+            }
+            
+            // 解析尺寸
+            const [width, height] = size.split('x').map(Number);
+            
+            // 保存设置
+            saveNovelAISettings();
+            
+            // 显示加载状态
+            document.getElementById('novelaiLoading').classList.add('active');
+            document.getElementById('novelaiError').classList.remove('active');
+            document.getElementById('novelaiResult').style.display = 'none';
+            document.getElementById('novelaiGenerateBtn').disabled = true;
+            
+            try {
+                // 构建请求
+                const requestBody = {
+                    input: prompt,
+                    model: 'nai-diffusion-3',
+                    action: 'generate',
+                    parameters: {
+                        width: width,
+                        height: height,
+                        scale: scale,
+                        sampler: 'k_euler',
+                        steps: steps,
+                        n_samples: 1,
+                        ucPreset: 0,
+                        qualityToggle: true,
+                        sm: false,
+                        sm_dyn: false,
+                        dynamic_thresholding: false,
+                        controlnet_strength: 1,
+                        legacy: false,
+                        add_original_image: false,
+                        cfg_rescale: 0,
+                        noise_schedule: 'native',
+                        negative_prompt: negativePrompt || 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry'
+                    }
+                };
+                
+                let url, headers;
+                
+                if (mode === 'direct') {
+                    // 直连模式
+                    url = 'https://image.novelai.net/ai/generate-image';
+                    headers = {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    };
+                } else {
+                    // 代理模式
+                    url = proxyUrl;
+                    headers = {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': apiKey
+                    };
+                }
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`API 请求失败 (${response.status}): ${errorText}`);
+                }
+                
+                // 处理响应
+                const blob = await response.blob();
+                const imageUrl = URL.createObjectURL(blob);
+                
+                // 显示结果
+                document.getElementById('novelaiResultImg').src = imageUrl;
+                document.getElementById('novelaiResult').style.display = 'block';
+                
+                // 保存图片数据以便下载
+                window.novelaiLastImage = blob;
+                
+            } catch (error) {
+                console.error('NovelAI 生成错误:', error);
+                showNovelAIError(error.message || '生成失败，请检查设置和网络连接');
+            } finally {
+                document.getElementById('novelaiLoading').classList.remove('active');
+                document.getElementById('novelaiGenerateBtn').disabled = false;
+            }
+        }
+        
+        // 显示错误
+        function showNovelAIError(message) {
+            const errorEl = document.getElementById('novelaiError');
+            errorEl.textContent = message;
+            errorEl.classList.add('active');
+            
+            setTimeout(() => {
+                errorEl.classList.remove('active');
+            }, 5000);
+        }
+        
+        // 下载图片
+        function downloadNovelAIImage() {
+            if (!window.novelaiLastImage) {
+                alert('没有可下载的图片');
+                return;
+            }
+            
+            const url = URL.createObjectURL(window.novelaiLastImage);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `novelai_${Date.now()}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
         
         
