@@ -3,14 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <!-- 开启iOS全屏模式，隐藏Safari工具栏 -->
+    
+    <!-- PWA 配置：内联 manifest (单文件方案) -->
+    <link rel="manifest" href='data:application/manifest+json,%7B%22name%22%3A%22rime%22%2C%22short_name%22%3A%22rime%22%2C%22display%22%3A%22standalone%22%2C%22start_url%22%3A%22.%22%2C%22theme_color%22%3A%22%23FFF2F8%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fimg.heliar.top%2Ffile%2F1768562864910_%E6%97%A0%E6%A0%87%E9%A2%98391_20260116192713.png%22%2C%22sizes%22%3A%22192x192%20512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D'>
+    
+    <!-- iOS 全屏模式配置 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <!-- 全屏时状态栏为半透明黑色，视觉更统一 -->
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- 设置主屏幕图标 -->
-    <link rel="apple-touch-icon" href="https://img.heliar.top/file/1768165259227_IMG_9124.jpeg">
+    <meta name="apple-mobile-web-app-title" content="rime">
+    
+    <!-- Android 全屏模式配置 -->
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- 主题颜色配置 -->
+    <meta name="theme-color" content="#FFF2F8">
+    
+    <!-- 图标配置 -->
+    <link rel="apple-touch-icon" href="https://img.heliar.top/file/1768562864910_无标题391_20260116192713.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://img.heliar.top/file/1768562864910_无标题391_20260116192713.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="https://img.heliar.top/file/1768562864910_无标题391_20260116192713.png">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <title>Pure Milky Pink Desktop</title>
+    <title>rime</title>
     <style>
         :root {
             --pure-pink: #FFF2F8;
@@ -4965,10 +4979,10 @@
             margin-bottom: 25px;
             white-space: pre-wrap;
             padding: 0 5px;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
             cursor: text;
         }
         
@@ -5001,6 +5015,14 @@
             width: 18px;
             height: 18px;
             fill: currentColor;
+        }
+        
+        .icity-app-page #icityDeleteBtn {
+            color: #ff4d4f;
+        }
+        
+        .icity-app-page #icityDeleteBtn:hover {
+            color: #ff7875;
         }
         
         .icity-app-page .comment-box {
@@ -5323,6 +5345,150 @@
         
         .icity-role-btn-cancel:hover {
             background: #f9f9f9;
+        }
+        
+        /* icity 标注弹窗样式 */
+        .icity-annotation-popup {
+            position: fixed;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            width: 300px;
+            max-width: calc(100vw - 40px);
+            z-index: 10002;
+        }
+        
+        .icity-annotation-popup .annotation-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            word-break: break-word;
+        }
+        
+        .icity-annotation-popup .annotation-input {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            outline: none;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        
+        .icity-annotation-popup .annotation-input:focus {
+            border-color: #4096ff;
+        }
+        
+        .icity-annotation-popup .annotation-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .icity-annotation-popup .annotation-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+        
+        .icity-annotation-popup .annotation-btn-cancel {
+            background: #f5f5f5;
+            color: #666;
+        }
+        
+        .icity-annotation-popup .annotation-btn-cancel:hover {
+            background: #e0e0e0;
+        }
+        
+        .icity-annotation-popup .annotation-btn-save {
+            background: #4096ff;
+            color: #fff;
+        }
+        
+        .icity-annotation-popup .annotation-btn-save:hover {
+            background: #1677ff;
+        }
+        
+        /* 标注高亮样式 */
+        .annotation-highlight {
+            background-color: #fff3cd;
+            border-bottom: 2px solid #ffc107;
+            cursor: pointer;
+            padding: 0 2px;
+        }
+        
+        .annotation-highlight:hover {
+            background-color: #ffe8a1;
+        }
+        
+        /* 标注提示框样式 */
+        .icity-annotation-tooltip {
+            position: fixed;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+            padding: 12px;
+            max-width: 300px;
+            z-index: 10003;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .icity-annotation-item {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+        }
+        
+        .icity-annotation-item .annotation-quote {
+            font-size: 13px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 8px;
+            padding-left: 10px;
+            border-left: 3px solid #ffc107;
+        }
+        
+        .icity-annotation-item .annotation-comment {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .icity-annotation-item .annotation-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .icity-annotation-item .annotation-delete {
+            color: #ff4d4f;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .icity-annotation-item .annotation-delete:hover {
+            text-decoration: underline;
+        }
+        
+        .icity-annotation-list {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 12px;
+        }
+        
+        .icity-annotation-item:first-child {
+            margin-top: 0;
         }
         
         .xy-page {
@@ -7177,8 +7343,9 @@
                                     <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
                                     存为图片
                                 </div>
-                                <div class="detail-action">
-                                    <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                <div class="detail-action" id="icityDeleteBtn">
+                                    <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                    删除
                                 </div>
                             </div>
                         </div>
@@ -7287,6 +7454,27 @@
             </div>
             <div class="icity-role-modal-buttons">
                 <button class="icity-role-btn-cancel" onclick="closeIcityRoleModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- icity 编辑资料模态框 -->
+    <div class="icity-role-modal" id="icityEditProfileModal" style="display: none;" onclick="if(event.target === this) closeIcityEditProfileModal()">
+        <div class="icity-role-modal-content" onclick="event.stopPropagation()">
+            <div class="icity-role-modal-title">编辑资料</div>
+            <div style="padding: 10px 0;">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-size: 14px; color: #666; margin-bottom: 5px;">用户名</label>
+                    <input type="text" id="icityEditUsername" placeholder="请输入用户名" style="width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; font-size: 15px; outline: none; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-size: 14px; color: #666; margin-bottom: 5px;">微信ID</label>
+                    <input type="text" id="icityEditWechatId" placeholder="请输入微信ID" style="width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; font-size: 15px; outline: none; box-sizing: border-box;">
+                </div>
+            </div>
+            <div class="icity-role-modal-buttons">
+                <button class="icity-role-btn-cancel" onclick="closeIcityEditProfileModal()">取消</button>
+                <button class="icity-role-btn-cancel" onclick="saveIcityProfile()" style="background: #4096ff; color: #fff; border: none;">保存</button>
             </div>
         </div>
     </div>
@@ -23408,11 +23596,18 @@ self.addEventListener('message', function(event) {
                 diaryList.addEventListener('click', (e) => {
                     const diaryItem = e.target.closest('.diary-item');
                     if (diaryItem) {
+                        // 记录来源页面
+                        detailPage.dataset.fromPage = 'list';
+                        
                         listPage.classList.remove('active');
                         detailPage.classList.add('active');
                         // 渲染日记内容（支持标注）
                         renderDiaryContentWithAnnotations(diaryItem.dataset.id, diaryItem.dataset.content).catch(console.error);
                         detailTime.textContent = diaryItem.dataset.time;
+                        
+                        // 保存日记ID和是否是用户发布
+                        detailPage.dataset.currentDiaryId = diaryItem.dataset.id;
+                        detailPage.dataset.isUserPublished = diaryItem.dataset.isUserPublished;
                         
                         // 更新详情页的角色信息
                         const roleName = diaryItem.querySelector('.user-name')?.textContent || 'user';
@@ -23450,6 +23645,9 @@ self.addEventListener('message', function(event) {
                 myDiaryList.addEventListener('click', (e) => {
                     const myDiaryItem = e.target.closest('.my-diary-item');
                     if (myDiaryItem) {
+                        // 记录来源页面
+                        detailPage.dataset.fromPage = 'my';
+                        
                         // 从列表页找到对应的日记项以获取角色信息
                         const diaryId = myDiaryItem.dataset.id;
                         const diaryItem = document.querySelector(`#icityDiaryList .diary-item[data-id="${diaryId}"]`);
@@ -23459,6 +23657,10 @@ self.addEventListener('message', function(event) {
                         // 渲染日记内容（支持标注）
                         renderDiaryContentWithAnnotations(myDiaryItem.dataset.id, myDiaryItem.dataset.content).catch(console.error);
                         detailTime.textContent = myDiaryItem.dataset.time;
+                        
+                        // 保存日记ID和是否是用户发布
+                        detailPage.dataset.currentDiaryId = myDiaryItem.dataset.id;
+                        detailPage.dataset.isUserPublished = myDiaryItem.dataset.isUserPublished;
                         
                         // 更新详情页的角色信息
                         if (diaryItem) {
@@ -23495,10 +23697,11 @@ self.addEventListener('message', function(event) {
             // 3. 详情页 -> 列表页/我的页
             detailBackBtn.addEventListener('click', () => {
                 detailPage.classList.remove('active');
-                if (listPage.classList.contains('active')) {
-                    listPage.classList.add('active');
-                } else {
+                // 根据来源页面返回
+                if (detailPage.dataset.fromPage === 'my') {
                     myPage.classList.add('active');
+                } else {
+                    listPage.classList.add('active');
                 }
             });
 
@@ -23562,7 +23765,7 @@ self.addEventListener('message', function(event) {
             });
 
             // 8. 发布日记功能
-            publishSubmit.addEventListener('click', () => {
+            publishSubmit.addEventListener('click', async () => {
                 const title = document.getElementById('icityTitleInput').value;
                 const content = document.getElementById('icityContentInput').value.trim();
                 if (content === '') {
@@ -23580,10 +23783,13 @@ self.addEventListener('message', function(event) {
                 const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
                 const timeStr = `${String(today.getHours()).padStart(2, '0')}:${String(today.getMinutes()).padStart(2, '0')}`;
                 
+                const diaryId = Date.now();
+                const fullContent = title ? `${title}\n\n${content}` : content;
+                
                 // 添加到日记列表（标记为用户发布的）
                 addIcityDiary({
-                    id: Date.now(),
-                    content: title ? `${title}\n\n${content}` : content,
+                    id: diaryId,
+                    content: fullContent,
                     time: `${dateStr} ${timeStr}`,
                     roleName: userName,
                     role: {
@@ -23631,7 +23837,63 @@ self.addEventListener('message', function(event) {
             // 11. 我的页面编辑资料点击
             if (profileEdit) {
                 profileEdit.addEventListener('click', () => {
-                    alert('进入编辑资料页面');
+                    openIcityEditProfileModal();
+                });
+            }
+            
+            // 12. 删除日记按钮点击
+            const deleteBtn = document.getElementById('icityDeleteBtn');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', async () => {
+                    const diaryId = detailPage.dataset.currentDiaryId;
+                    if (!diaryId) {
+                        alert('无法获取日记ID');
+                        return;
+                    }
+                    
+                    if (confirm('确定要删除这篇日记吗？删除后无法恢复！')) {
+                        try {
+                            // 从数据库删除日记
+                            await icityDb.diaries.delete(parseInt(diaryId));
+                            
+                            // 删除相关标注
+                            await icityDb.annotations.where('diaryId').equals(parseInt(diaryId)).delete();
+                            
+                            // 从页面移除日记项
+                            const diaryItem = document.querySelector(`#icityDiaryList .diary-item[data-id="${diaryId}"]`);
+                            if (diaryItem) {
+                                diaryItem.remove();
+                            }
+                            
+                            // 从我的日记列表移除
+                            const myDiaryItem = document.querySelector(`.my-diary-item[data-id="${diaryId}"]`);
+                            if (myDiaryItem) {
+                                myDiaryItem.remove();
+                            }
+                            
+                            // 更新我的日记统计
+                            updateIcityMyDiaryList();
+                            
+                            // 检查日记列表是否为空
+                            const remainingDiaries = document.querySelectorAll('#icityDiaryList .diary-item');
+                            if (remainingDiaries.length === 0) {
+                                document.getElementById('icityDiaryList').innerHTML = '<div style="text-align: center; padding: 40px 20px; color: #999; font-size: 14px;">还没有日记<br><div style="font-size: 12px; margin-top: 8px; color: #ccc;">点击右上角发布或生成日记</div></div>';
+                            }
+                            
+                            showIcityGenerateStatus('日记已删除', 'success');
+                            
+                            // 返回到来源页面
+                            detailPage.classList.remove('active');
+                            if (detailPage.dataset.fromPage === 'my') {
+                                myPage.classList.add('active');
+                            } else {
+                                listPage.classList.add('active');
+                            }
+                        } catch (error) {
+                            console.error('删除日记失败:', error);
+                            showIcityGenerateStatus('删除失败: ' + error.message, 'error');
+                        }
+                    }
                 });
             }
 
@@ -23644,19 +23906,19 @@ self.addEventListener('message', function(event) {
             // 初始化文本标注功能
             initIcityAnnotation();
 
-            // 12. 角色选择按钮点击
+            // 13. 角色选择按钮点击
             const selectRoleBtn = document.getElementById('icitySelectRoleBtn');
             selectRoleBtn.addEventListener('click', () => {
                 openIcityRoleModal();
             });
 
-            // 13. 生成日记按钮点击
+            // 14. 生成日记按钮点击
             const generateBtn = document.getElementById('icityGenerateBtn');
             generateBtn.addEventListener('click', () => {
                 generateIcityDiary();
             });
 
-            // 14. 角色选择列表点击（已在 openIcityRoleModal 中处理）
+            // 15. 角色选择列表点击（已在 openIcityRoleModal 中处理）
         }
 
         // icity 角色选择模态框
@@ -23724,6 +23986,54 @@ self.addEventListener('message', function(event) {
         function closeIcityRoleModal() {
             document.getElementById('icityRoleModal').style.display = 'none';
         }
+        
+        // 打开编辑资料模态框
+        function openIcityEditProfileModal() {
+            const modal = document.getElementById('icityEditProfileModal');
+            const currentPersona = JSON.parse(localStorage.getItem('currentMyPersona') || 'null');
+            
+            // 填充当前资料
+            document.getElementById('icityEditUsername').value = currentPersona?.nickname || '';
+            document.getElementById('icityEditWechatId').value = currentPersona?.wechatId || '';
+            
+            modal.style.display = 'flex';
+        }
+        
+        // 关闭编辑资料模态框
+        function closeIcityEditProfileModal() {
+            document.getElementById('icityEditProfileModal').style.display = 'none';
+        }
+        
+        // 保存编辑的资料
+        function saveIcityProfile() {
+            const username = document.getElementById('icityEditUsername').value.trim();
+            const wechatId = document.getElementById('icityEditWechatId').value.trim();
+            
+            if (!username) {
+                alert('请输入用户名');
+                return;
+            }
+            
+            if (!wechatId) {
+                alert('请输入微信ID');
+                return;
+            }
+            
+            // 更新currentMyPersona
+            const currentPersona = JSON.parse(localStorage.getItem('currentMyPersona') || '{}');
+            currentPersona.nickname = username;
+            currentPersona.wechatId = wechatId;
+            localStorage.setItem('currentMyPersona', JSON.stringify(currentPersona));
+            
+            // 更新页面显示
+            const profileName = document.querySelector('#icityMyPage .profile-name');
+            const profileId = document.querySelector('#icityMyPage .profile-id');
+            if (profileName) profileName.textContent = username;
+            if (profileId) profileId.textContent = `@${wechatId}`;
+            
+            closeIcityEditProfileModal();
+            showIcityGenerateStatus('资料保存成功！', 'success');
+        }
 
         // 显示生成进度提示
         function showIcityGenerateStatus(message, type = 'info') {
@@ -23762,14 +24072,12 @@ self.addEventListener('message', function(event) {
 
         // 生成 icity 日记
         async function generateIcityDiary() {
-            // 检查是否选择了角色
             if (!window.icitySelectedRole) {
                 showIcityGenerateStatus('请先选择角色', 'error');
                 openIcityRoleModal();
                 return;
             }
 
-            // 获取API设置
             const apiUrl = localStorage.getItem('openaiApiUrl') || 'https://api.openai.com/v1/chat/completions';
             const apiKey = localStorage.getItem('openaiApiKey') || '';
             const model = localStorage.getItem('openaiModel') || 'gpt-3.5-turbo';
@@ -23780,26 +24088,24 @@ self.addEventListener('message', function(event) {
                 return;
             }
 
-            // 显示加载状态
             const generateBtn = document.getElementById('icityGenerateBtn');
             const originalHTML = generateBtn.innerHTML;
             generateBtn.innerHTML = '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>';
             generateBtn.style.pointerEvents = 'none';
-            showIcityGenerateStatus('正在生成日记，请稍候...', 'info');
+            showIcityGenerateStatus('正在生成日记并处理任务...', 'info');
 
             try {
                 const today = new Date();
                 const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
                 const timeStr = `${String(today.getHours()).padStart(2, '0')}:${String(today.getMinutes()).padStart(2, '0')}`;
 
-                // 获取最近的聊天记录
+                // 获取聊天记录
                 let recentChatHistory = '';
                 try {
                     await ChatStorage.init();
                     const friendName = window.icitySelectedRole.friend?.name || window.icitySelectedRole.name;
                     const chatHistory = await ChatStorage.load(friendName);
                     if (chatHistory && chatHistory.length > 0) {
-                        // 获取最近10条聊天记录
                         const recentMessages = chatHistory.slice(-10).map(msg => {
                             const sender = msg.isSelf ? '我' : friendName;
                             return `${sender}: ${msg.text || ''}`;
@@ -23811,20 +24117,179 @@ self.addEventListener('message', function(event) {
                 } catch (e) {
                     console.warn('获取聊天记录失败:', e);
                 }
+                
+                // 收集任务信息
+                let myLastDiaryWithAnnotations = null;
+                let userRecentDiary = null;
+                
+                try {
+                    const allDiaries = await icityDb.diaries.orderBy('createdAt').reverse().limit(10).toArray();
+                    
+                    // 找到AI上一篇日记及其用户标注
+                    const myLastDiary = allDiaries.find(d => d.isUserPublished === 0 || d.isUserPublished === false);
+                    if (myLastDiary) {
+                        const annotations = await icityDb.annotations.where('diaryId').equals(myLastDiary.id).toArray();
+                        const userAnnotations = annotations.filter(ann => !ann.isAI && !ann.isReply);
+                        if (userAnnotations.length > 0) {
+                            myLastDiaryWithAnnotations = {
+                                content: myLastDiary.content,
+                                annotations: userAnnotations
+                            };
+                        }
+                    }
+                    
+                    // 找到用户最近发布的日记
+                    userRecentDiary = allDiaries.find(d => d.isUserPublished === 1 || d.isUserPublished === true);
+                } catch (e) {
+                    console.warn('获取日记数据失败:', e);
+                }
 
-                // 构建提示词
+                // 构建一次性完成所有任务的提示词
+                let prompt = `${window.icitySelectedRole.prompt}
+
+请完成以下任务，并以JSON格式返回：
+
+1. 写一篇第一人称日记（2000字以上）${recentChatHistory ? '，可结合最近的聊天内容' : ''}
+2. ${myLastDiaryWithAnnotations ? `用户对我上一篇日记进行了以下标注，请对每条标注给出1-2条回应（20-40字）：\n${myLastDiaryWithAnnotations.annotations.map(ann => `  - "${ann.text}"\n    评论：${ann.comment}`).join('\n')}` : '（用户没有标注我的日记）'}
+3. ${userRecentDiary ? `用户发布了一篇日记，请对其中3-5处进行标注评论（20-50字）：\n${userRecentDiary.content}` : '（用户没有发布日记）'}
+
+请按以下JSON格式输出：
+{
+  "diary": "我的日记正文",
+  "repliesToUserAnnotations": ${myLastDiaryWithAnnotations ? '[{"text": "我日记中的相关片段", "comment": "对用户标注的回应"}]' : '[]'},
+  "annotationsForUserDiary": ${userRecentDiary ? '[{"text": "用户日记中的原文片段", "comment": "我的标注评论"}]' : '[]'}
+}${recentChatHistory}
+
+只输出JSON，不要其他说明。`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: [
+                            { role: 'system', content: window.icitySelectedRole.prompt },
+                            { role: 'user', content: prompt }
+                        ],
+                        temperature: temperature,
+                        max_tokens: 8000
+                    })
+                });
+
+                if (!response.ok) throw new Error(`API请求失败: ${response.status}`);
+
+                const data = await response.json();
+                const responseContent = data.choices?.[0]?.message?.content?.trim() || '';
+                
+                let jsonStr = responseContent;
+                if (jsonStr.startsWith('```json')) {
+                    jsonStr = jsonStr.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+                } else if (jsonStr.startsWith('```')) {
+                    jsonStr = jsonStr.replace(/^```\s*/, '').replace(/\s*```$/, '');
+                }
+                
+                const parsed = JSON.parse(jsonStr);
+                const diaryContent = parsed.diary || '';
+                const replies = parsed.repliesToUserAnnotations || [];
+                const annotations = parsed.annotationsForUserDiary || [];
+                
+                if (!diaryContent || diaryContent.length < 100) throw new Error('生成的日记内容过短');
+                
+                // 保存AI日记
+                const diaryId = Date.now();
+                addIcityDiary({
+                    id: diaryId,
+                    content: diaryContent,
+                    time: `${dateStr} ${timeStr}`,
+                    roleName: window.icitySelectedRole.name || window.icitySelectedRole.realName || 'user',
+                    role: window.icitySelectedRole,
+                    isUserPublished: false
+                });
+                
+                // 保存对我上一篇日记的回复标注
+                if (replies.length > 0 && myLastDiaryWithAnnotations) {
+                    const myLastDiary = (await icityDb.diaries.orderBy('createdAt').reverse().limit(10).toArray())
+                        .find(d => d.isUserPublished === 0 || d.isUserPublished === false);
+                    if (myLastDiary && myLastDiary.id !== diaryId) {
+                        const currentAnnotations = await icityDb.annotations.where('diaryId').equals(myLastDiary.id).toArray();
+                        const replyAnnotations = replies.map((reply, idx) => ({
+                            id: Date.now() + idx + 1000,
+                            diaryId: myLastDiary.id,
+                            text: reply.text,
+                            comment: reply.comment,
+                            createdAt: new Date().toISOString(),
+                            isAI: true,
+                            aiRole: window.icitySelectedRole.name,
+                            isReply: true
+                        }));
+                        for (const ann of replyAnnotations) {
+                            await icityDb.annotations.put(ann);
+                        }
+                    }
+                }
+                
+                // 保存对用户日记的标注
+                if (annotations.length > 0 && userRecentDiary) {
+                    const annotationsToSave = annotations.map((ann, idx) => ({
+                        id: Date.now() + idx + 2000,
+                        diaryId: userRecentDiary.id,
+                        text: ann.text,
+                        comment: ann.comment,
+                        createdAt: new Date().toISOString(),
+                        isAI: true,
+                        aiRole: window.icitySelectedRole.name
+                    }));
+                    for (const ann of annotationsToSave) {
+                        await icityDb.annotations.put(ann);
+                    }
+                }
+                
+                showIcityGenerateStatus(`完成！${replies.length > 0 ? `回复了${replies.length}条标注，` : ''}${annotations.length > 0 ? `标注了你的日记${annotations.length}处` : ''}`, 'success');
+                
+            } catch (error) {
+                console.error('生成失败:', error);
+                showIcityGenerateStatus(`生成失败：${error.message}`, 'error');
+            } finally {
+                generateBtn.innerHTML = originalHTML;
+                generateBtn.style.pointerEvents = 'auto';
+            }
+        }
+
+        // AI对用户日记进行标注
+        async function generateAIAnnotationsForDiary(diaryId, content) {
+            if (!window.icitySelectedRole) {
+                console.warn('未选择角色，无法生成标注');
+                return;
+            }
+            
+            // 获取API配置
+            const apiUrl = localStorage.getItem('openaiApiUrl') || 'https://api.openai.com/v1/chat/completions';
+            const apiKey = localStorage.getItem('openaiApiKey') || '';
+            const model = localStorage.getItem('openaiModel') || 'gpt-3.5-turbo';
+            const temperature = parseFloat(localStorage.getItem('openaiTemperature')) || 0.8;
+
+            if (!apiKey) {
+                console.warn('未配置API密钥，无法生成标注');
+                return;
+            }
+            
+            try {
                 const prompt = `${window.icitySelectedRole.prompt}
 
-请以第一人称视角写一篇日记，要求：
-1. 字数不少于2000字
-2. 使用第一人称"我"来叙述
-3. 内容要符合角色的性格特点
-4. 记录今天的生活、感受和思考${recentChatHistory ? '，可以结合最近的聊天内容' : ''}
-5. 语言要自然、真实，像真正的日记一样${recentChatHistory ? '\n\n' + recentChatHistory : ''}
+我刚刚写了一篇日记，请你作为角色阅读这篇日记，并对其中3-5处你认为值得关注或有共鸣的内容进行标注评论（每条评论20-50字，要符合角色性格）。
 
-请直接输出日记内容，不要添加任何标题、日期或其他格式说明。`;
+日记内容：
+${content}
 
-                showIcityGenerateStatus('正在调用API生成日记...', 'info');
+请按以下JSON格式输出：
+{
+  "annotations": [
+    {"text": "日记中的原文片段1", "comment": "你作为角色对这段的评论1"},
+    {"text": "日记中的原文片段2", "comment": "你作为角色对这段的评论2"}
+  ]
+}
+
+只输出JSON，不要添加任何其他说明。`;
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -23835,55 +24300,54 @@ self.addEventListener('message', function(event) {
                     body: JSON.stringify({
                         model: model,
                         messages: [
-                            {
-                                role: 'system',
-                                content: window.icitySelectedRole.prompt
-                            },
-                            {
-                                role: 'user',
-                                content: prompt
-                            }
+                            { role: 'system', content: window.icitySelectedRole.prompt },
+                            { role: 'user', content: prompt }
                         ],
                         temperature: temperature,
-                        max_tokens: 8000
+                        max_tokens: 2000
                     })
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ error: { message: '未知错误' } }));
-                    const errorMsg = errorData.error?.message || `HTTP错误: ${response.status}`;
-                    throw new Error(errorMsg);
+                    throw new Error(`API请求失败: ${response.status}`);
                 }
 
                 const data = await response.json();
                 
                 if (data.choices && data.choices.length > 0) {
-                    const diaryContent = data.choices[0].message.content.trim();
+                    const responseContent = data.choices[0].message.content.trim();
                     
-                    if (!diaryContent || diaryContent.length < 100) {
-                        throw new Error('生成的日记内容过短，请重试');
+                    let annotations = [];
+                    try {
+                        let jsonStr = responseContent;
+                        if (jsonStr.startsWith('```json')) {
+                            jsonStr = jsonStr.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+                        } else if (jsonStr.startsWith('```')) {
+                            jsonStr = jsonStr.replace(/^```\s*/, '').replace(/\s*```$/, '');
+                        }
+                        
+                        const parsed = JSON.parse(jsonStr);
+                        annotations = parsed.annotations || [];
+                    } catch (e) {
+                        console.warn('JSON解析失败:', e);
+                        return;
                     }
                     
-                    // 添加到日记列表（标记为角色生成的，不是用户发布的）
-                    addIcityDiary({
-                        id: Date.now(),
-                        content: diaryContent,
-                        time: `${dateStr} ${timeStr}`,
-                        roleName: window.icitySelectedRole.name || window.icitySelectedRole.realName || 'user',
-                        role: window.icitySelectedRole,
-                        isUserPublished: false
-                    });
-                    
-                    showIcityGenerateStatus('日记生成成功！', 'success');
-                } else {
-                    throw new Error('未收到有效回复，请检查API配置');
+                    if (annotations.length > 0) {
+                        const formattedAnnotations = annotations.map((ann, idx) => ({
+                            id: Date.now() + idx + 1,
+                            text: ann.text,
+                            comment: ann.comment,
+                            createdAt: new Date().toISOString(),
+                            isAI: true,
+                            aiRole: window.icitySelectedRole.name || window.icitySelectedRole.realName
+                        }));
+                        await saveIcityAnnotations(diaryId, formattedAnnotations);
+                        console.log(`AI已对用户日记添加了${annotations.length}条标注`);
+                    }
                 }
             } catch (error) {
-                console.error('生成日记失败:', error);
-                showIcityGenerateStatus(`生成失败：${error.message}`, 'error');
-            } finally {
-                generateBtn.innerHTML = originalHTML;
-                generateBtn.style.pointerEvents = 'auto';
+                console.error('生成AI标注失败:', error);
             }
         }
 
@@ -24141,180 +24605,57 @@ self.addEventListener('message', function(event) {
             }
         }
         
-        // ==================== icity 文本标注功能 ====================
+        // ==================== icity 文本标注功能（AI自动标注）====================
         
         // 初始化文本标注功能（长按标注）
         function initIcityAnnotation() {
-            // 使用事件委托，因为detailContent可能动态变化
             const detailPage = document.getElementById('icityDetailPage');
             if (!detailPage) return;
+
+            let selectionTimer = null;
             
-            let longPressTimer = null;
-            let longPressStartPos = null;
-            let isLongPressing = false;
-            const LONG_PRESS_DURATION = 500; // 长按时间（毫秒）
-            
-            // 阻止默认的文本选择行为
-            detailPage.addEventListener('selectstart', function(e) {
-                const detailContent = document.getElementById('icityDetailContent');
-                if (detailContent && detailContent.contains(e.target)) {
-                    e.preventDefault();
-                    return false;
-                }
-            }, false);
-            
-            // 监听鼠标按下
-            detailPage.addEventListener('mousedown', function(e) {
-                const detailContent = document.getElementById('icityDetailContent');
-                if (!detailContent || !detailContent.contains(e.target)) return;
-                
-                // 如果点击的是已标注的高亮文本，不处理
-                if (e.target.classList.contains('annotation-highlight')) {
-                    return;
+            // 监听选区变化
+            document.addEventListener('selectionchange', function() {
+                // 清除之前的计时器
+                if (selectionTimer) {
+                    clearTimeout(selectionTimer);
                 }
                 
-                // 清除之前的文本选择
-                window.getSelection().removeAllRanges();
-                
-                // 记录按下位置
-                longPressStartPos = { x: e.clientX, y: e.clientY };
-                isLongPressing = false;
-                
-                // 启动长按计时器
-                longPressTimer = setTimeout(() => {
-                    isLongPressing = true;
-                    
-                    // 允许文本选择
-                    const detailContent = document.getElementById('icityDetailContent');
-                    if (detailContent) {
-                        detailContent.style.userSelect = 'text';
-                        detailContent.style.webkitUserSelect = 'text';
-                        
-                        // 尝试创建文本选择范围（从按下位置开始）
-                        try {
-                            let range = null;
-                            if (document.caretRangeFromPoint) {
-                                range = document.caretRangeFromPoint(longPressStartPos.x, longPressStartPos.y);
-                            } else if (document.caretPositionFromPoint) {
-                                const pos = document.caretPositionFromPoint(longPressStartPos.x, longPressStartPos.y);
-                                if (pos) {
-                                    range = document.createRange();
-                                    range.setStart(pos.offsetNode, pos.offset);
-                                    range.collapse(true);
-                                }
-                            }
-                            
-                            if (range) {
-                                const selection = window.getSelection();
-                                selection.removeAllRanges();
-                                selection.addRange(range);
-                            }
-                        } catch (err) {
-                            console.warn('创建文本选择范围失败:', err);
-                        }
-                    }
-                }, LONG_PRESS_DURATION);
-            });
-            
-            // 监听鼠标移动
-            detailPage.addEventListener('mousemove', function(e) {
-                const detailContent = document.getElementById('icityDetailContent');
-                if (!detailContent || !detailContent.contains(e.target)) return;
-                
-                if (longPressStartPos && !isLongPressing) {
-                    const moveDistance = Math.sqrt(
-                        Math.pow(e.clientX - longPressStartPos.x, 2) + 
-                        Math.pow(e.clientY - longPressStartPos.y, 2)
-                    );
-                    if (moveDistance > 10) {
-                        // 移动距离超过10px，取消长按
-                        if (longPressTimer) {
-                            clearTimeout(longPressTimer);
-                            longPressTimer = null;
-                        }
-                        longPressStartPos = null;
-                    }
-                } else if (isLongPressing) {
-                    // 长按后允许拖动选择文本（浏览器会自动处理）
-                    // 这里不需要额外处理
-                }
-            });
-            
-            // 监听鼠标抬起
-            detailPage.addEventListener('mouseup', function(e) {
-                const detailContent = document.getElementById('icityDetailContent');
-                if (!detailContent || !detailContent.contains(e.target)) {
-                    // 恢复禁用选择
-                    if (detailContent) {
-                        detailContent.style.userSelect = 'none';
-                        detailContent.style.webkitUserSelect = 'none';
-                    }
-                    longPressStartPos = null;
-                    if (longPressTimer) {
-                        clearTimeout(longPressTimer);
-                        longPressTimer = null;
-                    }
-                    return;
-                }
-                
-                // 如果点击的是已标注的高亮文本，不处理
-                if (e.target.classList.contains('annotation-highlight')) {
-                    return;
-                }
-                
-                // 清除长按计时器
-                if (longPressTimer) {
-                    clearTimeout(longPressTimer);
-                    longPressTimer = null;
-                }
-                
-                // 如果是长按后抬起，检查是否有选中的文本
-                if (isLongPressing) {
+                // 延迟检查选区，避免选区还在变化时就触发
+                selectionTimer = setTimeout(() => {
                     const selection = window.getSelection();
                     const text = selection.toString().trim();
+                    const detailContent = document.getElementById('icityDetailContent');
                     
-                    if (text.length > 0) {
-                        // 显示标注弹窗
-                        showAnnotationPopup(e, text);
+                    // 检查是否有选中文本，且选区在日记内容区域
+                    if (text.length > 0 && detailContent && selection.rangeCount > 0) {
+                        const range = selection.getRangeAt(0);
+                        // 检查选区是否在 detailContent 内
+                        if (detailContent.contains(range.commonAncestorContainer) || 
+                            detailContent.contains(selection.anchorNode)) {
+                            // 显示标注弹窗
+                            showAnnotationPopup(range, text);
+                        }
                     }
-                    
-                    // 恢复禁用选择
-                    detailContent.style.userSelect = 'none';
-                    detailContent.style.webkitUserSelect = 'none';
-                }
-                
-                isLongPressing = false;
-                longPressStartPos = null;
+                }, 300); // 等待300ms，确保用户完成选择
             });
             
-            // 监听鼠标离开（取消长按）
-            detailPage.addEventListener('mouseleave', function(e) {
-                if (longPressTimer) {
-                    clearTimeout(longPressTimer);
-                    longPressTimer = null;
-                }
-                longPressStartPos = null;
-                isLongPressing = false;
-                
-                const detailContent = document.getElementById('icityDetailContent');
-                if (detailContent) {
-                    detailContent.style.userSelect = 'none';
-                    detailContent.style.webkitUserSelect = 'none';
-                }
-            });
-            
-            // 点击其他地方关闭弹窗
-            document.addEventListener('click', function(e) {
+            // 点击外部关闭弹窗
+            document.addEventListener('mousedown', function(e) {
                 const popup = document.getElementById('icityAnnotationPopup');
                 const detailContent = document.getElementById('icityDetailContent');
-                if (popup && !popup.contains(e.target) && (!detailContent || !detailContent.contains(e.target))) {
+                
+                // 如果点击的不是弹窗内容、不是标注高亮、也不是日记内容，就关闭弹窗
+                if (popup && !popup.contains(e.target) && 
+                    !e.target.closest('.annotation-highlight') &&
+                    !(detailContent && detailContent.contains(e.target))) {
                     closeAnnotationPopup();
                 }
             });
         }
         
         // 显示标注弹窗
-        function showAnnotationPopup(event, selectedText) {
+        function showAnnotationPopup(range, selectedText) {
             // 移除旧的弹窗
             const oldPopup = document.getElementById('icityAnnotationPopup');
             if (oldPopup) oldPopup.remove();
@@ -24322,6 +24663,8 @@ self.addEventListener('message', function(event) {
             const popup = document.createElement('div');
             popup.id = 'icityAnnotationPopup';
             popup.className = 'icity-annotation-popup';
+            // Store selected text in dataset to persist even if selection is lost
+            popup.dataset.selectedText = selectedText;
             
             popup.innerHTML = `
                 <div class="annotation-text">已选择：${selectedText.length > 30 ? selectedText.substring(0, 30) + '...' : selectedText}</div>
@@ -24335,13 +24678,28 @@ self.addEventListener('message', function(event) {
             document.body.appendChild(popup);
             
             // 定位弹窗
-            const rect = event.target.getBoundingClientRect();
-            popup.style.left = (rect.left + rect.width / 2 - 150) + 'px';
-            popup.style.top = (rect.top - popup.offsetHeight - 10) + 'px';
+            let rect;
+            if (range instanceof Range) {
+                rect = range.getBoundingClientRect();
+            } else if (range && range.target) {
+                 // Fallback if passed an event by mistake (though we updated call sites)
+                 rect = range.target.getBoundingClientRect();
+            } else {
+                 return; // Invalid
+            }
+
+            // 居中显示在选区下方
+            popup.style.left = (rect.left + rect.width / 2 - 150) + 'px'; // 假设宽度300px
+            popup.style.top = (rect.bottom + 10) + 'px'; // 显示在下方
             
-            // 确保弹窗在视口内
-            if (parseInt(popup.style.top) < 10) {
-                popup.style.top = (rect.bottom + 10) + 'px';
+            // 边界检查
+            const popupRect = popup.getBoundingClientRect();
+            if (popupRect.left < 10) popup.style.left = '10px';
+            if (popupRect.right > window.innerWidth - 10) popup.style.left = (window.innerWidth - popupRect.width - 10) + 'px';
+            
+            // 如果下方空间不足，显示在上方
+            if (popupRect.bottom > window.innerHeight - 10) {
+                popup.style.top = (rect.top - popupRect.height - 10) + 'px';
             }
             
             // 聚焦输入框
@@ -24363,44 +24721,170 @@ self.addEventListener('message', function(event) {
             const comment = input?.value.trim() || '';
             const detailContent = document.getElementById('icityDetailContent');
             const diaryId = detailContent?.dataset.diaryId;
+            const popup = document.getElementById('icityAnnotationPopup');
             
             if (!diaryId) {
                 closeAnnotationPopup();
                 return;
             }
             
-            // 获取选中的文本
-            const selection = window.getSelection();
-            if (selection.rangeCount === 0) {
-                closeAnnotationPopup();
-                return;
-            }
+            // 获取选中的文本 - 优先使用弹窗中存储的文本
+            let selectedText = popup?.dataset.selectedText;
             
-            const selectedText = selection.toString().trim();
+            if (!selectedText) {
+                // 回退到获取当前选区
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                     selectedText = selection.toString().trim();
+                }
+            }
             
             if (!selectedText) {
                 closeAnnotationPopup();
                 return;
             }
             
-            // 保存标注数据
-            const annotations = await getIcityAnnotations(diaryId);
-            const annotation = {
-                id: Date.now(),
-                text: selectedText,
-                comment: comment,
-                createdAt: new Date().toISOString()
-            };
+            // 显示保存提示
+            showIcityGenerateStatus('正在保存标注...', 'info');
             
-            annotations.push(annotation);
-            await saveIcityAnnotations(diaryId, annotations);
+            try {
+                // 保存标注数据
+                const annotations = await getIcityAnnotations(diaryId);
+                const annotation = {
+                    id: Date.now(),
+                    text: selectedText,
+                    comment: comment,
+                    createdAt: new Date().toISOString(),
+                    isAI: false // 标记为用户手动添加的标注
+                };
+                
+                annotations.push(annotation);
+                await saveIcityAnnotations(diaryId, annotations);
+                
+                // 重新渲染内容
+                const originalContent = detailContent.dataset.originalContent || detailContent.textContent;
+                await renderDiaryContentWithAnnotations(diaryId, originalContent);
+                
+                closeAnnotationPopup();
+                showIcityGenerateStatus('标注已保存', 'success');
+            } catch (error) {
+                console.error('保存标注失败:', error);
+                showIcityGenerateStatus('保存标注失败: ' + error.message, 'error');
+                closeAnnotationPopup();
+            }
+        }
+        
+        // AI回复用户的标注
+        async function generateAIReplyToAnnotation(diaryId, diaryContent, annotatedText, userComment) {
+            if (!window.icitySelectedRole) {
+                console.warn('未选择角色，无法生成AI回复');
+                return;
+            }
             
-            // 重新渲染内容
-            const originalContent = detailContent.dataset.originalContent || detailContent.textContent;
-            await renderDiaryContentWithAnnotations(diaryId, originalContent);
+            // 获取API配置
+            const apiUrl = localStorage.getItem('openaiApiUrl') || 'https://api.openai.com/v1/chat/completions';
+            const apiKey = localStorage.getItem('openaiApiKey') || '';
+            const model = localStorage.getItem('openaiModel') || 'gpt-3.5-turbo';
+            const temperature = parseFloat(localStorage.getItem('openaiTemperature')) || 0.8;
+
+            if (!apiKey) {
+                console.warn('未配置API密钥，无法生成AI回复');
+                return;
+            }
             
-            closeAnnotationPopup();
-            showIcityGenerateStatus('标注已保存', 'success');
+            try {
+                const prompt = `${window.icitySelectedRole.prompt}
+
+这是我写的一篇日记的内容：
+${diaryContent}
+
+有人对我日记中的这段内容进行了标注：
+"${annotatedText}"
+
+他的标注评论是：
+${userComment}
+
+请你作为角色，针对这个标注评论，给出1-2条简短的回应标注（每条20-40字，要符合角色性格，可以是感谢、解释、共鸣或进一步的思考）。
+
+请按以下JSON格式输出：
+{
+  "replies": [
+    {"text": "日记中相关的原文片段", "comment": "你对他标注的回应"}
+  ]
+}
+
+只输出JSON，不要添加任何其他说明。`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: [
+                            { role: 'system', content: window.icitySelectedRole.prompt },
+                            { role: 'user', content: prompt }
+                        ],
+                        temperature: temperature,
+                        max_tokens: 1000
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API请求失败: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.choices && data.choices.length > 0) {
+                    const responseContent = data.choices[0].message.content.trim();
+                    
+                    let replies = [];
+                    try {
+                        let jsonStr = responseContent;
+                        if (jsonStr.startsWith('```json')) {
+                            jsonStr = jsonStr.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+                        } else if (jsonStr.startsWith('```')) {
+                            jsonStr = jsonStr.replace(/^```\s*/, '').replace(/\s*```$/, '');
+                        }
+                        
+                        const parsed = JSON.parse(jsonStr);
+                        replies = parsed.replies || [];
+                    } catch (e) {
+                        console.warn('JSON解析失败:', e);
+                        return;
+                    }
+                    
+                    if (replies.length > 0) {
+                        const currentAnnotations = await getIcityAnnotations(diaryId);
+                        const replyAnnotations = replies.map((reply, idx) => ({
+                            id: Date.now() + idx + 100,
+                            text: reply.text,
+                            comment: reply.comment,
+                            createdAt: new Date().toISOString(),
+                            isAI: true,
+                            aiRole: window.icitySelectedRole.name || window.icitySelectedRole.realName,
+                            isReply: true
+                        }));
+                        
+                        await saveIcityAnnotations(diaryId, [...currentAnnotations, ...replyAnnotations]);
+                        
+                        const detailContent = document.getElementById('icityDetailContent');
+                        if (detailContent && detailContent.dataset.diaryId == diaryId) {
+                            const originalContent = detailContent.dataset.originalContent;
+                            if (originalContent) {
+                                await renderDiaryContentWithAnnotations(diaryId, originalContent);
+                            }
+                        }
+                        
+                        console.log(`AI回复了你的标注: ${replies.length}条`);
+                    }
+                }
+            } catch (error) {
+                console.error('生成AI回复失败:', error);
+            }
         }
         
         // 获取标注数据（从Dexie）
@@ -24517,17 +25001,17 @@ self.addEventListener('message', function(event) {
         }
         
         // 更新标注列表
-        function updateAnnotationList(diaryId) {
+        async function updateAnnotationList(diaryId) {
             const annotationList = document.getElementById('icityAnnotationList');
             if (!annotationList) return;
             
-            const annotations = getIcityAnnotations(diaryId);
+            const annotations = await getIcityAnnotations(diaryId);
             
             if (annotations.length === 0) {
                 annotationList.style.display = 'none';
             } else {
                 annotationList.style.display = 'block';
-                annotationList.innerHTML = '<div style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #333;">标注评论</div>';
+                annotationList.innerHTML = '';
                 
                 annotations.forEach(ann => {
                     const item = document.createElement('div');
