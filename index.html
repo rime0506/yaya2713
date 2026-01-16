@@ -43,7 +43,6 @@
             font-family: -apple-system, "Helvetica Neue", sans-serif;
             background-color: #ffffff;
             overflow: hidden;
-            
             box-sizing: border-box;
         }
 
@@ -263,6 +262,77 @@
         .dock-icon:active {
             transform: scale(0.92);
             background-color: #F9EBF2;
+        }
+
+        /* Sticker Pack Group Styles */
+        .sticker-pack-group {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border-pink);
+        }
+
+        .sticker-pack-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+
+        .sticker-pack-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .sticker-pack-count {
+            font-size: 14px;
+            color: #999;
+            margin-left: 5px;
+        }
+
+        .sticker-pack-arrow {
+            font-size: 12px;
+            color: #ccc;
+            transition: transform 0.2s;
+        }
+
+        .sticker-pack-arrow.open {
+            transform: rotate(90deg);
+        }
+
+        .sticker-pack-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .sticker-pack-btn {
+            padding: 4px 10px;
+            background: var(--pure-pink);
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--deep-pink);
+            cursor: pointer;
+            border: 1px solid var(--border-pink);
+        }
+        .sticker-pack-btn:active {
+            background: #e8b8d0;
+        }
+
+        .sticker-pack-content {
+            display: none;
+            padding: 10px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .sticker-pack-content.open {
+            display: grid;
         }
 
         /* 微信页面样式 */
@@ -2689,6 +2759,67 @@
             transform: translateX(0);
         }
 
+        /* 表情包页面 */
+        .sticker-page {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #ffffff;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.4s ease;
+        }
+        .sticker-page.active {
+            transform: translateX(0);
+        }
+        .sticker-header {
+            background-color: #FFF2F8;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e89ab0;
+        }
+        .sticker-header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        .sticker-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .sticker-generate-area {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .sticker-preview-area {
+            margin-top: 20px;
+        }
+        .sticker-preview {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .sticker-preview img {
+            width: 100%;
+            display: block;
+        }
+        .sticker-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
         /* 设置页面 */
         .settings-page {
             position: fixed;
@@ -2823,8 +2954,10 @@
         }
 
         .collapse-panel.expanded .collapse-content {
-            max-height: 1200px;
+            max-height: 80vh;
             padding: 0 25px 25px;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .collapse-panel.expanded .collapse-icon {
@@ -6793,17 +6926,17 @@
                 </div>
                 <div class="app-label">TikTok</div>
             </div>
+            <div class="app-item" onclick="openStickerPage()">
+                <div class="icon-box" id="icon-sticker" style="background-color: #FFF2F8; border: 1px solid #e89ab0; display: flex; align-items: center; justify-content: center; color: #e89ab0; font-size: 24px;">
+                    😊
+                </div>
+                <div class="app-label">表情包</div>
+            </div>
             <div class="app-item" onclick="openIcityApp()">
                 <div class="icon-box" id="icon-icity" style="background-color: #fafafa; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; color: #4096ff; font-size: 20px; font-weight: 600;">
                     icity
                 </div>
                 <div class="app-label">icity</div>
-            </div>
-            <div class="app-item" onclick="openNovelAIApp()">
-                <div class="icon-box" id="icon-novelai" style="background-color: #FFF2F8; border: 1px solid var(--border-pink); display: flex; align-items: center; justify-content: center; color: var(--deep-pink); font-size: 28px;">
-                    🎨
-                </div>
-                <div class="app-label">表情包</div>
             </div>
         </div>
 
@@ -7616,6 +7749,11 @@
                         <div class="me-func-text">收藏</div>
                         <div class="me-func-arrow">→</div>
                     </div>
+                    <div class="me-func-item" onclick="openMyStickersPage()">
+                        <div class="me-func-icon">😀</div>
+                        <div class="me-func-text">表情</div>
+                        <div class="me-func-arrow">→</div>
+                    </div>
                     <div class="me-func-item" onclick="openWalletPage()">
                         <div class="me-func-icon">💳</div>
                         <div class="me-func-text">服务</div>
@@ -7695,6 +7833,49 @@
         <div class="wechat-content" style="padding: 0;">
             <div id="favoritesList" style="padding: 10px;">
                 <!-- 收藏列表将在这里显示，按角色分类 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 我的表情页面 -->
+    <div class="wechat-page" id="myStickersPage">
+        <div class="wechat-header">
+            <div class="wechat-header-btn" onclick="closeApp('myStickersPage')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+                <span style="font-size: 16px; margin-left: -5px;">表情</span>
+            </div>
+            <div class="wechat-title">我的表情</div>
+            <div class="wechat-header-btn" onclick="document.getElementById('stickerRefImageInput').click()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="wechat-content" style="padding: 15px;">
+            <div id="myStickersContainer">
+                <!-- 表情包列表将在这里动态渲染 -->
+                <div style="background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                    <div style="font-size: 16px; font-weight: 500; margin-bottom: 10px;">自定义表情</div>
+                    <div id="myStickersGrid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                        <!-- 默认未分类表情 -->
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: white; border-radius: 8px; padding: 15px;">
+                <div style="font-size: 16px; font-weight: 500; margin-bottom: 10px;">表情包管理</div>
+                <button onclick="createStickerPack()" style="width: 100%; padding: 12px; background: var(--pure-pink); color: var(--deep-pink); border: 1px solid var(--border-pink); border-radius: 6px; font-size: 14px; margin-bottom: 10px;">
+                    📂 新建表情包 / 上传图片
+                </button>
+                <input type="file" id="stickerPackUploadInput" multiple accept="image/*" style="display: none;" onchange="handleBatchStickerUpload(event)">
+                
+                <div style="font-size: 16px; font-weight: 500; margin-bottom: 10px; margin-top: 10px;">表情包制作</div>
+                <button onclick="toggleNovelAISettings()" style="width: 100%; padding: 12px; background: #FF9800; color: white; border: none; border-radius: 6px; font-size: 14px; margin-bottom: 10px;">
+                    🎨 打开 NovelAI 表情包生成器
+                </button>
             </div>
         </div>
     </div>
@@ -8333,6 +8514,11 @@
             <div class="option-item">
                 <span>攻略模式（显示好感度/选项）</span>
                 <div class="detail-toggle" id="strategyModeToggle" onclick="toggleStrategyMode(this)"></div>
+            </div>
+
+            <div class="option-item" onclick="openMountStickerModal()">
+                <span>挂载表情包</span>
+                <span class="detail-arrow">→</span>
             </div>
             
             <div class="option-item" id="offlineLengthOption" style="display: none;">
@@ -9320,6 +9506,137 @@
                 </div>
             </div>
             
+            <!-- NovelAI 图像生成设置折叠面板 -->
+            <div class="collapse-panel" id="novelaiSettingsPanel">
+                <div class="collapse-header" onclick="toggleNovelAISettings()">
+                    <div class="collapse-title">
+                        <span>🎨</span> NovelAI 图像生成
+                    </div>
+                    <div class="collapse-icon">▼</div>
+                </div>
+                <div class="collapse-content">
+                    <!-- NovelAI API设置 -->
+                    <div class="settings-section">
+                        <div class="section-title">NovelAI API 设置</div>
+                        
+                        <div class="settings-item">
+                            <label class="settings-label">API Key</label>
+                            <div class="password-toggle">
+                                <input type="password" class="settings-input" id="novelaiApiKey" placeholder="输入 NovelAI API Key">
+                                <button class="toggle-password" onclick="togglePasswordVisibility('novelaiApiKey', this)">显示</button>
+                            </div>
+                            <div style="font-size: 11px; color: var(--text-color); margin-top: 4px; opacity: 0.8; line-height: 1.4;">
+                                提示：从 NovelAI 官网获取 API Key
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <label class="settings-label">代理 URL（可选）</label>
+                            <input type="text" class="settings-input" id="novelaiProxyUrl" placeholder="例如：https://your-proxy.com/api" value="https://image.novelai.net/ai/generate-image">
+                            <div style="font-size: 11px; color: var(--text-color); margin-top: 4px; opacity: 0.8; line-height: 1.4;">
+                                提示：用于解决 CORS 问题，留空则使用默认地址
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <button class="test-btn" onclick="testNovelAIConnection()" style="width: 100%; margin-top: 10px;">
+                                <span id="testNovelAIBtnText">测试 NovelAI 连接</span>
+                            </button>
+                            <div id="novelaiTestResult" style="margin-top: 12px; font-size: 12px; min-height: 20px; line-height: 1.5;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 生成参数设置 -->
+                    <div class="settings-section">
+                        <div class="section-title">生成参数</div>
+                        
+                        <div class="settings-item">
+                            <label class="settings-label">模型版本</label>
+                            <select class="settings-input" id="novelaiModel">
+                                <option value="nai-diffusion-4-5-full" selected>nai-diffusion-4-5-full（V4.5 推荐）</option>
+                                <option value="nai-diffusion-4-full">nai-diffusion-4-full（V4）</option>
+                                <option value="nai-diffusion-3-inpainting">nai-diffusion-3-inpainting（V3）</option>
+                                <option value="nai-diffusion-3">nai-diffusion-3（V3）</option>
+                            </select>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <label class="settings-label">采样步数 (Steps)</label>
+                            <input type="number" class="settings-input" id="novelaiSteps" min="1" max="50" value="28" oninput="updateNovelAIStepsDisplay(this.value)">
+                            <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-color); margin-top: 5px;">
+                                <span>1</span>
+                                <span id="novelaiStepsValue" style="color: var(--deep-pink); font-weight: 500;">28</span>
+                                <span>50</span>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <label class="settings-label">引导强度 (Scale)</label>
+                            <input type="number" class="settings-input" id="novelaiScale" min="1" max="30" step="0.5" value="11" oninput="updateNovelAIScaleDisplay(this.value)">
+                            <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-color); margin-top: 5px;">
+                                <span>1</span>
+                                <span id="novelaiScaleValue" style="color: var(--deep-pink); font-weight: 500;">11</span>
+                                <span>30</span>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <label class="settings-label">采样器 (Sampler)</label>
+                            <select class="settings-input" id="novelaiSampler">
+                                <option value="k_euler_ancestral" selected>k_euler_ancestral（推荐）</option>
+                                <option value="k_euler">k_euler</option>
+                                <option value="k_lms">k_lms</option>
+                                <option value="plms">plms</option>
+                                <option value="ddim">ddim</option>
+                            </select>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <label class="settings-label">图像尺寸</label>
+                            <select class="settings-input" id="novelaiSize">
+                                <option value="832x1216" selected>832x1216（竖版）</option>
+                                <option value="1216x832">1216x832（横版）</option>
+                                <option value="1024x1024">1024x1024（方形）</option>
+                                <option value="832x832">832x832（小方形）</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Prompt 设置 -->
+                    <div class="settings-section">
+                        <div class="section-title">Prompt 设置</div>
+                        
+                        <div class="settings-item">
+                            <label class="settings-label">系统基础 Prompt</label>
+                            <textarea class="settings-textarea" id="novelaiSystemPrompt" placeholder="输入系统基础 Prompt（风格、质量、通用约束）" rows="3">masterpiece, best quality, highres, 1girl, solo, anime style, detailed, beautiful, cute</textarea>
+                            <div style="font-size: 11px; color: var(--text-color); margin-top: 4px; opacity: 0.8; line-height: 1.4;">
+                                提示：将自动添加到所有生成请求的开头
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <label class="settings-label">Negative Prompt</label>
+                            <textarea class="settings-textarea" id="novelaiNegativePrompt" placeholder="输入负面 Prompt" rows="2">lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry</textarea>
+                            <div style="font-size: 11px; color: var(--text-color); margin-top: 4px; opacity: 0.8; line-height: 1.4;">
+                                提示：用于排除不希望出现的元素
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="section-title">NovelAI 设置说明</div>
+                        <div class="settings-item">
+                            <p style="font-size: 13px; color: var(--text-color); line-height: 1.5; margin: 0;">
+                                1. NovelAI API: 需要有效的 NovelAI API 密钥<br>
+                                2. API 密钥将保存在本地浏览器中，不会发送到其他服务器<br>
+                                3. 使用新版 Diffusion V4/V4.5 模型标准<br>
+                                4. Prompt 构建规则：系统基础 + 角色场景 + 用户输入
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- 系统设置折叠面板 -->
             <div class="collapse-panel" id="systemSettingsPanel">
                 <div class="collapse-header" onclick="toggleSystemSettings()">
@@ -9400,291 +9717,81 @@
         </div>
     </div>
 
-    <!-- NovelAI 表情包生成页面 -->
-    <div class="novelai-page" id="novelaiPage">
-        <style>
-            .novelai-page {
-                position: fixed;
-                top: 0; left: 0;
-                width: 100%; height: 100%;
-                background: linear-gradient(135deg, #FFF2F8 0%, #F9EBF2 100%);
-                z-index: 20;
-                display: flex;
-                flex-direction: column;
-                transform: translateX(100%);
-                transition: transform 0.4s ease;
-            }
-            .novelai-page.active {
-                transform: translateX(0);
-            }
-            .novelai-header {
-                height: 88px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 0 15px;
-                background-color: var(--widget-bg);
-                border-bottom: 1px solid var(--border-pink);
-                box-sizing: border-box;
-            }
-            .novelai-header-btn {
-                font-size: 16px;
-                color: var(--deep-pink);
-                cursor: pointer;
-                padding: 8px;
-                display: flex;
-                align-items: center;
-                gap: 4px;
-            }
-            .novelai-title {
-                font-size: 18px;
-                font-weight: 600;
-                color: var(--deep-pink);
-            }
-            .novelai-content {
-                flex: 1;
-                overflow-y: auto;
-                padding: 20px 15px;
-            }
-            .novelai-section {
-                background: white;
-                border-radius: 15px;
-                padding: 15px;
-                margin-bottom: 15px;
-                border: 1px solid var(--border-pink);
-            }
-            .novelai-section-title {
-                font-size: 15px;
-                font-weight: 600;
-                color: var(--deep-pink);
-                margin-bottom: 12px;
-            }
-            .novelai-input-field {
-                margin-bottom: 12px;
-            }
-            .novelai-label {
-                display: block;
-                font-size: 13px;
-                color: #999;
-                margin-bottom: 6px;
-            }
-            .novelai-input {
-                width: 100%;
-                padding: 10px 12px;
-                border: 1px solid var(--border-pink);
-                border-radius: 8px;
-                font-size: 14px;
-                color: #333;
-                background-color: #fafafa;
-                box-sizing: border-box;
-                outline: none;
-            }
-            .novelai-input:focus {
-                border-color: var(--deep-pink);
-                background-color: white;
-            }
-            .novelai-textarea {
-                width: 100%;
-                min-height: 100px;
-                padding: 10px 12px;
-                border: 1px solid var(--border-pink);
-                border-radius: 8px;
-                font-size: 14px;
-                color: #333;
-                background-color: #fafafa;
-                box-sizing: border-box;
-                outline: none;
-                resize: vertical;
-                font-family: inherit;
-            }
-            .novelai-textarea:focus {
-                border-color: var(--deep-pink);
-                background-color: white;
-            }
-            .novelai-radio-group {
-                display: flex;
-                gap: 15px;
-                margin-top: 6px;
-            }
-            .novelai-radio {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                cursor: pointer;
-            }
-            .novelai-radio input[type="radio"] {
-                accent-color: var(--deep-pink);
-            }
-            .novelai-generate-btn {
-                width: 100%;
-                height: 50px;
-                background: var(--deep-pink);
-                color: white;
-                border: none;
-                border-radius: 12px;
-                font-size: 16px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.2s ease;
-            }
-            .novelai-generate-btn:active {
-                transform: scale(0.98);
-                background: #e8b8d0;
-            }
-            .novelai-generate-btn:disabled {
-                background: #ccc;
-                cursor: not-allowed;
-            }
-            .novelai-result {
-                margin-top: 15px;
-                text-align: center;
-            }
-            .novelai-result-img {
-                width: 100%;
-                max-width: 512px;
-                border-radius: 15px;
-                border: 2px solid var(--border-pink);
-                margin: 0 auto;
-                display: block;
-            }
-            .novelai-loading {
-                display: none;
-                text-align: center;
-                padding: 20px;
-                color: var(--deep-pink);
-                font-size: 14px;
-            }
-            .novelai-loading.active {
-                display: block;
-            }
-            .novelai-error {
-                display: none;
-                padding: 12px;
-                background: #fff0f0;
-                border: 1px solid #ffcccc;
-                border-radius: 8px;
-                color: #cc0000;
-                font-size: 13px;
-                margin-top: 10px;
-            }
-            .novelai-error.active {
-                display: block;
-            }
-            .novelai-save-btn {
-                margin-top: 10px;
-                width: 100%;
-                height: 44px;
-                background: white;
-                color: var(--deep-pink);
-                border: 1px solid var(--deep-pink);
-                border-radius: 12px;
-                font-size: 15px;
-                cursor: pointer;
-                transition: all 0.2s ease;
-            }
-            .novelai-save-btn:active {
-                transform: scale(0.98);
-                background: var(--pure-pink);
-            }
-        </style>
-
-        <div class="novelai-header">
-            <div class="novelai-header-btn" onclick="closeNovelAIApp()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M15 18l-6-6 6-6" />
-                </svg>
-            </div>
-            <div class="novelai-title">AI 表情包生成</div>
-            <div class="novelai-header-btn" onclick="openNovelAISettings()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="3"/>
-                    <path d="M12 1v6m0 6v6M1 12h6m6 0h6m-2.636-7.364l-4.243 4.243m0 6.364l4.243 4.243M5.636 5.636l4.243 4.243m6.364 0l4.243-4.243"/>
-                </svg>
+    <!-- 表情包页面 -->
+    <div class="sticker-page" id="stickerPage">
+        <div class="sticker-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="wechat-header-btn" onclick="closeStickerPage()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                </div>
+                <div class="sticker-header-title">表情包生成</div>
             </div>
         </div>
-
-        <div class="novelai-content">
-            <!-- 设置区域 -->
-            <div class="novelai-section">
-                <div class="novelai-section-title">⚙️ 设置</div>
+        <div class="sticker-content">
+            <div class="sticker-generate-area">
+                <h3 style="margin: 0 0 15px 0; font-size: 16px; color: var(--text-color);">生成表情包</h3>
+                <p style="font-size: 14px; color: #666; margin-bottom: 15px; line-height: 1.6;">
+                    使用 NovelAI 生成 LINE 风格的表情包。系统将使用内置提示词自动生成 3×3 网格布局的表情包。
+                </p>
                 
-                <div class="novelai-input-field">
-                    <label class="novelai-label">API Key</label>
-                    <input type="password" class="novelai-input" id="novelaiApiKey" placeholder="输入你的 NovelAI API Key">
-                </div>
-                
-                <div class="novelai-input-field">
-                    <label class="novelai-label">连接模式</label>
-                    <div class="novelai-radio-group">
-                        <label class="novelai-radio">
-                            <input type="radio" name="novelaiMode" value="direct" checked>
-                            <span>直连</span>
-                        </label>
-                        <label class="novelai-radio">
-                            <input type="radio" name="novelaiMode" value="proxy">
-                            <span>跨域代理</span>
-                        </label>
+                <!-- 参考图上传 -->
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; color: var(--text-color);">参考图（可选）</label>
+                    <div style="position: relative; margin-bottom: 8px;">
+                        <div id="stickerRefImagePreview" style="width: 100%; max-width: 300px; height: 200px; border: 2px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; cursor: pointer; overflow: hidden;" onclick="document.getElementById('stickerRefImageInput').click()">
+                            <div id="stickerRefImagePlaceholder" style="text-align: center; color: #999;">
+                                <div style="font-size: 48px; margin-bottom: 10px;">📷</div>
+                                <div style="font-size: 14px;">点击上传参考图</div>
+                            </div>
+                            <img id="stickerRefImageDisplay" src="" alt="参考图" style="display: none; max-width: 100%; max-height: 100%; object-fit: contain;">
+                        </div>
+                        <input type="file" id="stickerRefImageInput" accept="image/*" style="display: none;" onchange="handleStickerRefImageUpload(event)">
+                        <button type="button" id="stickerRefImageClearBtn" onclick="clearStickerRefImage()" style="display: none; position: absolute; top: 5px; right: 5px; background: #ff3b30; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 14px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">✕</button>
                     </div>
+                    <div style="font-size: 11px; color: #999;">提示：上传参考图可以帮助生成更符合要求的表情包</div>
                 </div>
                 
-                <div class="novelai-input-field" id="proxyUrlField" style="display: none;">
-                    <label class="novelai-label">代理地址</label>
-                    <input type="text" class="novelai-input" id="novelaiProxyUrl" placeholder="https://your-proxy.com/api">
+                <!-- 指令要求输入 -->
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; color: var(--text-color);">指令要求</label>
+                    <textarea id="stickerTextInput" class="settings-textarea" placeholder="例如：生成一个开心的表情，或者：生成包含 OK、NO、THANKS 等文字的表情包" rows="3" style="width: 100%; box-sizing: border-box;"></textarea>
+                    <div style="font-size: 11px; color: #999; margin-top: 4px;">提示：描述你想要生成的表情包的具体要求</div>
                 </div>
+                
+                <button class="test-btn" onclick="generateSticker()" id="generateStickerBtn" style="width: 100%; padding: 12px; font-size: 16px;">
+                    <span id="generateStickerBtnText">🎨 生成表情包</span>
+                </button>
+                <div id="stickerGenerateStatus" style="margin-top: 15px; font-size: 14px; min-height: 20px; text-align: center;"></div>
             </div>
-
-            <!-- 生成参数 -->
-            <div class="novelai-section">
-                <div class="novelai-section-title">🎨 生成参数</div>
-                
-                <div class="novelai-input-field">
-                    <label class="novelai-label">提示词 (Prompt)</label>
-                    <textarea class="novelai-textarea" id="novelaiPrompt" placeholder="例如：1girl, cute, smile, chibi, sticker style"></textarea>
+            
+            <div class="sticker-preview-area" id="stickerPreviewArea" style="display: none;">
+                <h3 style="margin: 0 0 15px 0; font-size: 16px; color: var(--text-color);">生成结果</h3>
+                <div class="sticker-preview" id="stickerPreview">
+                    <!-- 生成的图片将显示在这里 -->
+                </div>
+                <div class="sticker-actions">
+                    <button class="test-btn" onclick="saveSticker()" style="flex: 1; padding: 10px;">💾 保存到表情</button>
+                    <button class="test-btn" onclick="splitSticker()" style="flex: 1; padding: 10px; background: #FF9800; color: white;">✂️ 拆分表情包</button>
+                    <button class="test-btn" onclick="regenerateSticker()" style="flex: 1; padding: 10px; background: #f0f0f0; color: var(--text-color);">🔄 重新生成</button>
                 </div>
                 
-                <div class="novelai-input-field">
-                    <label class="novelai-label">负面提示词 (Negative Prompt)</label>
-                    <textarea class="novelai-textarea" id="novelaiNegativePrompt" placeholder="例如：nsfw, lowres, bad anatomy" style="min-height: 60px;"></textarea>
-                </div>
-                
-                <div class="novelai-input-field">
-                    <label class="novelai-label">图片尺寸</label>
-                    <select class="novelai-input" id="novelaiSize">
-                        <option value="512x512">512 × 512 (正方形)</option>
-                        <option value="512x768">512 × 768 (竖图)</option>
-                        <option value="768x512">768 × 512 (横图)</option>
-                    </select>
-                </div>
-                
-                <div class="novelai-input-field">
-                    <label class="novelai-label">生成步数 (Steps)</label>
-                    <input type="number" class="novelai-input" id="novelaiSteps" value="28" min="1" max="50">
-                </div>
-                
-                <div class="novelai-input-field">
-                    <label class="novelai-label">引导系数 (Scale)</label>
-                    <input type="number" class="novelai-input" id="novelaiScale" value="11" min="1" max="20" step="0.5">
-                </div>
-            </div>
+                <!-- 拆分结果区域 -->
+                <div id="splitResultArea" style="display: none; margin-top: 20px;">
+                    <h3 style="margin: 0 0 15px 0; font-size: 16px; color: var(--text-color);">拆分结果 <span id="splitCount" style="font-size: 12px; font-weight: normal; color: #666;"></span></h3>
+                    <div id="splitGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;"></div>
+                    
+                    <div style="margin-top: 15px; padding: 10px; background: #f8f8f8; border-radius: 8px;">
+                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">保存整套表情到 WeChat</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="stickerPackName" placeholder="给这套表情取个名字" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                            <button onclick="saveSplitStickersToMyEmojis()" class="test-btn" style="background-color: #07C160; color: white; white-space: nowrap;">💾 一键保存</button>
+                        </div>
+                    </div>
 
-            <!-- 生成按钮 -->
-            <button class="novelai-generate-btn" id="novelaiGenerateBtn" onclick="generateNovelAIImage()">
-                🎨 生成图片
-            </button>
-
-            <!-- 加载状态 -->
-            <div class="novelai-loading" id="novelaiLoading">
-                <div style="font-size: 24px; margin-bottom: 10px;">⏳</div>
-                <div>正在生成中，请稍候...</div>
-            </div>
-
-            <!-- 错误提示 -->
-            <div class="novelai-error" id="novelaiError"></div>
-
-            <!-- 结果展示 -->
-            <div class="novelai-result" id="novelaiResult" style="display: none;">
-                <img class="novelai-result-img" id="novelaiResultImg" src="" alt="生成的图片">
-                <button class="novelai-save-btn" onclick="downloadNovelAIImage()">💾 下载图片</button>
+                    <button onclick="downloadAllSplitStickers()" id="downloadAllSplitBtn" class="test-btn" style="width: 100%; margin-top: 10px; background-color: #ed8936; color: white;">📥 批量下载文件</button>
+                </div>
             </div>
         </div>
     </div>
@@ -9706,15 +9813,101 @@
             .xianyu-page.active {
                 transform: translateX(0);
             }
-            .xianyu-header {
-                background-color: #FFDA44;
-                padding: 10px 15px;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                height: 50px;
-                box-sizing: border-box;
-            }
+        /* ==================== 统一顶栏样式 ==================== */
+        .wechat-header, 
+        .chat-header, 
+        .xianyu-header,
+        .app-header,
+        /* 增加其他页面的顶栏适配 */
+        .food-delivery-page .page-header,
+        .wallet-page .header,
+        #worldbookPage .wechat-header,
+        #favoritesPage .wechat-header,
+        #meSettingsPage .wechat-header,
+        .persona-header {
+            height: 80px; /* 统一高度 */
+            padding-top: 30px; /* 避开状态栏 */
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            /* 移除 background-color，保留各自页面的默认颜色 */
+        }
+        
+        /* 单独处理 饿美了外卖 的 page-header 布局 */
+        .food-delivery-page .page-header {
+            background-color: #fff; /* 饿美了可能是白色或黄色 */
+            border-bottom: 1px solid #f0f0f0;
+            padding-left: 15px;
+            padding-right: 15px;
+            /* 如果使用了 space-between */
+            justify-content: space-between; 
+        }
+
+        /* 恢复各个 Header 的原始背景色逻辑 (如果有被上面覆盖) */
+        
+        /* 调整标题和按钮位置 - 统一微调 */
+        .wechat-title, 
+        .chat-title,
+        .xianyu-search-bar,
+        .app-header-title,
+        .header-title,
+        .page-title {
+            margin-top: 4px; 
+        }
+        
+        .wechat-header-btn, 
+        .chat-back-btn,
+        .chat-more-btn,
+        .app-header-btn,
+        .header-back,
+        .back-btn,
+        .page-action-btn {
+            margin-top: 4px;
+        }
+
+        /* 我的表情页面折叠样式 */
+        .sticker-pack-group {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .sticker-pack-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            user-select: none;
+        }
+        .sticker-pack-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+        .sticker-pack-count {
+            font-size: 12px;
+            color: #999;
+            margin-left: 8px;
+        }
+        .sticker-pack-arrow {
+            transition: transform 0.3s;
+            color: #ccc;
+        }
+        .sticker-pack-arrow.open {
+            transform: rotate(90deg);
+        }
+        .sticker-pack-content {
+            display: none;
+            padding: 15px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .sticker-pack-content.open {
+            display: grid;
+        }
             .xianyu-search-bar {
                 flex: 1;
                 background-color: white;
@@ -9991,6 +10184,9 @@
         document.getElementById('openaiModel').value = savedOpenAIModel;
         document.getElementById('openaiTemperature').value = savedTemperature;
         document.getElementById('temperatureValue').textContent = savedTemperature;
+        
+        // 2.5. 初始化 NovelAI 设置
+        loadNovelAISettings();
         
         // 加载我的人设
         loadMyPersona();
@@ -12288,7 +12484,14 @@
         const history = await ChatStorage.load(friendName);
         if (history && history.length > 0) {
             history.forEach(msg => {
-                addChatMessage(friendName, msg.text, msg.isSelf, false, msg.id, msg.imageUrl, msg.imageDesc, msg.voiceDuration, msg.voiceText, msg.redPacketData);
+                // 检查是否为 NovelAI 图像消息
+                if (msg.type === 'naiimag' && msg.imageUrl) {
+                    // 使用专门的函数渲染 NovelAI 图像消息
+                    renderNovelAIImageMessage(friendName, msg);
+                } else {
+                    // 普通消息
+                    addChatMessage(friendName, msg.text, msg.isSelf, false, msg.id, msg.imageUrl, msg.imageDesc, msg.voiceDuration, msg.voiceText, msg.redPacketData);
+                }
             });
             // 加载完历史消息后滚动到底部
             setTimeout(() => {
@@ -12369,9 +12572,21 @@
                 };
             }
             
+            // 检查是否为 NovelAI 图像消息
+            const novelaiMsg = bubble.querySelector('.novelai-image-message');
+            const isNovelAIImage = novelaiMsg !== null || el.dataset.messageType === 'naiimag';
+            
             // 提取文字内容（排除图片描述和[图片]标记）
             let text = '';
-            if (redPacketEl) {
+            let messageType = null;
+            
+            if (isNovelAIImage) {
+                // NovelAI 图像消息
+                messageType = 'naiimag';
+                const promptInfo = novelaiMsg?.querySelector('.novelai-prompt-info');
+                const promptText = promptInfo ? promptInfo.textContent.replace('生成描述：', '').trim() : '';
+                text = `[NovelAI 图像] ${promptText || '无描述'}`;
+            } else if (redPacketEl) {
                 // 红包消息：保存特殊文本标记，实际渲染靠 redPacketData
                 text = `[红包] ${redPacketData.note}`;
             } else if (voiceEl) {
@@ -12397,15 +12612,15 @@
                 bubble.childNodes.forEach(node => {
                     if (node.nodeType === 3) { // 文本节点
                         textNodes.push(node.textContent);
-                    } else if (node.nodeType === 1 && node.tagName !== 'IMG' && !node.classList.contains('image-desc') && !node.classList.contains('voice-message') && !node.classList.contains('voice-text-content')) {
-                        // 非图片、非描述的文本元素，排除语音相关元素
+                    } else if (node.nodeType === 1 && node.tagName !== 'IMG' && !node.classList.contains('image-desc') && !node.classList.contains('voice-message') && !node.classList.contains('voice-text-content') && !node.classList.contains('novelai-image-message')) {
+                        // 非图片、非描述的文本元素，排除语音相关元素和 NovelAI 消息元素
                         textNodes.push(node.textContent);
                     }
                 });
                 text = textNodes.join('').trim();
             }
             
-            messages.push({ text, isSelf, id: messageId, imageUrl, imageDesc, voiceDuration, voiceText, redPacketData });
+            messages.push({ text, isSelf, id: messageId, imageUrl, imageDesc, voiceDuration, voiceText, redPacketData, type: messageType });
         });
         
         await ChatStorage.save(friendName, messages);
@@ -12671,7 +12886,8 @@
             { name: '礼物', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>', action: 'gift' },
             { name: '重回', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>', action: 'regenerate' },
             { name: '语音输入', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>', action: 'voice' },
-            { name: '发起收款', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>', action: 'transfer' }
+            { name: '发起收款', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>', action: 'transfer' },
+            { name: 'AI绘图', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect><path d="M7 7h10M7 12h10M7 17h10"></path></svg>', action: 'novelai' }
         ];
         
         functions.forEach(func => {
@@ -12702,6 +12918,8 @@
                     sendVideoCallRequest();
                 } else if (func.action === 'gift') {
                     sendGiftMessage();
+                } else if (func.action === 'novelai') {
+                    openNovelAIGenerateModal();
                 }
             };
             functionGrid.appendChild(item);
@@ -12736,13 +12954,13 @@
         saveChatMessages(currentChatFriend);
     }
 
-    // 加载表情列表
-    function loadEmojiList() {
+    // 加载表情列表 (异步版本)
+    async function loadEmojiList() {
         const emojiList = document.getElementById('emojiList');
         emojiList.innerHTML = '';
         
-        // 加载我的表情
-        const myEmojis = getMyEmojis();
+        // 加载我的表情 (IndexedDB)
+        const myEmojis = await getMyEmojisAsync();
         
         // 先添加所有表情
         myEmojis.forEach((emoji, index) => {
@@ -12761,16 +12979,130 @@
         emojiList.appendChild(addBtn);
     }
 
-    // 获取我的表情列表
-    function getMyEmojis() {
-        const emojis = localStorage.getItem('myEmojis');
-        return emojis ? JSON.parse(emojis) : [];
+    // ==========================================
+    // IndexedDB 存储封装 (解决 LocalStorage 容量限制)
+    // ==========================================
+    const DB_NAME = 'WeChatEmojiDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'myEmojis';
+
+    function openEmojiDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            
+            request.onerror = (event) => reject('Database error: ' + event.target.error);
+            
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                }
+            };
+            
+            request.onsuccess = (event) => resolve(event.target.result);
+        });
     }
 
-    // 保存我的表情列表
-    function saveMyEmojis(emojis) {
-        localStorage.setItem('myEmojis', JSON.stringify(emojis));
+    async function getAllEmojisFromDB() {
+        try {
+            const db = await openEmojiDB();
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.getAll();
+                
+                request.onsuccess = () => resolve(request.result || []);
+                request.onerror = () => reject(request.error);
+            });
+        } catch (error) {
+            console.error('IndexedDB Error:', error);
+            return [];
+        }
     }
+
+    async function addEmojiToDB(emoji) {
+        try {
+            const db = await openEmojiDB();
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.add(emoji);
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        } catch (error) {
+            console.error('IndexedDB Error:', error);
+            throw error;
+        }
+    }
+    
+    // 批量添加
+    async function addEmojisToDB(emojis) {
+        try {
+            const db = await openEmojiDB();
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                
+                emojis.forEach(emoji => {
+                    store.add(emoji);
+                });
+                
+                transaction.oncomplete = () => resolve();
+                transaction.onerror = () => reject(transaction.error);
+            });
+        } catch (error) {
+            console.error('IndexedDB Error:', error);
+            throw error;
+        }
+    }
+
+    // 替代 getMyEmojis (异步)
+    async function getMyEmojisAsync() {
+        // 先尝试从 IndexedDB 获取
+        let emojis = await getAllEmojisFromDB();
+        
+        // 如果 DB 为空，尝试迁移 localStorage 数据
+        if (emojis.length === 0) {
+            const localEmojis = localStorage.getItem('myEmojis');
+            if (localEmojis) {
+                try {
+                    const parsed = JSON.parse(localEmojis);
+                    if (parsed.length > 0) {
+                        await addEmojisToDB(parsed);
+                        localStorage.removeItem('myEmojis'); // 迁移后清理
+                        emojis = parsed;
+                    }
+                } catch (e) {
+                    console.error('Migration error:', e);
+                }
+            }
+        }
+        return emojis;
+    }
+
+    // 兼容旧的 getMyEmojis (注意：改为返回 Promise 或需要在调用处修改)
+    // 这是一个破坏性变更，需要查找所有调用 getMyEmojis 的地方并修改为 await
+    // 临时方案：如果调用者不使用 await，可能拿不到数据。
+    // 我们需要修改调用逻辑。
+    
+    // 获取我的表情列表 (修改为异步)
+    // 注意：这将影响 renderEmojiPanel
+    function getMyEmojis() {
+       // 这是一个占位，实际逻辑在调用处改为 await getMyEmojisAsync()
+       console.warn('Deprecated synchronous getMyEmojis called. Use getMyEmojisAsync instead.');
+       const localEmojis = localStorage.getItem('myEmojis');
+       return localEmojis ? JSON.parse(localEmojis) : [];
+    }
+
+    // 保存我的表情列表 (修改为异步，不再使用 localStorage)
+    async function saveMyEmojis(emojis) {
+        // 这个函数现在只用于兼容旧代码的单一保存逻辑，建议废弃
+        // 实际上我们需要一个新的 saveEmoji(emoji)
+        console.warn('Deprecated saveMyEmojis called. Use addEmojiToDB instead.');
+    }
+
 
     // 发送表情
     function sendEmoji(emojiUrl) {
@@ -13823,32 +14155,34 @@ ${functionCallingInstructions}
                             let stickerUrl = '';
                             let stickerDesc = `表情：${keyword}`;
                             
-                            // 尝试从用户上传的表情包中查找
                             try {
-                                const myEmojis = getMyEmojis();
-                                if (myEmojis && myEmojis.length > 0) {
-                                    // 优先匹配名称包含关键词的表情
-                                    const matched = myEmojis.filter(e => e.name.includes(keyword));
-                                    if (matched.length > 0) {
-                                        const selected = matched[Math.floor(Math.random() * matched.length)];
-                                        stickerUrl = selected.url;
-                                        stickerDesc = selected.name;
+                                // 尝试获取符合挂载规则的表情
+                                const sticker = await getCharacterSticker(currentChatFriend, keyword);
+                                
+                                if (sticker) {
+                                    stickerUrl = sticker.url;
+                                    stickerDesc = sticker.name;
+                                } else {
+                                    // 检查是否挂载了包
+                                    const mounted = getMountedPacks(currentChatFriend);
+                                    if (mounted.length > 0) {
+                                        // 挂载了包但未找到表情，且不允许使用默认，则跳过发送
+                                        console.log('挂载了表情包但未找到可用表情，跳过发送');
+                                        stickerUrl = null; 
                                     } else {
-                                        // 没匹配到则随机发送一个
-                                        const randomEmoji = myEmojis[Math.floor(Math.random() * myEmojis.length)];
-                                        stickerUrl = randomEmoji.url;
-                                        stickerDesc = randomEmoji.name;
+                                        // 未挂载包，使用默认 SVG 表情
+                                        stickerUrl = generateStickerSvg();
                                     }
                                 }
                             } catch (e) {
                                 console.error('获取用户表情失败', e);
-                            }
-                            
-                            if (!stickerUrl) {
+                                // 出错降级处理
                                 stickerUrl = generateStickerSvg();
                             }
                             
-                            msgId = addChatMessage(currentChatFriend, `[表情] ${stickerDesc}`, false, true, null, stickerUrl, stickerDesc);
+                            if (stickerUrl) {
+                                msgId = addChatMessage(currentChatFriend, `[表情] ${stickerDesc}`, false, true, null, stickerUrl, stickerDesc);
+                            }
                         } else if (voiceMatch) {
                             // 语音
                             const text = voiceMatch[1];
@@ -17575,6 +17909,25 @@ ${recentMessages || '暂无聊天记录'}`;
         document.getElementById('desktop').classList.remove('hidden');
         document.getElementById('personalizationPage').classList.remove('active');
     }
+    
+    // 打开表情包页面
+    function openStickerPage() {
+        document.getElementById('desktop').classList.add('hidden');
+        document.getElementById('stickerPage').classList.add('active');
+        // 重置状态
+        document.getElementById('stickerPreviewArea').style.display = 'none';
+        document.getElementById('stickerGenerateStatus').textContent = '';
+        document.getElementById('stickerTextInput').value = '';
+        // 清除参考图
+        clearStickerRefImage();
+        currentStickerImageUrl = null;
+    }
+    
+    // 关闭表情包页面
+    function closeStickerPage() {
+        document.getElementById('desktop').classList.remove('hidden');
+        document.getElementById('stickerPage').classList.remove('active');
+    }
 
     // 切换小组件设置折叠面板
     function toggleWidgetSettings() {
@@ -17591,6 +17944,11 @@ ${recentMessages || '暂无聊天记录'}`;
     // 切换系统设置折叠面板
     function toggleSystemSettings() {
         const panel = document.getElementById('systemSettingsPanel');
+        panel.classList.toggle('expanded');
+    }
+    
+    function toggleNovelAISettings() {
+        const panel = document.getElementById('novelaiSettingsPanel');
         panel.classList.toggle('expanded');
     }
     
@@ -17992,6 +18350,1519 @@ ${recentMessages || '暂无聊天记录'}`;
         closePersonalizationPage();
         alert('个性化设置保存成功！');
     }
+    
+    // 保存 NovelAI 设置
+    function saveNovelAISettings() {
+        const apiKey = document.getElementById('novelaiApiKey').value.trim();
+        const proxyUrl = document.getElementById('novelaiProxyUrl').value.trim();
+        const model = document.getElementById('novelaiModel').value;
+        const steps = parseInt(document.getElementById('novelaiSteps').value) || 28;
+        const scale = parseFloat(document.getElementById('novelaiScale').value) || 11;
+        const sampler = document.getElementById('novelaiSampler').value;
+        const size = document.getElementById('novelaiSize').value;
+        const systemPrompt = document.getElementById('novelaiSystemPrompt').value.trim();
+        const negativePrompt = document.getElementById('novelaiNegativePrompt').value.trim();
+        
+        if (apiKey) localStorage.setItem('novelaiApiKey', apiKey);
+        if (proxyUrl) localStorage.setItem('novelaiProxyUrl', proxyUrl);
+        localStorage.setItem('novelaiModel', model);
+        localStorage.setItem('novelaiSteps', steps);
+        localStorage.setItem('novelaiScale', scale);
+        localStorage.setItem('novelaiSampler', sampler);
+        localStorage.setItem('novelaiSize', size);
+        localStorage.setItem('novelaiSystemPrompt', systemPrompt);
+        localStorage.setItem('novelaiNegativePrompt', negativePrompt);
+    }
+    
+    // 加载 NovelAI 设置
+    function loadNovelAISettings() {
+        const apiKey = localStorage.getItem('novelaiApiKey') || '';
+        const proxyUrl = localStorage.getItem('novelaiProxyUrl') || 'https://image.novelai.net/ai/generate-image';
+        let model = localStorage.getItem('novelaiModel') || 'nai-diffusion-4-5-full';
+        
+        // 如果保存的是旧的不支持的模型，自动修复
+        if (model === 'nai-diffusion-3-inpainting') {
+            model = 'nai-diffusion-4-5-full';
+            localStorage.setItem('novelaiModel', model);
+        }
+        const steps = localStorage.getItem('novelaiSteps') || '28';
+        const scale = localStorage.getItem('novelaiScale') || '11';
+        const sampler = localStorage.getItem('novelaiSampler') || 'k_euler_ancestral';
+        const size = localStorage.getItem('novelaiSize') || '832x1216';
+        const systemPrompt = localStorage.getItem('novelaiSystemPrompt') || 'masterpiece, best quality, highres, 1girl, solo, anime style, detailed, beautiful, cute';
+        const negativePrompt = localStorage.getItem('novelaiNegativePrompt') || 'lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry';
+        
+        if (document.getElementById('novelaiApiKey')) document.getElementById('novelaiApiKey').value = apiKey;
+        if (document.getElementById('novelaiProxyUrl')) document.getElementById('novelaiProxyUrl').value = proxyUrl;
+        if (document.getElementById('novelaiModel')) document.getElementById('novelaiModel').value = model;
+        if (document.getElementById('novelaiSteps')) {
+            document.getElementById('novelaiSteps').value = steps;
+            updateNovelAIStepsDisplay(steps);
+        }
+        if (document.getElementById('novelaiScale')) {
+            document.getElementById('novelaiScale').value = scale;
+            updateNovelAIScaleDisplay(scale);
+        }
+        if (document.getElementById('novelaiSampler')) document.getElementById('novelaiSampler').value = sampler;
+        if (document.getElementById('novelaiSize')) document.getElementById('novelaiSize').value = size;
+        if (document.getElementById('novelaiSystemPrompt')) document.getElementById('novelaiSystemPrompt').value = systemPrompt;
+        if (document.getElementById('novelaiNegativePrompt')) document.getElementById('novelaiNegativePrompt').value = negativePrompt;
+    }
+    
+    // 更新 NovelAI Steps 显示
+    function updateNovelAIStepsDisplay(value) {
+        const display = document.getElementById('novelaiStepsValue');
+        if (display) display.textContent = value;
+    }
+    
+    // 更新 NovelAI Scale 显示
+    function updateNovelAIScaleDisplay(value) {
+        const display = document.getElementById('novelaiScaleValue');
+        if (display) display.textContent = value;
+    }
+    
+    // 测试 NovelAI 连接
+    async function testNovelAIConnection() {
+        const apiKey = document.getElementById('novelaiApiKey').value.trim();
+        const proxyUrl = document.getElementById('novelaiProxyUrl').value.trim() || 'https://image.novelai.net/ai/generate-image';
+        
+        if (!apiKey) {
+            showNovelAITestResult('error', '请填写 API Key');
+            return;
+        }
+        
+        const btn = document.getElementById('testNovelAIBtnText');
+        const resultDiv = document.getElementById('novelaiTestResult');
+        
+        if (btn) btn.textContent = '测试中...';
+        showNovelAITestResult('loading', '正在测试连接...');
+        
+        try {
+            // 使用简单的测试 prompt
+            const testPrompt = '1girl, solo, test';
+            const testResult = await generateNovelAIImage(testPrompt, '', true);
+            
+            if (testResult.success) {
+                showNovelAITestResult('success', '✅ 连接成功！API Key 有效');
+            } else {
+                showNovelAITestResult('error', `❌ 连接失败：${testResult.error || '未知错误'}`);
+            }
+        } catch (error) {
+            showNovelAITestResult('error', `❌ 连接失败：${error.message}`);
+        } finally {
+            if (btn) btn.textContent = '测试 NovelAI 连接';
+        }
+    }
+    
+    // 显示 NovelAI 测试结果
+    function showNovelAITestResult(type, message) {
+        const resultDiv = document.getElementById('novelaiTestResult');
+        if (!resultDiv) return;
+        
+        resultDiv.style.display = 'block';
+        resultDiv.style.padding = '8px 12px';
+        resultDiv.style.borderRadius = '6px';
+        resultDiv.style.fontSize = '12px';
+        resultDiv.style.lineHeight = '1.5';
+        
+        if (type === 'success') {
+            resultDiv.style.backgroundColor = '#d4edda';
+            resultDiv.style.color = '#155724';
+            resultDiv.style.border = '1px solid #c3e6cb';
+        } else if (type === 'error') {
+            resultDiv.style.backgroundColor = '#f8d7da';
+            resultDiv.style.color = '#721c24';
+            resultDiv.style.border = '1px solid #f5c6cb';
+        } else {
+            resultDiv.style.backgroundColor = '#d1ecf1';
+            resultDiv.style.color = '#0c5460';
+            resultDiv.style.border = '1px solid #bee5eb';
+        }
+        
+        resultDiv.textContent = message;
+    }
+    
+    // ========== NovelAI 图像生成核心函数 ==========
+    
+    /**
+     * 从ZIP文件中提取图片
+     * @param {Blob} zipBlob - ZIP文件的Blob对象
+     * @returns {Promise<string>} 图片的dataURL
+     */
+    async function extractImageFromZip(zipBlob) {
+        // 检查是否有JSZip库
+        if (typeof JSZip === 'undefined') {
+            // 如果没有JSZip，尝试直接读取为图片
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(zipBlob);
+            });
+        }
+        
+        try {
+            const zip = await JSZip.loadAsync(zipBlob);
+            let imageFile = null;
+            
+            // 查找第一个图片文件
+            for (const filename in zip.files) {
+                if (filename.match(/\.(png|jpg|jpeg|webp)$/i)) {
+                    imageFile = zip.files[filename];
+                    break;
+                }
+            }
+            
+            if (!imageFile) {
+                throw new Error('ZIP文件中未找到图片');
+            }
+            
+            const imageBlob = await imageFile.async('blob');
+            
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(imageBlob);
+            });
+        } catch (error) {
+            console.error('解压ZIP失败:', error);
+            // 如果解压失败，尝试直接读取
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(zipBlob);
+            });
+        }
+    }
+    
+    /**
+     * 生成 NovelAI 图像
+     * @param {string} userPrompt - 用户输入的 Prompt
+     * @param {string} rolePrompt - 角色或场景的正向 Prompt（可选）
+     * @param {boolean} isTest - 是否为测试模式（不保存消息）
+     * @param {string} referenceImage - 参考图（base64格式，可选）
+     * @returns {Promise<{success: boolean, imageUrl?: string, error?: string}>}
+     */
+    async function generateNovelAIImage(userPrompt, rolePrompt = '', isTest = false, referenceImage = null, options = {}) {
+        try {
+            // 获取 NovelAI 设置
+            const apiKey = localStorage.getItem('novelaiApiKey') || '';
+            const proxyUrl = localStorage.getItem('novelaiProxyUrl') || 'https://image.novelai.net/ai/generate-image';
+            let model = localStorage.getItem('novelaiModel') || 'nai-diffusion-4-5-full';
+            
+            // 修复旧的模型名称
+            if (model === 'nai-diffusion-3-inpainting') {
+                // nai-diffusion-3-inpainting 不支持 generate action，改用标准V3模型
+                model = 'nai-diffusion-3';
+                console.warn('检测到不支持的模型 nai-diffusion-3-inpainting，已自动切换为 nai-diffusion-3');
+            }
+            const steps = parseInt(localStorage.getItem('novelaiSteps')) || 28;
+            const scale = parseFloat(localStorage.getItem('novelaiScale')) || 11;
+            const sampler = localStorage.getItem('novelaiSampler') || 'k_euler_ancestral';
+            // 支持通过 options.size 覆盖默认尺寸，优先使用 options.size，否则读取设置
+            const size = options.size || localStorage.getItem('novelaiSize') || '832x1216';
+            
+            let systemPrompt = localStorage.getItem('novelaiSystemPrompt') || 'masterpiece, best quality, highres, 1girl, solo, anime style, detailed, beautiful, cute';
+            if (options.skipSystemPrompt) {
+                systemPrompt = '';
+            }
+
+            let negativePrompt = localStorage.getItem('novelaiNegativePrompt') || 'lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry';
+            if (options.extraNegativePrompt) {
+                negativePrompt += ', ' + options.extraNegativePrompt;
+            }
+            
+            // 验证必要参数
+            if (!apiKey) {
+                return { success: false, error: '请先在设置中配置 NovelAI API Key' };
+            }
+            
+            if (!userPrompt || !userPrompt.trim()) {
+                return { success: false, error: '请输入生成图像的描述' };
+            }
+            
+            // 构建最终 Prompt（按照要求：系统基础 + 角色场景 + 用户输入）
+            let finalPrompt = systemPrompt.trim();
+            
+            if (rolePrompt && rolePrompt.trim()) {
+                if (finalPrompt) finalPrompt += ', ';
+                finalPrompt += rolePrompt.trim();
+            }
+            if (userPrompt && userPrompt.trim()) {
+                if (finalPrompt) finalPrompt += ', ';
+                finalPrompt += userPrompt.trim();
+            }
+            
+            // 解析尺寸
+            const [width, height] = size.split('x').map(Number);
+            
+            // 判断模型版本（V4/V4.5 还是 V3）
+            const isV4 = model.includes('nai-diffusion-4');
+            
+            // 如果模型名称包含 'inpainting'，提示用户
+            if (model.includes('inpainting') && !model.includes('nai-diffusion-4')) {
+                console.warn('警告：inpainting 模型主要用于修复功能，可能不支持标准生成。建议使用标准模型。');
+            }
+            
+            // 根据模型版本选择API端点和请求格式
+            let apiUrl;
+            // 判断是否使用了自定义代理
+            const isCustomProxy = proxyUrl && proxyUrl !== 'https://image.novelai.net/ai/generate-image' && proxyUrl !== 'https://image.novelai.net/ai/generate-image-stream';
+            
+            if (isCustomProxy) {
+                // 如果使用自定义代理，直接使用代理URL
+                apiUrl = proxyUrl;
+            } else {
+                // 根据模型版本选择正确的端点
+                if (isV4) {
+                    apiUrl = 'https://image.novelai.net/ai/generate-image-stream';
+                } else {
+                    apiUrl = 'https://image.novelai.net/ai/generate-image';
+                }
+            }
+            
+            // 构建请求体（根据模型版本使用不同格式）
+            let requestBody;
+            
+            if (isV4) {
+                // V4/V4.5 使用新格式
+                requestBody = {
+                    input: finalPrompt,
+                    model: model,
+                    action: 'generate',
+                    parameters: {
+                        params_version: 3,
+                        width: width,
+                        height: height,
+                        scale: scale,
+                        sampler: sampler,
+                        steps: steps,
+                        seed: Math.floor(Math.random() * 9999999999),
+                        n_samples: 1,
+                        ucPreset: 0,
+                        qualityToggle: true,
+                        autoSmea: false,
+                        dynamic_thresholding: false,
+                        controlnet_strength: 1,
+                        legacy: false,
+                        add_original_image: true,
+                        cfg_rescale: 0,
+                        noise_schedule: 'karras',
+                        legacy_v3_extend: false,
+                        skip_cfg_above_sigma: null,
+                        use_coords: false,
+                        legacy_uc: false,
+                        normalize_reference_strength_multiple: true,
+                        inpaintImg2ImgStrength: 1,
+                        characterPrompts: [],
+                        v4_prompt: {
+                            caption: {
+                                base_caption: finalPrompt,
+                                char_captions: []
+                            },
+                            use_coords: false,
+                            use_order: true
+                        },
+                        v4_negative_prompt: {
+                            caption: {
+                                base_caption: negativePrompt.trim(),
+                                char_captions: []
+                            },
+                            legacy_uc: false
+                        },
+                        negative_prompt: negativePrompt.trim(),
+                        deliberate_euler_ancestral_bug: false,
+                        prefer_brownian: true
+                    }
+                };
+                
+                // 如果有参考图，添加到请求中
+                if (referenceImage) {
+                    // 提取 base64 数据（去掉 data:image/xxx;base64, 前缀）
+                    const base64Data = referenceImage.includes(',') ? referenceImage.split(',')[1] : referenceImage;
+                    requestBody.parameters.reference_image = base64Data;
+                    requestBody.parameters.reference_strength = 0.6; // 参考图强度，可调整
+                    requestBody.parameters.reference_information_extracted = 1;
+                }
+            } else {
+                // V3 使用旧格式
+                requestBody = {
+                    input: finalPrompt,
+                    model: model,
+                    action: 'generate',
+                    parameters: {
+                        width: width,
+                        height: height,
+                        scale: scale,
+                        sampler: sampler,
+                        steps: steps,
+                        seed: Math.floor(Math.random() * 9999999999),
+                        n_samples: 1,
+                        ucPreset: 0,
+                        qualityToggle: true,
+                        sm: false,
+                        sm_dyn: false,
+                        dynamic_thresholding: false,
+                        controlnet_strength: 1,
+                        legacy: false,
+                        add_original_image: false,
+                        cfg_rescale: 0,
+                        noise_schedule: 'native',
+                        negative_prompt: negativePrompt.trim()
+                    }
+                };
+                
+                // V3 也支持参考图
+                if (referenceImage) {
+                    const base64Data = referenceImage.includes(',') ? referenceImage.split(',')[1] : referenceImage;
+                    requestBody.parameters.reference_image = base64Data;
+                    requestBody.parameters.reference_strength = 0.6;
+                }
+            }
+            
+            // 发送请求
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify(requestBody)
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                let errorMessage = `HTTP错误: ${response.status}`;
+                try {
+                    const errorData = JSON.parse(errorText);
+                    errorMessage = errorData.message || errorData.error || errorMessage;
+                } catch (e) {
+                    errorMessage = errorText || errorMessage;
+                }
+                return { success: false, error: errorMessage };
+            }
+            
+            // 处理响应（可能是 SSE 流或 ZIP 文件）
+            const contentType = response.headers.get('content-type');
+            let imageDataUrl = null;
+            
+            if (contentType && contentType.includes('text/event-stream')) {
+                // SSE 流式响应（V4/V4.5）
+                const text = await response.text();
+                const lines = text.trim().split('\n');
+                let base64Data = null;
+                
+                // 从后往前查找最后一个包含图片数据的行
+                for (let i = lines.length - 1; i >= 0; i--) {
+                    const line = lines[i].trim();
+                    if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+                        const dataContent = line.substring(6);
+                        try {
+                            const jsonData = JSON.parse(dataContent);
+                            if (jsonData.event_type === 'final' && jsonData.image) {
+                                base64Data = jsonData.image;
+                                break;
+                            }
+                            if (jsonData.data) {
+                                base64Data = jsonData.data;
+                                break;
+                            }
+                            if (jsonData.image) {
+                                base64Data = jsonData.image;
+                                break;
+                            }
+                        } catch (e) {
+                            // 如果不是JSON，可能是直接的base64
+                            base64Data = dataContent;
+                            break;
+                        }
+                    }
+                }
+                
+                if (!base64Data) {
+                    return { success: false, error: '无法从 SSE 响应中提取图片数据' };
+                }
+                
+                // 检查是否为PNG或JPEG的base64
+                const isPNG = base64Data.startsWith('iVBORw0KGgo');
+                const isJPEG = base64Data.startsWith('/9j/');
+                
+                if (isPNG || isJPEG) {
+                    imageDataUrl = `data:${isPNG ? 'image/png' : 'image/jpeg'};base64,${base64Data}`;
+                } else {
+                    // 可能是ZIP的base64，需要解压
+                    const binaryString = atob(base64Data);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    const zipBlob = new Blob([bytes]);
+                    imageDataUrl = await extractImageFromZip(zipBlob);
+                }
+            } else {
+                // ZIP 文件响应（V3）
+                const zipBlob = await response.blob();
+                imageDataUrl = await extractImageFromZip(zipBlob);
+            }
+            
+            if (!imageDataUrl) {
+                return { success: false, error: '无法解析图像数据' };
+            }
+            
+            return { success: true, imageUrl: imageDataUrl };
+            
+        } catch (error) {
+            console.error('NovelAI 图像生成失败:', error);
+            return { success: false, error: error.message || '网络错误或请求失败' };
+        }
+    }
+    
+    /**
+     * 在聊天中生成并发送 NovelAI 图像
+     * @param {string} userPrompt - 用户输入的 Prompt
+     * @param {string} rolePrompt - 角色或场景的正向 Prompt（可选）
+     */
+    async function generateAndSendNovelAIImage(userPrompt, rolePrompt = '') {
+        if (!currentChatFriend) {
+            alert('请先选择一个好友');
+            return;
+        }
+        
+        // 显示生成中的提示
+        const loadingMessageId = addChatMessage(currentChatFriend, '🖼️ 正在生成图像...', false, true);
+        saveChatMessages(currentChatFriend);
+        
+        try {
+            // 调用生成函数
+            const result = await generateNovelAIImage(userPrompt, rolePrompt, false);
+            
+            // 删除加载提示消息
+            const loadingMsg = document.querySelector(`[data-message-id="${loadingMessageId}"]`);
+            if (loadingMsg) {
+                loadingMsg.remove();
+            }
+            
+            if (result.success && result.imageUrl) {
+                // 添加 NovelAI 图像消息（使用 naiimag 类型）
+                addNovelAIImageMessage(currentChatFriend, result.imageUrl, userPrompt);
+                saveChatMessages(currentChatFriend);
+            } else {
+                // 显示错误消息
+                const errorMsg = result.error || '生成失败，请重试';
+                addChatMessage(currentChatFriend, `❌ 图像生成失败：${errorMsg}`, false, true);
+                saveChatMessages(currentChatFriend);
+            }
+        } catch (error) {
+            // 删除加载提示消息
+            const loadingMsg = document.querySelector(`[data-message-id="${loadingMessageId}"]`);
+            if (loadingMsg) {
+                loadingMsg.remove();
+            }
+            
+            // 显示错误消息
+            addChatMessage(currentChatFriend, `❌ 图像生成失败：${error.message || '未知错误'}`, false, true);
+            saveChatMessages(currentChatFriend);
+        }
+    }
+    
+    /**
+     * 添加 NovelAI 图像消息（类型：naiimag）
+     * @param {string} name - 好友名称
+     * @param {string} imageUrl - 图像 URL
+     * @param {string} prompt - 生成时使用的 Prompt
+     */
+    function addNovelAIImageMessage(name, imageUrl, prompt) {
+        const messages = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message'; // 不是自己的消息
+        
+        const messageId = generateMessageId();
+        messageDiv.dataset.messageId = messageId;
+        messageDiv.dataset.messageType = 'naiimag'; // 标记为 NovelAI 图像消息
+        
+        const avatar = name.charAt(0);
+        
+        // 构建消息内容（显示图像和 Prompt）
+        const bubbleContent = `
+            <div class="novelai-image-message">
+                <img src="${imageUrl}" alt="NovelAI 生成图像" style="display:block; max-width: 100%; border-radius: 8px; cursor: pointer;" onclick="viewNovelAIImage('${imageUrl.replace(/'/g, "\\'")}')">
+                <div class="novelai-prompt-info" style="margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.05); border-radius: 4px; font-size: 12px; color: #666;">
+                    <div style="font-weight: 500; margin-bottom: 4px;">生成描述：</div>
+                    <div style="word-break: break-word;">${prompt || '无描述'}</div>
+                </div>
+            </div>
+        `;
+        
+        messageDiv.innerHTML = `
+            <div class="chat-avatar" onclick="showStatusBar('${name}')" style="cursor: pointer;" data-role-name="${name}">${avatar}</div>
+            <div class="chat-bubble" data-message-id="${messageId}">${bubbleContent}</div>
+        `;
+        
+        messages.appendChild(messageDiv);
+        
+        // 滚动到底部
+        messages.scrollTop = messages.scrollHeight;
+        
+        // 保存到 IndexedDB（需要包含 type 字段）
+        ChatStorage.load(name).then(chatHistory => {
+            const messageData = {
+                id: messageId,
+                text: `[NovelAI 图像] ${prompt || '无描述'}`,
+                isSelf: false,
+                imageUrl: imageUrl,
+                imageDesc: prompt || '',
+                type: 'naiimag', // 标记为 NovelAI 图像消息
+                timestamp: Date.now()
+            };
+            chatHistory.push(messageData);
+            ChatStorage.save(name, chatHistory);
+        });
+    }
+    
+    /**
+     * 查看 NovelAI 图像（全屏显示）
+     * @param {string} imageUrl - 图像 URL
+     */
+    function viewNovelAIImage(imageUrl) {
+        // 创建全屏查看器
+        const viewer = document.createElement('div');
+        viewer.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        `;
+        
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.style.cssText = `
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        `;
+        
+        viewer.appendChild(img);
+        document.body.appendChild(viewer);
+        
+        // 点击关闭
+        viewer.addEventListener('click', () => {
+            document.body.removeChild(viewer);
+        });
+    }
+    
+    // ========== 表情包生成功能 ==========
+    
+    // 内置表情包提示词
+    const STICKER_BUILTIN_PROMPT = 'Q-style LINE sticker pack, hand-drawn texture, soft low-saturation macaron color palette, pure white background. Line features: Clear, smooth black outlines with uniform thickness and rounded edges. Expression design: 3×3 grid layout, 9 independent bust stickers with exaggerated, cute movements that match text labels exactly, covering daily high-frequency emotions (happy, surprised, speechless, sleepy, etc.). Text labels: Only use sharp, clear English text (e.g., "OK!", "NO!", "THANKS!", "SORRY!") with a round, cute font. Text must be edge-sharp, no blurring, no garbled characters, no jagged edges. Detail optimization: High contrast, distinct color layers, no noise, consistent healing art style, suitable for chat app stickers.';
+    
+    // 当前生成的表情包图片URL
+    let currentStickerImageUrl = null;
+    
+    /**
+     * 生成表情包
+     */
+    // 当前参考图（base64格式）
+    let currentStickerRefImage = null;
+    
+    /**
+     * 处理参考图上传
+     */
+    function handleStickerRefImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        if (!file.type.startsWith('image/')) {
+            alert('请上传图片文件');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            currentStickerRefImage = e.target.result; // 保存为 base64
+            
+            // 显示预览
+            const placeholder = document.getElementById('stickerRefImagePlaceholder');
+            const display = document.getElementById('stickerRefImageDisplay');
+            const clearBtn = document.getElementById('stickerRefImageClearBtn');
+            
+            if (placeholder) placeholder.style.display = 'none';
+            if (display) {
+                display.src = currentStickerRefImage;
+                display.style.display = 'block';
+            }
+            if (clearBtn) clearBtn.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    /**
+     * 清除参考图
+     */
+    function clearStickerRefImage() {
+        currentStickerRefImage = null;
+        
+        const placeholder = document.getElementById('stickerRefImagePlaceholder');
+        const display = document.getElementById('stickerRefImageDisplay');
+        const clearBtn = document.getElementById('stickerRefImageClearBtn');
+        const input = document.getElementById('stickerRefImageInput');
+        
+        if (placeholder) placeholder.style.display = 'block';
+        if (display) {
+            display.src = '';
+            display.style.display = 'none';
+        }
+        if (clearBtn) clearBtn.style.display = 'none';
+        if (input) input.value = '';
+    }
+    
+    async function generateSticker() {
+        const btn = document.getElementById('generateStickerBtn');
+        const btnText = document.getElementById('generateStickerBtnText');
+        const statusDiv = document.getElementById('stickerGenerateStatus');
+        const textInput = document.getElementById('stickerTextInput');
+        
+        // 检查API Key
+        const apiKey = localStorage.getItem('novelaiApiKey');
+        if (!apiKey) {
+            alert('请先在系统设置中配置 NovelAI API Key');
+            return;
+        }
+        
+        // 获取用户输入的指令要求
+        const userInstruction = textInput.value.trim();
+        
+        // ============================================================
+        // 【结构级重构 V2】强制使用「九宫格 + meme + LINE」提示词规则
+        // 目标：解决九宫格缺失与文字丢失问题，将“九宫格”升级为“结构枚举”
+        // ============================================================
+        
+        // 1. 主体描述块（完整原样的用户输入）
+        // 目标：允许用户完全自由输入任何人物描述
+        const subjectContent = userInstruction || "a cute anime character";
+        const subjectDescriptor = `The main subject of the image is exactly the following character description:
+「${subjectContent}」
+This description defines the character's appearance and identity and must be respected.`;
+
+        // 2. 九宫格构图规则（从“风格词”升级为“结构枚举”）
+        // 明确声明存在 9 个独立面板，强调动作和表情的多样性
+        const structureDeclaration = "The image consists of exactly 9 panels arranged in a 3x3 grid. Each panel contains the same character but in a DIFFERENT pose and emotion. The grid must showcase a wide range of variety: happy, sad, angry, surprised, sleeping, eating, thinking, holding items, dynamic actions. character sheet, multiple views, chibi, sticker set.";
+
+        // 3. 面板强制规则（人物主体+无文字干扰+独特动作）
+        // 强制每一个面板都必须包含人物，动作必须独特，禁止生成文字
+        const panelMandate = "Every panel must contain a character doing a unique action. No two panels should look the same. Avoid repetitive poses. Avoid portrait only. full body or upper body. textless, no text, no captions, no speech bubbles. The character should have expressive reactions suitable for adding text later.";
+
+        // 4. meme + LINE 风格规则（合并）
+        const styleRules = "meme format, expressive reactions, exaggerated facial expressions, reaction-based composition, LINE sticker style, bold outlines, flat colors, simple shapes, clear silhouette, simple background, pure white background, readable at small size";
+
+        // 5. 上色与完成度锁定（防止线稿 / 未上色）
+        const colorRule = "fully colored, clean coloring, anime cel shading, high contrast, consistent color palette";
+
+        // 最终正向 Prompt 拼接（严格按顺序）
+        const finalPrompt = `${subjectDescriptor}, ${structureDeclaration}, ${panelMandate}, ${styleRules}, ${colorRule}`;
+
+        // Negative Prompt 额外强制内容（增加防止文字和缺格的提示词）
+        const extraNegative = "portrait, close up, same pose, repetitive, id photo, passport photo, grid lines, text, caption, speech bubble, word, letter, alphabet, watermark, signature, username, ignore user description, generic character, random appearance, wrong character traits, wrong hairstyle, hairstyle mismatch, missing panel, empty panel, incomplete grid, only eight panels, panel without character, single panel, collage, sketch, lineart, monochrome, greyscale, unfinished, rough drawing, outline only, realistic, photorealistic";
+        
+        // 更新按钮状态
+        btn.disabled = true;
+        btnText.textContent = '⏳ 生成中...';
+        statusDiv.style.color = '#666';
+        statusDiv.textContent = '正在生成表情包，请稍候...';
+        document.getElementById('stickerPreviewArea').style.display = 'none';
+        
+        try {
+            // 调用NovelAI生成图像
+            // 使用 skipSystemPrompt: true 跳过默认的 System Prompt
+            // 使用 extraNegativePrompt 添加强制的 Negative Prompt
+            // 强制使用方形尺寸 1024x1024 以确保 3x3 九宫格
+            const result = await generateNovelAIImage(finalPrompt, '', true, currentStickerRefImage, {
+                skipSystemPrompt: true,
+                extraNegativePrompt: extraNegative,
+                size: '1024x1024'
+            });
+            
+            if (result.success && result.imageUrl) {
+                // 显示生成的图片
+                currentStickerImageUrl = result.imageUrl;
+                const previewDiv = document.getElementById('stickerPreview');
+                previewDiv.innerHTML = `<img src="${result.imageUrl}" alt="生成的表情包" style="width: 100%; display: block;">`;
+                document.getElementById('stickerPreviewArea').style.display = 'block';
+                
+                statusDiv.style.color = '#155724';
+                statusDiv.textContent = '✅ 表情包生成成功！';
+                btnText.textContent = '🎨 生成表情包';
+            } else {
+                statusDiv.style.color = '#721c24';
+                statusDiv.textContent = `❌ 生成失败：${result.error || '未知错误'}`;
+                btnText.textContent = '🎨 生成表情包';
+            }
+        } catch (error) {
+            statusDiv.style.color = '#721c24';
+            statusDiv.textContent = `❌ 生成失败：${error.message || '未知错误'}`;
+            btnText.textContent = '🎨 生成表情包';
+        } finally {
+            btn.disabled = false;
+        }
+    }
+    
+    /**
+     * 保存表情包到表情列表
+     */
+    function saveSticker() {
+        if (!currentStickerImageUrl) {
+            alert('没有可保存的表情包');
+            return;
+        }
+        
+        // 获取当前表情列表
+        const emojis = getMyEmojis();
+        
+        // 生成表情名称
+        const timestamp = new Date().toLocaleString('zh-CN');
+        const emojiName = `表情包_${timestamp}`;
+        
+        // 添加到表情列表
+        emojis.push({
+            name: emojiName,
+            url: currentStickerImageUrl
+        });
+        
+        // 保存到localStorage
+        saveMyEmojis(emojis);
+        
+        alert('表情包已保存到表情列表！');
+        
+        // 如果当前在聊天界面，可以提示用户使用
+        if (currentChatFriend) {
+            if (confirm('表情包已保存！是否现在打开表情面板查看？')) {
+                closeStickerPage();
+                // 如果聊天页面是打开的，打开表情面板
+                const chatPage = document.getElementById('chatPage');
+                if (chatPage && chatPage.classList.contains('active')) {
+                    openEmojiPanel();
+                }
+            }
+        }
+    }
+    
+    /**
+     * 重新生成表情包
+     */
+    function regenerateSticker() {
+        // 清空当前结果
+        document.getElementById('stickerPreviewArea').style.display = 'none';
+        document.getElementById('splitResultArea').style.display = 'none'; // 隐藏拆分区域
+        currentStickerImageUrl = null;
+        
+        // 重新生成
+        generateSticker();
+    }
+    
+    // ==================== 拆分表情包逻辑 (移植自 抠图3.html) ====================
+    
+    // 全局变量存储拆分后的图片
+    let splitImages = [];
+
+    /**
+     * 拆分表情包
+     */
+    function splitSticker() {
+        if (!currentStickerImageUrl) {
+            alert('没有可拆分的图片');
+            return;
+        }
+
+        const splitResultArea = document.getElementById('splitResultArea');
+        const splitGrid = document.getElementById('splitGrid');
+        const splitCount = document.getElementById('splitCount');
+        
+        splitResultArea.style.display = 'block';
+        splitGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px;">正在拆分中...</div>';
+        
+        // 创建图像对象加载 currentStickerImageUrl
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = currentStickerImageUrl;
+        
+        img.onload = function() {
+            // 创建 canvas 处理
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // 1. 背景去除 (阈值 240)
+            const backgroundThreshold = 240;
+            const pixels = [];
+            
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const i = (y * width + x) * 4;
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+                    
+                    if (r > backgroundThreshold && g > backgroundThreshold && b > backgroundThreshold) {
+                        data[i + 3] = 0; // 透明
+                    } else {
+                        pixels.push({ x, y });
+                    }
+                }
+            }
+            
+            // 2. 连通区域分析
+            const visited = new Array(width * height).fill(false);
+            const dirs = [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]];
+            let persons = [];
+            const minPersonSize = 50; // 最小尺寸
+            
+            for (const { x, y } of pixels) {
+                const idx = y * width + x;
+                // 检查是否访问过且非透明
+                if (!visited[idx] && data[idx * 4 + 3] > 0) {
+                    const queue = [[x, y]];
+                    visited[idx] = true;
+                    
+                    let minX = x, maxX = x, minY = y, maxY = y;
+                    
+                    while (queue.length > 0) {
+                        const [cx, cy] = queue.shift();
+                        
+                        for (const [dx, dy] of dirs) {
+                            const nx = cx + dx;
+                            const ny = cy + dy;
+                            
+                            if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                                const nidx = ny * width + nx;
+                                if (!visited[nidx] && data[nidx * 4 + 3] > 0) {
+                                    visited[nidx] = true;
+                                    queue.push([nx, ny]);
+                                    minX = Math.min(minX, nx);
+                                    maxX = Math.max(maxX, nx);
+                                    minY = Math.min(minY, ny);
+                                    maxY = Math.max(maxY, ny);
+                                }
+                            }
+                        }
+                    }
+                    
+                    const pWidth = maxX - minX + 1;
+                    const pHeight = maxY - minY + 1;
+                    
+                    if (pWidth >= minPersonSize && pHeight >= minPersonSize) {
+                        persons.push({ minX, maxX, minY, maxY, width: pWidth, height: pHeight });
+                    }
+                }
+            }
+            
+            // 3. 生成拆分后的图片
+            splitImages = [];
+            splitGrid.innerHTML = '';
+            splitCount.textContent = `共 ${persons.length} 个`;
+            
+            if (persons.length === 0) {
+                splitGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999;">未能识别出独立的表情图像，请尝试背景更干净的图片。</div>';
+                return;
+            }
+            
+            persons.forEach((person, index) => {
+                const { minX, maxX, minY, maxY, width: pWidth, height: pHeight } = person;
+                
+                const tempCanvas = document.createElement('canvas');
+                // 添加一些边距
+                const padding = 10;
+                // 底部预留文字区域 (调整为 40px 以容纳更大字体)
+                const textHeight = 40;
+                tempCanvas.width = pWidth + padding * 2;
+                tempCanvas.height = pHeight + padding * 2 + textHeight;
+                const tempCtx = tempCanvas.getContext('2d');
+                
+                // 绘制
+                const personImageData = ctx.getImageData(minX, minY, pWidth, pHeight);
+                tempCtx.putImageData(personImageData, padding, padding);
+                
+                const imgDataUrl = tempCanvas.toDataURL('image/png');
+                splitImages.push(imgDataUrl);
+                
+                // 显示在界面上
+                const item = document.createElement('div');
+                item.style.cssText = 'background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column;';
+                item.innerHTML = `
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 10px; background: #f8f8f8; position: relative;">
+                        <img src="${imgDataUrl}" id="stickerImg_${index}" style="max-width: 100%; max-height: 120px; object-fit: contain;">
+                    </div>
+                    <div style="padding: 5px; background: #fff; border-top: 1px solid #eee;">
+                         <input type="text" placeholder="输入中文梗文字" onchange="addTextToSticker(${index}, this.value)" style="width: 100%; padding: 4px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; text-align: center;">
+                    </div>
+                    <button onclick="downloadSingleSplitImage(${index})" style="width: 100%; padding: 8px; border: none; background: #f0f0f0; border-top: 1px solid #eee; color: #333; cursor: pointer; font-size: 12px;">⬇️ 下载</button>
+                `;
+                splitGrid.appendChild(item);
+            });
+        };
+        
+        img.onerror = function() {
+            splitGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: red;">图片加载失败</div>';
+        };
+    }
+    
+    // 给单个表情添加文字 (绘制到 canvas 并更新图片)
+    function addTextToSticker(index, text) {
+        if (!text) return; // 如果清空，暂时不处理还原（简化逻辑）
+        
+        const img = new Image();
+        // 获取原始拆分图（不含字）由于我们没有保存原始 ImageData，这里简化为重新从 currentStickerImageUrl 切割太麻烦
+        // 方案：splitImages[index] 已经是带空白底部的图了，我们直接在上面画字
+        
+        img.src = splitImages[index];
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            
+            // 1. 清除旧文字区域（底部 40px）
+            ctx.drawImage(img, 0, 0);
+            const textHeight = 40;
+            ctx.fillStyle = 'rgba(0,0,0,0)'; // 透明
+            ctx.clearRect(0, canvas.height - textHeight, canvas.width, textHeight); // 擦除底部
+            // 实际上 base64 已经合并了背景，如果背景透明，擦除是对的。
+            
+            // 2. 绘制文字 (参考示例图：黑色粗体，简洁清晰)
+            // 字体尝试使用系统黑体或圆体
+            ctx.font = 'bold 24px "Microsoft YaHei", "Heiti SC", sans-serif'; 
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            const x = canvas.width / 2;
+            const y = canvas.height - textHeight / 2 - 5; 
+            
+            // 简单的白色描边，增加可读性（可选）
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 4;
+            ctx.lineJoin = 'round';
+            ctx.strokeText(text, x, y);
+            
+            // 黑色文字主体
+            ctx.fillStyle = '#000000';
+            ctx.fillText(text, x, y);
+            
+            // 更新图片
+            const newDataUrl = canvas.toDataURL('image/png');
+            splitImages[index] = newDataUrl; // 更新数据源
+            document.getElementById(`stickerImg_${index}`).src = newDataUrl; // 更新视图
+        };
+    }
+
+    /**
+     * 下载单个拆分图片
+     */
+    function downloadSingleSplitImage(index) {
+        const dataUrl = splitImages[index];
+        if (dataUrl) {
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `sticker_${index + 1}.png`;
+            link.click();
+        }
+    }
+    
+    /**
+     * 批量下载所有拆分图片
+     */
+    function downloadAllSplitStickers() {
+        if (splitImages.length === 0) return;
+        
+        splitImages.forEach((dataUrl, index) => {
+            setTimeout(() => {
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = `sticker_${index + 1}.png`;
+                link.click();
+            }, index * 200);
+        });
+    }
+
+    /**
+     * 一键保存所有拆分表情到“我的表情”
+     */
+    async function saveSplitStickersToMyEmojis() {
+        if (splitImages.length === 0) {
+            alert('没有可保存的表情，请先拆分！');
+            return;
+        }
+
+        const packNameInput = document.getElementById('stickerPackName');
+        const packName = packNameInput.value.trim() || `表情包_${new Date().toLocaleString('zh-CN')}`;
+        
+        const newEmojis = [];
+        splitImages.forEach((url, index) => {
+            newEmojis.push({
+                name: `${packName}_${index + 1}`,
+                url: url,
+                timestamp: Date.now()
+            });
+        });
+
+        try {
+            await addEmojisToDB(newEmojis);
+            alert(`成功保存 ${newEmojis.length} 个表情到“我的表情”！\n\n请在 WeChat > 我 > 表情 中查看。`);
+        } catch (error) {
+            alert('保存失败，存储空间不足或数据库错误。');
+            console.error(error);
+        }
+    }
+
+    // 监听我的表情页面显示，刷新列表
+    
+    function openMyStickersPage() {
+        const page = document.getElementById('myStickersPage');
+        page.classList.add('active');
+        renderMyStickers();
+    }
+    
+    async function renderMyStickers() {
+        const container = document.getElementById('myStickersContainer');
+        if (!container) return;
+        
+        container.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">加载中...</div>';
+        
+        const emojis = await getMyEmojisAsync();
+        container.innerHTML = '';
+        
+        if (emojis.length === 0) {
+            container.innerHTML = '<div style="background: white; border-radius: 8px; padding: 40px; text-align: center; color: #999; margin-bottom: 15px;">暂无自定义表情</div>';
+            return;
+        }
+        
+        // 1. 分组逻辑
+        const packs = {};
+        const miscPackName = '其他表情';
+        
+        emojis.forEach(emoji => {
+            let packName = emoji.pack || miscPackName;
+            
+            // 兼容旧数据：尝试解析 PackName_Index 格式
+            if (!emoji.pack && emoji.name && emoji.name.includes('_')) {
+                const parts = emoji.name.split('_');
+                if (!isNaN(parseInt(parts[parts.length - 1]))) {
+                    packName = parts.slice(0, parts.length - 1).join('_');
+                }
+            }
+            
+            if (!packs[packName]) {
+                packs[packName] = [];
+            }
+            packs[packName].push(emoji);
+        });
+        
+        // 2. 渲染分组
+        const sortedPackNames = Object.keys(packs).sort((a, b) => {
+            if (a === miscPackName) return 1;
+            if (b === miscPackName) return -1;
+            return a.localeCompare(b);
+        });
+
+        sortedPackNames.forEach((packName, index) => {
+            const packEmojis = packs[packName];
+            
+            // 创建组容器
+            const group = document.createElement('div');
+            group.className = 'sticker-pack-group';
+            
+            // 创建标题头
+            const header = document.createElement('header');
+            header.className = 'sticker-pack-header';
+            header.innerHTML = `
+                <div style="flex: 1; display: flex; align-items: center;">
+                    <span class="sticker-pack-title">${packName}</span>
+                    <span class="sticker-pack-count">(${packEmojis.length})</span>
+                </div>
+                <div class="sticker-pack-actions" onclick="event.stopPropagation()">
+                    <button class="sticker-pack-btn" onclick="uploadToPack('${packName}')">+ 上传</button>
+                    <div class="sticker-pack-arrow ${index === 0 ? 'open' : ''}">▶</div>
+                </div>
+            `;
+            
+            // 创建内容网格
+            const content = document.createElement('div');
+            content.className = `sticker-pack-content ${index === 0 ? 'open' : ''}`;
+            
+            // 填充表情
+            packEmojis.forEach(emoji => {
+                const item = document.createElement('div');
+                item.style.cssText = 'aspect-ratio: 1; background: #f8f8f8; border-radius: 4px; overflow: hidden; position: relative; cursor: pointer; border: 1px solid #eee;';
+                item.innerHTML = `
+                    <img src="${emoji.url}" style="width: 100%; height: 100%; object-fit: contain;">
+                `;
+                item.onclick = () => viewNovelAIImage(emoji.url);
+                content.appendChild(item);
+            });
+            
+            // 绑定点击折叠事件 (点击整个header)
+            header.onclick = (e) => {
+                // 如果点击的是按钮，阻止冒泡已经在HTML里做了，这里只处理折叠
+                if (e.target.tagName === 'BUTTON') return;
+                
+                const isOpen = content.classList.contains('open');
+                const arrow = header.querySelector('.sticker-pack-arrow');
+                
+                if (isOpen) {
+                    content.classList.remove('open');
+                    arrow.classList.remove('open');
+                } else {
+                    content.classList.add('open');
+                    arrow.classList.add('open');
+                }
+            };
+            
+            group.appendChild(header);
+            group.appendChild(content);
+            container.appendChild(group);
+        });
+    }
+
+    // 新建表情包
+    function createStickerPack() {
+        const packName = prompt("请输入新表情包名称：");
+        if (!packName) return;
+        
+        currentUploadingPack = packName;
+        document.getElementById('stickerPackUploadInput').click();
+    }
+
+    // 上传到指定表情包
+    let currentUploadingPack = '';
+    function uploadToPack(packName) {
+        currentUploadingPack = packName;
+        document.getElementById('stickerPackUploadInput').click();
+    }
+
+    // 处理批量上传
+    async function handleBatchStickerUpload(event) {
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
+        
+        if (!currentUploadingPack) {
+            currentUploadingPack = '其他表情';
+        }
+
+        const emojisToAdd = [];
+        let successCount = 0;
+        
+        // 显示加载提示
+        const btn = document.querySelector('button[onclick="createStickerPack()"]');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '⏳ 处理中...';
+        btn.disabled = true;
+
+        try {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) continue;
+                
+                try {
+                    const base64 = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = e => resolve(e.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                    
+                    emojisToAdd.push({
+                        name: file.name.split('.')[0],
+                        url: base64,
+                        pack: currentUploadingPack, // 添加 pack 字段
+                        createdAt: Date.now()
+                    });
+                    successCount++;
+                } catch (e) {
+                    console.error('File read error:', e);
+                }
+            }
+            
+            if (emojisToAdd.length > 0) {
+                await addEmojisToDB(emojisToAdd);
+                alert(`成功添加 ${successCount} 个表情到 "${currentUploadingPack}"！`);
+                renderMyStickers(); // 刷新列表
+            } else {
+                alert('未选择有效的图片文件。');
+            }
+        } catch (e) {
+            console.error('Batch upload error:', e);
+            alert('上传出错，请重试。');
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            event.target.value = ''; // 重置 input
+            currentUploadingPack = '';
+        }
+    }
+
+    // ========== 表情包挂载逻辑 ==========
+
+    // 获取所有表情包名称
+    async function getStickerPacks() {
+        const emojis = await getMyEmojisAsync();
+        const packs = new Set();
+        emojis.forEach(e => {
+            if (e.pack) {
+                packs.add(e.pack);
+            } else if (e.name && e.name.includes('_')) {
+                 const parts = e.name.split('_');
+                 if (!isNaN(parseInt(parts[parts.length - 1]))) {
+                    packs.add(parts.slice(0, parts.length - 1).join('_'));
+                 }
+            }
+        });
+        // 确保包含 "其他表情" 如果有相关表情? 
+        const packMap = {};
+        const miscPackName = '其他表情';
+        emojis.forEach(emoji => {
+            let packName = emoji.pack || miscPackName;
+            if (!emoji.pack && emoji.name && emoji.name.includes('_')) {
+                const parts = emoji.name.split('_');
+                if (!isNaN(parseInt(parts[parts.length - 1]))) {
+                    packName = parts.slice(0, parts.length - 1).join('_');
+                }
+            }
+            packMap[packName] = true;
+        });
+        return Object.keys(packMap).sort();
+    }
+
+    // 获取角色挂载的表情包
+    function getMountedPacks(friendId) {
+        const key = `mounted_packs_${friendId}`;
+        const saved = localStorage.getItem(key);
+        return saved ? JSON.parse(saved) : [];
+    }
+
+    // 保存角色挂载的表情包
+    function saveMountedPacksData(friendId, packs) {
+        const key = `mounted_packs_${friendId}`;
+        localStorage.setItem(key, JSON.stringify(packs));
+    }
+
+    async function openMountStickerModal() {
+        if (!currentChatFriend) return;
+        
+        const modal = document.getElementById('mountStickerModal');
+        const list = document.getElementById('mountStickerList');
+        
+        // 显示加载
+        list.innerHTML = '<div>加载中...</div>';
+        modal.classList.add('active');
+        
+        const allPacks = await getStickerPacks();
+        const mounted = getMountedPacks(currentChatFriend);
+        
+        if (allPacks.length === 0) {
+            list.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">暂无表情包，请先在"我的表情"中上传</div>';
+            return;
+        }
+        
+        list.innerHTML = allPacks.map(pack => `
+            <label class="mount-sticker-item" style="display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #f0f0f0; cursor: pointer;">
+                <input type="checkbox" value="${pack}" ${mounted.includes(pack) ? 'checked' : ''} style="margin-right: 10px; width: 18px; height: 18px; accent-color: var(--deep-pink);">
+                <span style="font-size: 15px; color: #333;">${pack}</span>
+            </label>
+        `).join('');
+    }
+
+    function closeMountStickerModal() {
+        document.getElementById('mountStickerModal').classList.remove('active');
+    }
+
+    function saveMountedPacks() {
+        if (!currentChatFriend) return;
+        
+        const checkboxes = document.querySelectorAll('#mountStickerList input[type="checkbox"]:checked');
+        const selectedPacks = Array.from(checkboxes).map(cb => cb.value);
+        
+        saveMountedPacksData(currentChatFriend, selectedPacks);
+        closeMountStickerModal();
+        alert(`已更新 ${currentChatFriend} 的挂载表情包`);
+    }
+
+    // 获取AI应该发送的表情
+    async function getCharacterSticker(friendId, keyword) {
+        const mountedPacks = getMountedPacks(friendId);
+        
+        // 如果没挂载包，返回 null (由调用方决定是否发送默认)
+        if (mountedPacks.length === 0) {
+            return null;
+        }
+        
+        const myEmojis = await getMyEmojisAsync();
+        
+        // 只筛选挂载包中的表情
+        const availableEmojis = myEmojis.filter(e => {
+            let packName = e.pack || '其他表情';
+             if (!e.pack && e.name && e.name.includes('_')) {
+                const parts = e.name.split('_');
+                if (!isNaN(parseInt(parts[parts.length - 1]))) {
+                    packName = parts.slice(0, parts.length - 1).join('_');
+                }
+            }
+            return mountedPacks.includes(packName);
+        });
+        
+        if (availableEmojis.length === 0) return null;
+        
+        // 关键词匹配
+        const matched = availableEmojis.filter(e => e.name.includes(keyword));
+        
+        if (matched.length > 0) {
+            return matched[Math.floor(Math.random() * matched.length)];
+        } else {
+            // 随机一个
+            return availableEmojis[Math.floor(Math.random() * availableEmojis.length)];
+        }
+    }
+    
+    /**
+     * 渲染已保存的 NovelAI 图像消息（用于加载历史消息）
+     * @param {string} name - 好友名称
+     * @param {Object} msg - 消息对象
+     */
+    function renderNovelAIImageMessage(name, msg) {
+        const messages = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message'; // 不是自己的消息
+        
+        const messageId = msg.id || generateMessageId();
+        messageDiv.dataset.messageId = messageId;
+        messageDiv.dataset.messageType = 'naiimag'; // 标记为 NovelAI 图像消息
+        
+        const avatar = name.charAt(0);
+        const prompt = msg.imageDesc || msg.text?.replace('[NovelAI 图像] ', '') || '无描述';
+        
+        // 构建消息内容（显示图像和 Prompt）
+        const bubbleContent = `
+            <div class="novelai-image-message">
+                <img src="${msg.imageUrl}" alt="NovelAI 生成图像" style="display:block; max-width: 100%; border-radius: 8px; cursor: pointer;" onclick="viewNovelAIImage('${msg.imageUrl.replace(/'/g, "\\'")}')">
+                <div class="novelai-prompt-info" style="margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.05); border-radius: 4px; font-size: 12px; color: #666;">
+                    <div style="font-weight: 500; margin-bottom: 4px;">生成描述：</div>
+                    <div style="word-break: break-word;">${prompt}</div>
+                </div>
+            </div>
+        `;
+        
+        messageDiv.innerHTML = `
+            <div class="chat-avatar" onclick="showStatusBar('${name}')" style="cursor: pointer;" data-role-name="${name}">${avatar}</div>
+            <div class="chat-bubble" data-message-id="${messageId}">${bubbleContent}</div>
+        `;
+        
+        messages.appendChild(messageDiv);
+    }
+    
+    /**
+     * 打开 NovelAI 图像生成对话框
+     */
+    function openNovelAIGenerateModal() {
+        if (!currentChatFriend) {
+            alert('请先选择一个好友');
+            return;
+        }
+        
+        // 检查是否配置了 API Key
+        const apiKey = localStorage.getItem('novelaiApiKey');
+        if (!apiKey) {
+            alert('请先在桌面设置中配置 NovelAI API Key');
+            return;
+        }
+        
+        // 创建对话框
+        const modal = document.createElement('div');
+        modal.id = 'novelaiGenerateModal';
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+        
+        modal.innerHTML = `
+            <div style="background: white; border-radius: 12px; padding: 20px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0; font-size: 18px; font-weight: 600;">NovelAI 图像生成</h3>
+                    <button onclick="closeNovelAIGenerateModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #999;">&times;</button>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500;">图像描述（Prompt）</label>
+                    <textarea id="novelaiPromptInput" placeholder="例如：a cute cat, sitting on a windowsill, sunset" style="width: 100%; min-height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; resize: vertical; box-sizing: border-box;"></textarea>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500;">角色/场景 Prompt（可选）</label>
+                    <textarea id="novelaiRolePromptInput" placeholder="例如：anime style, detailed face" style="width: 100%; min-height: 60px; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; resize: vertical; box-sizing: border-box;"></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button onclick="closeNovelAIGenerateModal()" style="padding: 10px 20px; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer; font-size: 14px;">取消</button>
+                    <button onclick="confirmNovelAIGenerate()" style="padding: 10px 20px; border: none; border-radius: 6px; background: var(--deep-pink, #ff6b9d); color: white; cursor: pointer; font-size: 14px; font-weight: 500;">生成</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // 聚焦输入框
+        setTimeout(() => {
+            const input = document.getElementById('novelaiPromptInput');
+            if (input) input.focus();
+        }, 100);
+    }
+    
+    /**
+     * 关闭 NovelAI 图像生成对话框
+     */
+    function closeNovelAIGenerateModal() {
+        const modal = document.getElementById('novelaiGenerateModal');
+        if (modal) {
+            document.body.removeChild(modal);
+        }
+    }
+    
+    /**
+     * 确认生成 NovelAI 图像
+     */
+    async function confirmNovelAIGenerate() {
+        const promptInput = document.getElementById('novelaiPromptInput');
+        const rolePromptInput = document.getElementById('novelaiRolePromptInput');
+        
+        const userPrompt = promptInput?.value.trim() || '';
+        const rolePrompt = rolePromptInput?.value.trim() || '';
+        
+        if (!userPrompt) {
+            alert('请输入图像描述');
+            return;
+        }
+        
+        // 关闭对话框
+        closeNovelAIGenerateModal();
+        
+        // 开始生成
+        await generateAndSendNovelAIImage(userPrompt, rolePrompt);
+    }
 
     // 保存系统设置
     function saveSystemSettings() {
@@ -18011,6 +19882,9 @@ ${recentMessages || '暂无聊天记录'}`;
         savedOpenAIKey = openaiKey;
         savedOpenAIModel = openaiModel;
         savedTemperature = temperature;
+        
+        // 保存 NovelAI 设置
+        saveNovelAISettings();
 
         closeSettingsPage();
         alert('系统设置保存成功！');
@@ -25924,241 +27798,6 @@ ${recentHistory || '暂无对话记录'}
             statusCard.innerHTML = html;
         }
         
-        // ==================== NovelAI 表情包生成 Logic ====================
-        
-        // 打开 NovelAI 应用
-        function openNovelAIApp() {
-            const page = document.getElementById('novelaiPage');
-            page.classList.add('active');
-            
-            // 加载保存的设置
-            loadNovelAISettings();
-        }
-        
-        // 关闭 NovelAI 应用
-        function closeNovelAIApp() {
-            const page = document.getElementById('novelaiPage');
-            page.classList.remove('active');
-        }
-        
-        // 加载设置
-        function loadNovelAISettings() {
-            const settings = JSON.parse(localStorage.getItem('novelai_settings') || '{}');
-            
-            if (settings.apiKey) {
-                document.getElementById('novelaiApiKey').value = settings.apiKey;
-            }
-            
-            if (settings.mode) {
-                const radio = document.querySelector(`input[name="novelaiMode"][value="${settings.mode}"]`);
-                if (radio) radio.checked = true;
-                
-                // 显示/隐藏代理地址字段
-                if (settings.mode === 'proxy') {
-                    document.getElementById('proxyUrlField').style.display = 'block';
-                }
-            }
-            
-            if (settings.proxyUrl) {
-                document.getElementById('novelaiProxyUrl').value = settings.proxyUrl;
-            }
-            
-            if (settings.prompt) {
-                document.getElementById('novelaiPrompt').value = settings.prompt;
-            }
-            
-            if (settings.negativePrompt) {
-                document.getElementById('novelaiNegativePrompt').value = settings.negativePrompt;
-            }
-        }
-        
-        // 保存设置
-        function saveNovelAISettings() {
-            const settings = {
-                apiKey: document.getElementById('novelaiApiKey').value,
-                mode: document.querySelector('input[name="novelaiMode"]:checked').value,
-                proxyUrl: document.getElementById('novelaiProxyUrl').value,
-                prompt: document.getElementById('novelaiPrompt').value,
-                negativePrompt: document.getElementById('novelaiNegativePrompt').value
-            };
-            
-            localStorage.setItem('novelai_settings', JSON.stringify(settings));
-        }
-        
-        // 打开设置（占位符，设置已经内置在页面中）
-        function openNovelAISettings() {
-            alert('设置区域已在页面顶部，向下滚动查看生成参数 😊');
-        }
-        
-        // 监听连接模式切换
-        document.addEventListener('DOMContentLoaded', function() {
-            const modeRadios = document.querySelectorAll('input[name="novelaiMode"]');
-            modeRadios.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    const proxyField = document.getElementById('proxyUrlField');
-                    if (this.value === 'proxy') {
-                        proxyField.style.display = 'block';
-                    } else {
-                        proxyField.style.display = 'none';
-                    }
-                    saveNovelAISettings();
-                });
-            });
-            
-            // 监听输入变化，自动保存
-            const inputs = ['novelaiApiKey', 'novelaiProxyUrl', 'novelaiPrompt', 'novelaiNegativePrompt'];
-            inputs.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.addEventListener('blur', saveNovelAISettings);
-                }
-            });
-        });
-        
-        // 生成图片
-        async function generateNovelAIImage() {
-            // 获取设置
-            const apiKey = document.getElementById('novelaiApiKey').value.trim();
-            const mode = document.querySelector('input[name="novelaiMode"]:checked').value;
-            const proxyUrl = document.getElementById('novelaiProxyUrl').value.trim();
-            const prompt = document.getElementById('novelaiPrompt').value.trim();
-            const negativePrompt = document.getElementById('novelaiNegativePrompt').value.trim();
-            const size = document.getElementById('novelaiSize').value;
-            const steps = parseInt(document.getElementById('novelaiSteps').value);
-            const scale = parseFloat(document.getElementById('novelaiScale').value);
-            
-            // 验证
-            if (!apiKey) {
-                showNovelAIError('请先输入 API Key');
-                return;
-            }
-            
-            if (!prompt) {
-                showNovelAIError('请输入提示词');
-                return;
-            }
-            
-            if (mode === 'proxy' && !proxyUrl) {
-                showNovelAIError('请输入代理地址');
-                return;
-            }
-            
-            // 解析尺寸
-            const [width, height] = size.split('x').map(Number);
-            
-            // 保存设置
-            saveNovelAISettings();
-            
-            // 显示加载状态
-            document.getElementById('novelaiLoading').classList.add('active');
-            document.getElementById('novelaiError').classList.remove('active');
-            document.getElementById('novelaiResult').style.display = 'none';
-            document.getElementById('novelaiGenerateBtn').disabled = true;
-            
-            try {
-                // 构建请求
-                const requestBody = {
-                    input: prompt,
-                    model: 'nai-diffusion-3',
-                    action: 'generate',
-                    parameters: {
-                        width: width,
-                        height: height,
-                        scale: scale,
-                        sampler: 'k_euler',
-                        steps: steps,
-                        n_samples: 1,
-                        ucPreset: 0,
-                        qualityToggle: true,
-                        sm: false,
-                        sm_dyn: false,
-                        dynamic_thresholding: false,
-                        controlnet_strength: 1,
-                        legacy: false,
-                        add_original_image: false,
-                        cfg_rescale: 0,
-                        noise_schedule: 'native',
-                        negative_prompt: negativePrompt || 'nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry'
-                    }
-                };
-                
-                let url, headers;
-                
-                if (mode === 'direct') {
-                    // 直连模式
-                    url = 'https://image.novelai.net/ai/generate-image';
-                    headers = {
-                        'Authorization': `Bearer ${apiKey}`,
-                        'Content-Type': 'application/json'
-                    };
-                } else {
-                    // 代理模式
-                    url = proxyUrl;
-                    headers = {
-                        'Content-Type': 'application/json',
-                        'X-API-Key': apiKey
-                    };
-                }
-                
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify(requestBody)
-                });
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`API 请求失败 (${response.status}): ${errorText}`);
-                }
-                
-                // 处理响应
-                const blob = await response.blob();
-                const imageUrl = URL.createObjectURL(blob);
-                
-                // 显示结果
-                document.getElementById('novelaiResultImg').src = imageUrl;
-                document.getElementById('novelaiResult').style.display = 'block';
-                
-                // 保存图片数据以便下载
-                window.novelaiLastImage = blob;
-                
-            } catch (error) {
-                console.error('NovelAI 生成错误:', error);
-                showNovelAIError(error.message || '生成失败，请检查设置和网络连接');
-            } finally {
-                document.getElementById('novelaiLoading').classList.remove('active');
-                document.getElementById('novelaiGenerateBtn').disabled = false;
-            }
-        }
-        
-        // 显示错误
-        function showNovelAIError(message) {
-            const errorEl = document.getElementById('novelaiError');
-            errorEl.textContent = message;
-            errorEl.classList.add('active');
-            
-            setTimeout(() => {
-                errorEl.classList.remove('active');
-            }, 5000);
-        }
-        
-        // 下载图片
-        function downloadNovelAIImage() {
-            if (!window.novelaiLastImage) {
-                alert('没有可下载的图片');
-                return;
-            }
-            
-            const url = URL.createObjectURL(window.novelaiLastImage);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `novelai_${Date.now()}.png`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-        
         
     </script>
     
@@ -26251,5 +27890,22 @@ ${recentHistory || '暂无对话记录'}
         .music_prog_y8u { position: absolute; left: 0; top: 0; height: 100%; width: 40%; background: #2d2d2d; border-radius: 2px; }
         .time_txt_u4i { font-size: 10px; color: #ccc; font-weight: 500; }
     </style>
+    <!-- 挂载表情包弹窗 -->
+    <div class="emoji-add-modal" id="mountStickerModal" onclick="if(event.target===this) closeMountStickerModal()">
+        <div class="emoji-add-content" style="width: 85%; max-width: 360px;">
+            <div class="emoji-add-title">挂载表情包</div>
+            <div style="margin-bottom: 15px; font-size: 14px; color: #666;">
+                选择给当前角色挂载的表情包。挂载后，角色将只使用选定表情包中的表情。
+            </div>
+            <div id="mountStickerList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;">
+                <!-- 列表动态生成 -->
+            </div>
+            <div class="emoji-add-actions">
+                <button class="emoji-add-btn cancel" onclick="closeMountStickerModal()">取消</button>
+                <button class="emoji-add-btn confirm" onclick="saveMountedPacks()">保存</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
